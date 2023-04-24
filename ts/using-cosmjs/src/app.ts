@@ -16,9 +16,9 @@ import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
 import {defaultRegistryTypes} from "@cosmjs/stargate"
 import {MsgDelegate} from "cosmjs-types/cosmos/staking/v1beta1/tx";
 import {MsgSend} from "cosmjs-types/cosmos/bank/v1beta1/tx";
-import {QueryClientImpl as FeemodelQueryClient} from "../coreum/proto-ts/coreum/feemodel/v1/query";
-import {MsgIssue} from "../coreum/proto-ts/coreum/asset/ft/v1/tx";
-import {Feature} from "../coreum/proto-ts/coreum/asset/ft/v1/token";
+import {QueryClientImpl as FeemodelQueryClient} from "../coreum-ts/coreum/feemodel/v1/query";
+import {MsgIssue} from "../coreum-ts/coreum/asset/ft/v1/tx";
+import {Feature} from "../coreum-ts/coreum/asset/ft/v1/token";
 
 export interface MsgIssueEncodeObject extends EncodeObject {
     readonly typeUrl: "/coreum.asset.ft.v1.MsgIssue";

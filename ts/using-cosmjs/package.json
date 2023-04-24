@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "../node_modules/.bin/ts-node-dev ./src/app.ts",
-    "build": "../node_modules/.bin/tsc"
+    "dev": "./node_modules/.bin/ts-node-dev ./src/app.ts",
+    "build": "./node_modules/.bin/tsc"
   },
   "author": "",
   "license": "ISC",
@@ -25,6 +25,7 @@
     "@cosmjs/proto-signing": "^0.29.5",
     "@cosmjs/stargate": "^0.29.5",
     "express": "^4.17.2",
+    "ts-node": "^10.9.1",
     "ts-proto": "^1.146.0"
   }
 }
