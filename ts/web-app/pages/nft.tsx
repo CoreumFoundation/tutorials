@@ -4,7 +4,7 @@ import {sha256} from 'js-sha256'
 
 import WalletLoader from 'components/WalletLoader'
 import {useSigningClient} from 'contexts/client'
-import {QueryClassResponse, QueryNFTsResponse} from "../coreum/proto-ts/coreum/nft/v1beta1/query";
+import {QueryNFTsResponse} from "../coreum/proto-ts/coreum/nft/v1beta1/query";
 import {AssetNFT as AssetNFTTx, NFT as NFTTx} from "../coreum/tx";
 import {EncodeObject} from "@cosmjs/proto-signing";
 

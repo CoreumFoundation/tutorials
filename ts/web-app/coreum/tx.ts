@@ -1,18 +1,16 @@
 import {
   DeepPartial,
   Exact,
-  MsgIssueClass,
   MsgIssueClass as AssetNFTMsgIssueClass,
-  MsgMint,
   MsgMint as AssetNFTMsgMint,
 } from "./proto-ts/coreum/asset/nft/v1/tx";
-import {MsgSend, MsgSend as NFTMsgSend} from "./proto-ts/coreum/nft/v1beta1/tx";
+import {MsgSend as NFTMsgSend} from "./proto-ts/coreum/nft/v1beta1/tx";
 import {GeneratedType} from "@cosmjs/proto-signing";
 
 export const coreumRegistryTypes: ReadonlyArray<[string, GeneratedType]> = [
-  ["/coreum.asset.nft.v1.MsgIssueClass", MsgIssueClass],
-  ["/coreum.asset.nft.v1.MsgMint", MsgMint],
-  ["/coreum.nft.v1beta1.MsgSend", MsgSend],
+  ["/coreum.asset.nft.v1.MsgIssueClass", AssetNFTMsgIssueClass],
+  ["/coreum.asset.nft.v1.MsgMint", AssetNFTMsgMint],
+  ["/coreum.nft.v1beta1.MsgSend", NFTMsgSend],
 ];
 
 export namespace AssetNFT {
