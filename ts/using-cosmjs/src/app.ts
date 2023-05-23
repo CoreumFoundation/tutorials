@@ -184,17 +184,9 @@ const main = (async function () {
 
 export async function getGasPriceWithMultiplier(feemodelQueryClient: FeemodelQueryClient) {
     const gasPriceMultiplier = 1.1
-    // the param can be changed via governance
-    const feemodelParams = await feemodelQueryClient.Params({})
     const minGasPriceRes = await feemodelQueryClient.MinGasPrice({})
     const minGasPrice = decodeCosmosSdkDecFromProto(minGasPriceRes.minGasPrice?.amount || "")
     let gasPrice = minGasPrice.toFloatApproximation() * gasPriceMultiplier
-
-    const initialGasPrice = decodeCosmosSdkDecFromProto(feemodelParams.params?.model?.initialGasPrice || "").toFloatApproximation()
-    if (gasPrice > initialGasPrice) {
-        gasPrice = initialGasPrice
-    }
-
     return GasPrice.fromString(`${gasPrice}${minGasPriceRes.minGasPrice?.denom || ""}`);
 }
 
