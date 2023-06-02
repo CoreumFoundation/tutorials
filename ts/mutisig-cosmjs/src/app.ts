@@ -1,8 +1,7 @@
 import {stringToPath} from "@cosmjs/crypto";
 import {coins} from "@cosmjs/proto-signing";
 import {
-    assertIsDeliverTxSuccess, calculateFee, createProtobufRpcClient,
-    decodeCosmosSdkDecFromProto,
+    assertIsDeliverTxSuccess, calculateFee,
     GasPrice,
     makeMultisignedTx,
     SignerData,
@@ -11,8 +10,6 @@ import {
 import {MsgSendEncodeObject} from "@cosmjs/stargate/build/modules";
 import {StargateClient} from "@cosmjs/stargate/build/stargateclient";
 import {MsgSend} from "cosmjs-types/cosmos/bank/v1beta1/tx";
-import {QueryClient} from "@cosmjs/stargate/build/queryclient/queryclient";
-import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {
     createMultisigThresholdPubkey,
