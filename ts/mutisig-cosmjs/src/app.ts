@@ -12,7 +12,6 @@ import {MsgSendEncodeObject} from "@cosmjs/stargate/build/modules";
 import {StargateClient} from "@cosmjs/stargate/build/stargateclient";
 import {MsgSend} from "cosmjs-types/cosmos/bank/v1beta1/tx";
 import {QueryClient} from "@cosmjs/stargate/build/queryclient/queryclient";
-import {QueryClientImpl as FeemodelQueryClient} from "../coreum-ts/coreum/feemodel/v1/query";
 import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
 import {TxRaw} from "cosmjs-types/cosmos/tx/v1beta1/tx";
 import {
@@ -43,13 +42,6 @@ const main = (async function () {
     const recipientAddress = "testcore12m9r6zeem9tpvqe29686ddeu9z2ra29j93yyc2";
     const amountToSend = 1000
 
-    // ******************** Clients ********************
-
-    const tendermintClient = await Tendermint34Client.connect(coreumRpcEndpoint);
-    const queryClient = new QueryClient(tendermintClient);
-    const rpcClient = createProtobufRpcClient(queryClient);
-    const feemodelQueryClient = new FeemodelQueryClient(rpcClient)
-
     // ******************** Multisig ********************
 
     const signingInstruction = await (async () => {
@@ -67,7 +59,7 @@ const main = (async function () {
             value: msgSend,
         };
         const gasLimit = 74000; // the value is static for the single send with 3 signatures
-        const gasPrice = await getGasPrice(feemodelQueryClient, coreumDenom)
+        const gasPrice = GasPrice.fromString(`0.0625${coreumDenom || ""}`);
         const sendFee: StdFee = calculateFee(gasLimit, gasPrice);
         const fee = {
             amount: sendFee.amount,
@@ -152,12 +144,6 @@ export function makeMultisignedTxBytes(
 ): Uint8Array {
     const signedTx = makeMultisignedTx(multisigPubkey, sequence, fee, bodyBytes, signatures);
     return Uint8Array.from(TxRaw.encode(signedTx).finish());
-}
-
-export async function getGasPrice(feemodelQueryClient: FeemodelQueryClient, denom: string) {
-    const feemodelParams = await feemodelQueryClient.Params({})
-    const gasPrice = decodeCosmosSdkDecFromProto(feemodelParams.params?.model?.initialGasPrice || "").toFloatApproximation()
-    return GasPrice.fromString(`${gasPrice}${denom || ""}`);
 }
 
 export default main;
