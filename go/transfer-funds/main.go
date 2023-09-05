@@ -16,6 +16,7 @@ import (
 	"google.golang.org/grpc/credentials"
 
 	"github.com/CoreumFoundation/coreum/v2/pkg/client"
+	coreumConfig "github.com/CoreumFoundation/coreum/v2/pkg/config"
 	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
 )
 
@@ -26,7 +27,7 @@ const (
 	chainID          = constant.ChainIDTest
 	addressPrefix    = constant.AddressPrefixTest
 	denom            = constant.DenomTest
-	recipientAddress = "testcore1534s8rz2e36lwycr6gkm9vpfe5yf67wkuca7zs"
+	recipientAddress = "testcore1344jh7kgg4q4fzpuamrtqjesuxeyen700nlve6"
 	nodeAddress      = "full-node.testnet-1.coreum.dev:9090"
 )
 
@@ -45,7 +46,21 @@ func main() {
 
 	// Configure client context and tx factory
 	// If you don't use TLS then replace `grpc.WithTransportCredentials()` with `grpc.WithInsecure()`
+
+	encodingConfig := coreumConfig.NewEncodingConfig(modules)
+
 	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+	// TODO switch to new grpcClient initialization
+	//pc, ok := encodingConfig.Codec.(codec.GRPCCodecProvider)
+	//if !ok {
+	//	panic("failed to cast codec to codec.GRPCCodecProvider)")
+	//}
+	//
+	//grpcClient, err := grpc.Dial(
+	//	nodeAddress,
+	//	grpc.WithDefaultCallOptions(grpc.ForceCodec(pc.GRPCCodec())),
+	//	grpc.WithTransportCredentials(insecure.NewCredentials()),
+	//)
 	if err != nil {
 		panic(err)
 	}
@@ -53,8 +68,8 @@ func main() {
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
-		WithKeyring(keyring.NewInMemory()).
-		WithBroadcastMode(flags.BroadcastBlock)
+		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
+		WithBroadcastMode(flags.BroadcastSync)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -74,25 +89,30 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(senderInfo.GetAddress().String())
+	senderAddress, err := senderInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(fmt.Printf("Sender address: %s\n", senderAddress.String()))
 
 	// Validate address
-	_, err = sdk.AccAddressFromBech32(senderInfo.GetAddress().String())
+	_, err = sdk.AccAddressFromBech32(senderAddress.String())
 	if err != nil {
 		panic(err)
 	}
 
 	// Broadcast transaction transferring funds
 	msg := &banktypes.MsgSend{
-		FromAddress: senderInfo.GetAddress().String(),
+		FromAddress: senderAddress.String(),
 		ToAddress:   recipientAddress,
-		Amount:      sdk.NewCoins(sdk.NewInt64Coin(denom, 9_000_000)),
+		Amount:      sdk.NewCoins(sdk.NewInt64Coin(denom, 1_000_000)),
 	}
 
 	ctx := context.Background()
 	result, err := client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msg,
 	)

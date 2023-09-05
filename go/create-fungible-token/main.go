@@ -5,6 +5,13 @@ import (
 	"crypto/tls"
 	"fmt"
 
+	"google.golang.org/grpc/credentials"
+
+	coreumConfig "github.com/CoreumFoundation/coreum/v2/pkg/config"
+
+	"github.com/CoreumFoundation/coreum/v2/pkg/client"
+	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
+	assetfttypes "github.com/CoreumFoundation/coreum/v2/x/asset/ft/types"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -13,11 +20,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
-
-	"github.com/CoreumFoundation/coreum/v2/pkg/client"
-	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
-	assetfttypes "github.com/CoreumFoundation/coreum/v2/x/asset/ft/types"
 )
 
 const (
@@ -42,9 +44,22 @@ func main() {
 		auth.AppModuleBasic{},
 	)
 
+	encodingConfig := coreumConfig.NewEncodingConfig(modules)
+
 	// Configure client context and tx factory
 	// If you don't use TLS then replace `grpc.WithTransportCredentials()` with `grpc.WithInsecure()`
 	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+	// TODO switch to new grpcClient initialization
+	//pc, ok := encodingConfig.Codec.(codec.GRPCCodecProvider)
+	//if !ok {
+	//	panic("failed to cast codec to codec.GRPCCodecProvider)")
+	//}
+	//
+	//grpcClient, err := grpc.Dial(
+	//	nodeAddress,
+	//	grpc.WithDefaultCallOptions(grpc.ForceCodec(pc.GRPCCodec())),
+	//	grpc.WithTransportCredentials(insecure.NewCredentials()),
+	//)
 	if err != nil {
 		panic(err)
 	}
@@ -52,8 +67,8 @@ func main() {
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
-		WithKeyring(keyring.NewInMemory()).
-		WithBroadcastMode(flags.BroadcastBlock)
+		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
+		WithBroadcastMode(flags.BroadcastSync)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -73,11 +88,16 @@ func main() {
 		panic(err)
 	}
 
+	senderAddress, err := senderInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
+
 	// Broadcast transaction issuing new fungible token
-	const subunit = "uabc"
+	const subunit = "uabc32"
 	msgIssue := &assetfttypes.MsgIssue{
-		Issuer:        senderInfo.GetAddress().String(),
-		Symbol:        "ABC",
+		Issuer:        senderAddress.String(),
+		Symbol:        "ABC32",
 		Subunit:       subunit,
 		Precision:     6,
 		InitialAmount: sdk.NewInt(100_000_000),
@@ -88,7 +108,7 @@ func main() {
 	ctx := context.Background()
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgIssue,
 	)
@@ -97,10 +117,10 @@ func main() {
 	}
 
 	// Query initial balance hold by the issuer
-	denom := subunit + "-" + senderInfo.GetAddress().String()
+	denom := subunit + "-" + senderAddress.String()
 	bankClient := banktypes.NewQueryClient(clientCtx)
 	resp, err := bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
-		Address: senderInfo.GetAddress().String(),
+		Address: senderAddress.String(),
 		Denom:   denom,
 	})
 	if err != nil {
@@ -120,15 +140,20 @@ func main() {
 		panic(err)
 	}
 
+	recipientAddress, err := recipientInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
+
 	msgSend := &banktypes.MsgSend{
-		FromAddress: senderInfo.GetAddress().String(),
-		ToAddress:   recipientInfo.GetAddress().String(),
+		FromAddress: senderAddress.String(),
+		ToAddress:   recipientAddress.String(),
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin(denom, 1_000_000)),
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgSend,
 	)
@@ -138,7 +163,7 @@ func main() {
 
 	// Query the balance of the recipient
 	resp, err = bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
-		Address: recipientInfo.GetAddress().String(),
+		Address: recipientAddress.String(),
 		Denom:   denom,
 	})
 	if err != nil {
@@ -148,14 +173,14 @@ func main() {
 
 	// Freeze balance portion of the recipient's balance
 	msgFreeze := &assetfttypes.MsgFreeze{
-		Sender:  senderInfo.GetAddress().String(),
-		Account: recipientInfo.GetAddress().String(),
+		Sender:  senderAddress.String(),
+		Account: recipientAddress.String(),
 		Coin:    sdk.NewInt64Coin(denom, 500_000),
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgFreeze,
 	)
