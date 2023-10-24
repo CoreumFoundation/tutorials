@@ -13,7 +13,7 @@ import AppBar from '@mui/material/AppBar';
 import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -39,6 +39,13 @@ function Nav() {
   };
 
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
+
+
+  useEffect(() => {
+    if (authContext?.loggedAddress.length !== 0) {
+      connectWallet();
+    }
+  }, [authContext]);
 
   const renderNavOptions = () => {
     return (
