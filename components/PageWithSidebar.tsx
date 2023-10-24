@@ -1,16 +1,26 @@
 import { ReactNode } from 'react';
-import {
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from '@mui/material';
-import InboxIcon from '@mui/icons-material/Inbox';
-import MailIcon from '@mui/icons-material/Mail';
+import { Drawer, List, ListItemButton, ListSubheader } from '@mui/material';
+
 import styled from '@emotion/styled';
+import { SIZES } from 'pages/theme';
+import { useRouter } from 'next/navigation';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+
+const SidebarSubHeader = styled(ListSubheader)`
+  font-size: 1.2rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  marginleft: ${SIZES.lineHeight}rem;
+`;
+
+const StyledListItemButton = styled(ListItemButton)`
+  padding-left: ${SIZES.lineHeight * 2}rem;
+`;
 
 const Sidebar = () => {
+  const router = useRouter();
   return (
     <Drawer
       variant="permanent"
@@ -20,26 +30,53 @@ const Sidebar = () => {
         [`& .MuiDrawer-paper`]: {
           width: 240,
           boxSizing: 'border-box',
-          top: '64px',
+          top: `${SIZES.lineHeight * 3.4}rem`,
         },
       }}
     >
       <List>
-        {['Inbox', 'Mail'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>
-              {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-            </ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
+        <SidebarSubHeader>
+          Profile <ChevronRightIcon />
+        </SidebarSubHeader>
+        <StyledListItemButton
+          onClick={() => router.push('/management/user-profile')}
+        >
+          My profile
+        </StyledListItemButton>
+
+        <SidebarSubHeader>
+          Guild <ChevronRightIcon />
+        </SidebarSubHeader>
+        <StyledListItemButton
+          onClick={() => router.push('/management/guild-profile')}
+        >
+          Guild profile
+        </StyledListItemButton>
+        <StyledListItemButton
+          onClick={() => router.push('/management/members')}
+        >
+          Members
+        </StyledListItemButton>
+        <StyledListItemButton onClick={() => router.push('/management/vaults')}>
+          Members
+        </StyledListItemButton>
+        <SidebarSubHeader>
+          Governance <ChevronRightIcon />
+        </SidebarSubHeader>
+        <StyledListItemButton onClick={() => router.push('/management/vote')}>
+          Vote
+        </StyledListItemButton>
+        <StyledListItemButton
+          onClick={() => router.push('/management/purpose')}
+        >
+          Purpose
+        </StyledListItemButton>
       </List>
     </Drawer>
   );
 };
 
 const Content = styled('div')`
-  margin-left: 240px;
   padding: 2rem;
   flex: 1;
 `;

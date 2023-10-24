@@ -1,8 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
-import type { NextPage } from 'next';
-import styled from '@emotion/styled';
-import { Typography, Card, Box, Grid, Container, Button } from '@mui/material';
 import { useRouter } from 'next/router';
+import type { NextPage } from 'next';
+
+import styled from '@emotion/styled';
+
+import { Typography, Box, Grid, Container, Button } from '@mui/material';
+
 //@ts-ignore
 import type { Guild } from 'util/types';
 
@@ -11,20 +14,18 @@ import { useSigningClient } from 'contexts/client';
 import WalletLoader from 'components/WalletLoader';
 import GuildCard from 'components/GuildCard';
 
-const StyledCard = styled(Card)`
-  margin: 1rem;
-  max-width: 384px;
-  padding: 1rem;
-  text-align: center;
-`;
-
 const StyledTitle = styled(Typography)`
   color: ${(props) => props.theme.palette.primary.main};
 `;
+
 const Home: NextPage = () => {
-  const { walletAddress, signingClient } = useSigningClient();
   const [guilds, setGuilds] = useState<Guild[]>([]);
+
   const fetched = useRef<boolean>(false);
+
+  const router = useRouter();
+
+  const { walletAddress, signingClient } = useSigningClient();
 
   async function getContracts() {
     //@ts-ignore
@@ -51,8 +52,6 @@ const Home: NextPage = () => {
       fetched.current = true;
     }
   }, [signingClient, fetched]);
-
-  const router = useRouter();
 
   return (
     <WalletLoader>
