@@ -1,69 +1,77 @@
-import {ReactNode} from 'react'
-import {useSigningClient} from 'contexts/client'
-import Loader from './Loader'
+import { ReactNode } from 'react';
 
-function WalletLoader({
-                        children,
-                        loading = false,
-                      }: {
-  children: ReactNode
-  loading?: boolean
-}) {
+import { useSigningClient } from 'contexts/client';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Container,
+  InputAdornment,
+  Typography,
+} from '@mui/material';
+import { SIZES } from 'pages/theme';
+import { CallToActionButtons } from './Buttons/CallToActionButtons';
+
+type Props = {
+  children: ReactNode;
+  loading?: boolean;
+};
+
+const WalletLoader = ({ children, loading = false }: Props) => {
   const {
-    walletAddress,
-    loading: clientLoading,
-    error,
     connectWallet,
-  } = useSigningClient()
+    error,
+    loading: clientLoading,
+    walletAddress,
+  } = useSigningClient();
 
   if (loading || clientLoading) {
     return (
-      <div className="justify-center">
-        <Loader/>
-      </div>
-    )
+      <Box maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
   }
 
   if (walletAddress === '') {
     return (
-      <div className="max-w-full">
-        <h1 className="text-6xl font-bold">
-          Welcome to{' '}
-          <a className="link link-primary link-hover" href="https://coreum.com/">
-            Coreum!
-          </a>
-        </h1>
+      <Container maxWidth="lg">
+        <Typography variant="h1">Gaming Guilds Go </Typography>
+        <Typography variant="h1">Digital: Dive into Web3!</Typography>
+        <Typography
+          variant="h4"
+          gutterBottom
+          component="h2"
+          style={{ marginTop: `${SIZES['lineHeight'] * 2}rem` }}
+        >
+          JOIN AND CREATE YOUR GUILD
+        </Typography>
 
-        <p className="mt-3 text-2xl">
-          Get started by installing{' '}
-          <a
-            className="pl-1 link link-primary link-hover"
-            href="https://keplr.app/"
-          >
-            Keplr wallet
-          </a>
-        </p>
+        <CallToActionButtons />
 
-        <div className="flex flex-wrap items-center justify-around md:max-w-4xl mt-6 sm:w-full">
-          <button
-            className="p-6 mt-6 text-left border border-secondary hover:border-primary w-96 rounded-xl hover:text-primary focus:text-primary-focus"
-            onClick={connectWallet}
-          >
-            <h3 className="text-2xl font-bold">Connect your wallet &rarr;</h3>
-            <p className="mt-4 text-xl">
-              Get your Keplr wallet connected now and start using it.
-            </p>
-          </button>
-        </div>
-      </div>
-    )
+        <Card onClick={connectWallet}>
+          <CardActionArea>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Connect your wallet
+              </Typography>
+              <Typography variant="body1">
+                Get your Keplr wallet connected now and start using it.
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Container>
+    );
   }
 
   if (error) {
-    return <code>{JSON.stringify(error)}</code>
+    return <code>{JSON.stringify(error)}</code>;
   }
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
 
-export default WalletLoader
+export default WalletLoader;
