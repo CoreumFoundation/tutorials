@@ -1,48 +1,69 @@
 import { ReactNode } from 'react';
-import { useSigningClient } from 'contexts/client';
-import Loader from './Loader';
 
-function WalletLoader({
-  children,
-  loading = false,
-}: {
+import { useSigningClient } from 'contexts/client';
+import {
+  Box,
+  Card,
+  CardActionArea,
+  CardContent,
+  CircularProgress,
+  Container,
+  InputAdornment,
+  Typography,
+} from '@mui/material';
+import { SIZES } from 'pages/theme';
+import { CallToActionButtons } from './Buttons/CallToActionButtons';
+
+type Props = {
   children: ReactNode;
   loading?: boolean;
-}) {
+};
+
+const WalletLoader = ({ children, loading = false }: Props) => {
   const {
-    walletAddress,
-    loading: clientLoading,
-    error,
     connectWallet,
+    error,
+    loading: clientLoading,
+    walletAddress,
   } = useSigningClient();
 
   if (loading || clientLoading) {
     return (
-      <div>
-        <Loader />
-      </div>
+      <Box maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (walletAddress === '') {
     return (
-      <div>
-        <h1>
-          Welcome to <a>Coreum!</a>
-        </h1>
+      <Container maxWidth="lg">
+        <Typography variant="h1">Gaming Guilds Go </Typography>
+        <Typography variant="h1">Digital: Dive into Web3!</Typography>
+        <Typography
+          variant="h4"
+          gutterBottom
+          component="h2"
+          style={{ marginTop: `${SIZES['lineHeight'] * 2}rem` }}
+        >
+          JOIN AND CREATE YOUR GUILD
+        </Typography>
 
-        <p>
-          Get started by installing{' '}
-          <a href="https://keplr.app/">Keplr wallet</a>
-        </p>
+        <CallToActionButtons />
 
-        <div>
-          <button onClick={connectWallet}>
-            <h3>Connect your wallet &rarr;</h3>
-            <p>Get your Keplr wallet connected now and start using it.</p>
-          </button>
-        </div>
-      </div>
+        <Card onClick={connectWallet}>
+          <CardActionArea>
+            <CardContent>
+              <Typography variant="h5" gutterBottom>
+                Connect your wallet
+              </Typography>
+              <Typography variant="body1">
+                Get your Keplr wallet connected now and start using it.
+              </Typography>
+            </CardContent>
+          </CardActionArea>
+        </Card>
+      </Container>
     );
   }
 
@@ -51,6 +72,6 @@ function WalletLoader({
   }
 
   return <>{children}</>;
-}
+};
 
 export default WalletLoader;
