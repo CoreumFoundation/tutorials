@@ -1,15 +1,15 @@
 import { useEffect, useState, useRef } from 'react';
 import type { NextPage } from 'next';
 import styled from '@emotion/styled';
-import { Typography, Card, CardContent, Paper, Box } from '@mui/material';
-
+import { Typography, Card, Box, Grid, Container, Button } from '@mui/material';
+import { useRouter } from 'next/router';
 //@ts-ignore
 import type { Guild } from 'util/types';
 
 import { useSigningClient } from 'contexts/client';
 
 import WalletLoader from 'components/WalletLoader';
-import { StyledLink } from 'components/StyledLink';
+import GuildCard from 'components/GuildCard';
 
 const StyledCard = styled(Card)`
   margin: 1rem;
@@ -45,11 +45,6 @@ const Home: NextPage = () => {
     setGuilds(acu);
   }
 
-  const shortAddress = (addr: string) => {
-    let shorted = `${addr.slice(0, 4)}...${addr.slice(-4, addr.length)}`;
-    return shorted;
-  };
-
   useEffect(() => {
     if (signingClient && !fetched.current) {
       getContracts();
@@ -57,101 +52,74 @@ const Home: NextPage = () => {
     }
   }, [signingClient, fetched]);
 
+  const router = useRouter();
+
   return (
     <WalletLoader>
-      <Typography variant="h5" gutterBottom>
-        Your wallet address is:
-        <StyledLink
-          href={
-            process.env.NEXT_PUBLIC_CHAIN_EXPLORER +
-            'coreum/accounts/' +
-            walletAddress
-          }
-          passHref
-          target="_blank"
-        >
-          {walletAddress}
-        </StyledLink>
-      </Typography>
-
-      <Box>
-        {/*
-         <StyledCard variant="outlined">
-          <CardContent>
-            <StyledLink
-              href="https://docs.coreum.dev/tools-ecosystem/faucet.html"
-              passHref
-              target="_blank"
-            >
-              <Typography variant="h5" gutterBottom>
-                Fund wallet
-              </Typography>
-              <Typography>
-                Fund you wallet for the {process.env.NEXT_PUBLIC_CHAIN_NAME}.
-              </Typography>
-            </StyledLink>
-          </CardContent>
-        </StyledCard>
-
-        <StyledCard variant="outlined">
-          <CardContent>
-            <StyledLink href="/send" passHref>
-              <Typography variant="h5" gutterBottom>
-                Send to wallet
-              </Typography>
-              <Typography>
-                Execute a transaction to send funds to a wallet address.
-              </Typography>
-            </StyledLink>
-          </CardContent>
-        </StyledCard>
-
-        <StyledCard variant="outlined">
-          <CardContent>
-            <StyledLink href="/nft" passHref>
-              <Typography variant="h5" gutterBottom>
-                NFT
-              </Typography>
-              <Typography>
-                Create you NFT class and mint NFTs for it.
-              </Typography>
-            </StyledLink>
-          </CardContent>
-        </StyledCard>
- */}
-        <StyledCard variant="elevation">
-          <CardContent>
-            <StyledLink href="/multisig" passHref>
-              <StyledTitle variant="h5" gutterBottom>
-                Guild creator
-              </StyledTitle>
-              <Typography>
-                Create a multisig with your peers and start management of your
-                group's assets.
-              </Typography>
-            </StyledLink>
-          </CardContent>
-        </StyledCard>
-      </Box>
-      <hr />
-      <Paper>
-        {guilds.length > 0 && (
-          <Box>
-            {guilds.map((g: Guild) => {
-              return (
-                <Paper key={g}>
-                  {g.label}
-                  <hr />
-                  <Typography>Created by {shortAddress(g.creator)}</Typography>
-                  <StyledLink href={`/guild/${g.address}`} passHref>
-                    Enter
-                  </StyledLink>
-                </Paper>
-              );
-            })}
+      {guilds.length === 0 && (
+        <Container>
+          <Box sx={{ marginBottom: 8 }}>
+            <StyledTitle variant="h5" gutterBottom>
+              You have no guilds
+            </StyledTitle>
           </Box>
-        )}
-      </Paper>
+          <Box sx={{ marginBottom: 2 }}>
+            <Typography variant="h4" gutterBottom>
+              Create your first Guild
+            </Typography>
+          </Box>
+          <Box>
+            <Typography variant="body1">
+              Create your first guild to be able to invite members, set a
+              governance and manage the vault.
+            </Typography>
+          </Box>
+          <Box style={{ marginTop: '10rem' }}>
+            <Button
+              variant="contained"
+              onClick={() => router.push('/multisig')}
+            >
+              Create Guild
+            </Button>
+          </Box>
+        </Container>
+      )}
+
+      {guilds.length > 0 && (
+        <Container>
+          <Box sx={{ marginBottom: 6 }}>
+            <StyledTitle variant="h5" gutterBottom>
+              You are part of {guilds.length}
+              {` `}
+              {guilds.length === 1 ? 'guild' : 'guilds'}
+            </StyledTitle>
+          </Box>
+          <Grid container spacing={4}>
+            {guilds.map((guild) => (
+              <Grid item xs={12} md={6} key={guild.name}>
+                <GuildCard
+                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  guild={{
+                    name: guild.label, // Todo check the types
+                    totalMembers: 2, // Todo get this from the contract
+                    thumbnail:
+                      'https://i.pinimg.com/564x/06/0d/21/060d2195df7a10d4fd8e37fde4cf5320.jpg',
+                  }}
+                  key={guild.name}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Box style={{ marginTop: '10rem' }}>
+            <Button
+              variant="contained"
+              onClick={() => router.push('/multisig')}
+            >
+              Create Guild
+            </Button>
+          </Box>
+        </Container>
+      )}
     </WalletLoader>
   );
 };

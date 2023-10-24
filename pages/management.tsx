@@ -1,7 +1,4 @@
-// pages/sidebar-page.tsx
-import Layout from '../components/Layout';
-
-import React, { useContext } from 'react';
+import React from 'react';
 
 import PageWithSidebar from 'components/PageWithSidebar';
 
