@@ -1,40 +1,40 @@
 /* eslint-disable */
-import Long from 'long'
-import _m0 from 'protobufjs/minimal'
-import { Any } from '../../../google/protobuf/any'
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { Any } from '../../../google/protobuf/any';
 
-export const protobufPackage = 'coreum.nft.v1beta1'
+export const protobufPackage = 'coreum.nft.v1beta1';
 
 /** Class defines the class of the nft type. */
 export interface Class {
   /** id defines the unique identifier of the NFT classification, similar to the contract address of ERC721 */
-  id: string
+  id: string;
   /** name defines the human-readable name of the NFT classification. Optional */
-  name: string
+  name: string;
   /** symbol is an abbreviated name for nft classification. Optional */
-  symbol: string
+  symbol: string;
   /** description is a brief description of nft classification. Optional */
-  description: string
+  description: string;
   /** uri for the class metadata stored off chain. It can define schema for Class and NFT `Data` attributes. Optional */
-  uri: string
+  uri: string;
   /** uri_hash is a hash of the document pointed by uri. Optional */
-  uriHash: string
+  uriHash: string;
   /** data is the app specific metadata of the NFT class. Optional */
-  data?: Any
+  data?: Any;
 }
 
 /** NFT defines the NFT. */
 export interface NFT {
   /** class_id associated with the NFT, similar to the contract address of ERC721 */
-  classId: string
+  classId: string;
   /** id is a unique identifier of the NFT */
-  id: string
+  id: string;
   /** uri for the NFT metadata stored off chain */
-  uri: string
+  uri: string;
   /** uri_hash is a hash of the document pointed by uri */
-  uriHash: string
+  uriHash: string;
   /** data is an app specific data of the NFT. Optional */
-  data?: Any
+  data?: Any;
 }
 
 function createBaseClass(): Class {
@@ -46,99 +46,99 @@ function createBaseClass(): Class {
     uri: '',
     uriHash: '',
     data: undefined,
-  }
+  };
 }
 
 export const Class = {
   encode(message: Class, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== '') {
-      writer.uint32(10).string(message.id)
+      writer.uint32(10).string(message.id);
     }
     if (message.name !== '') {
-      writer.uint32(18).string(message.name)
+      writer.uint32(18).string(message.name);
     }
     if (message.symbol !== '') {
-      writer.uint32(26).string(message.symbol)
+      writer.uint32(26).string(message.symbol);
     }
     if (message.description !== '') {
-      writer.uint32(34).string(message.description)
+      writer.uint32(34).string(message.description);
     }
     if (message.uri !== '') {
-      writer.uint32(42).string(message.uri)
+      writer.uint32(42).string(message.uri);
     }
     if (message.uriHash !== '') {
-      writer.uint32(50).string(message.uriHash)
+      writer.uint32(50).string(message.uriHash);
     }
     if (message.data !== undefined) {
-      Any.encode(message.data, writer.uint32(58).fork()).ldelim()
+      Any.encode(message.data, writer.uint32(58).fork()).ldelim();
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Class {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseClass()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseClass();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.name = reader.string()
-          continue
+          message.name = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.symbol = reader.string()
-          continue
+          message.symbol = reader.string();
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.description = reader.string()
-          continue
+          message.description = reader.string();
+          continue;
         case 5:
           if (tag != 42) {
-            break
+            break;
           }
 
-          message.uri = reader.string()
-          continue
+          message.uri = reader.string();
+          continue;
         case 6:
           if (tag != 50) {
-            break
+            break;
           }
 
-          message.uriHash = reader.string()
-          continue
+          message.uriHash = reader.string();
+          continue;
         case 7:
           if (tag != 58) {
-            break
+            break;
           }
 
-          message.data = Any.decode(reader, reader.uint32())
-          continue
+          message.data = Any.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): Class {
@@ -150,116 +150,117 @@ export const Class = {
       uri: isSet(object.uri) ? String(object.uri) : '',
       uriHash: isSet(object.uriHash) ? String(object.uriHash) : '',
       data: isSet(object.data) ? Any.fromJSON(object.data) : undefined,
-    }
+    };
   },
 
   toJSON(message: Class): unknown {
-    const obj: any = {}
-    message.id !== undefined && (obj.id = message.id)
-    message.name !== undefined && (obj.name = message.name)
-    message.symbol !== undefined && (obj.symbol = message.symbol)
-    message.description !== undefined && (obj.description = message.description)
-    message.uri !== undefined && (obj.uri = message.uri)
-    message.uriHash !== undefined && (obj.uriHash = message.uriHash)
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.name !== undefined && (obj.name = message.name);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.uri !== undefined && (obj.uri = message.uri);
+    message.uriHash !== undefined && (obj.uriHash = message.uriHash);
     message.data !== undefined &&
-      (obj.data = message.data ? Any.toJSON(message.data) : undefined)
-    return obj
+      (obj.data = message.data ? Any.toJSON(message.data) : undefined);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<Class>, I>>(base?: I): Class {
-    return Class.fromPartial(base ?? {})
+    return Class.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Class>, I>>(object: I): Class {
-    const message = createBaseClass()
-    message.id = object.id ?? ''
-    message.name = object.name ?? ''
-    message.symbol = object.symbol ?? ''
-    message.description = object.description ?? ''
-    message.uri = object.uri ?? ''
-    message.uriHash = object.uriHash ?? ''
+    const message = createBaseClass();
+    message.id = object.id ?? '';
+    message.name = object.name ?? '';
+    message.symbol = object.symbol ?? '';
+    message.description = object.description ?? '';
+    message.uri = object.uri ?? '';
+    message.uriHash = object.uriHash ?? '';
     message.data =
       object.data !== undefined && object.data !== null
         ? Any.fromPartial(object.data)
-        : undefined
-    return message
+        : undefined;
+    return message;
   },
-}
+};
 
 function createBaseNFT(): NFT {
-  return { classId: '', id: '', uri: '', uriHash: '', data: undefined }
+  return { classId: '', id: '', uri: '', uriHash: '', data: undefined };
 }
 
 export const NFT = {
   encode(message: NFT, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.classId !== '') {
-      writer.uint32(10).string(message.classId)
+      writer.uint32(10).string(message.classId);
     }
     if (message.id !== '') {
-      writer.uint32(18).string(message.id)
+      writer.uint32(18).string(message.id);
     }
     if (message.uri !== '') {
-      writer.uint32(26).string(message.uri)
+      writer.uint32(26).string(message.uri);
     }
     if (message.uriHash !== '') {
-      writer.uint32(34).string(message.uriHash)
+      writer.uint32(34).string(message.uriHash);
     }
     if (message.data !== undefined) {
-      Any.encode(message.data, writer.uint32(82).fork()).ldelim()
+      Any.encode(message.data, writer.uint32(82).fork()).ldelim();
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): NFT {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseNFT()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseNFT();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classId = reader.string()
-          continue
+          message.classId = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.uri = reader.string()
-          continue
+          message.uri = reader.string();
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.uriHash = reader.string()
-          continue
+          message.uriHash = reader.string();
+          continue;
         case 10:
           if (tag != 82) {
-            break
+            break;
           }
 
-          message.data = Any.decode(reader, reader.uint32())
-          continue
+          message.data = Any.decode(reader, reader.uint32());
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): NFT {
@@ -269,37 +270,37 @@ export const NFT = {
       uri: isSet(object.uri) ? String(object.uri) : '',
       uriHash: isSet(object.uriHash) ? String(object.uriHash) : '',
       data: isSet(object.data) ? Any.fromJSON(object.data) : undefined,
-    }
+    };
   },
 
   toJSON(message: NFT): unknown {
-    const obj: any = {}
-    message.classId !== undefined && (obj.classId = message.classId)
-    message.id !== undefined && (obj.id = message.id)
-    message.uri !== undefined && (obj.uri = message.uri)
-    message.uriHash !== undefined && (obj.uriHash = message.uriHash)
+    const obj: any = {};
+    message.classId !== undefined && (obj.classId = message.classId);
+    message.id !== undefined && (obj.id = message.id);
+    message.uri !== undefined && (obj.uri = message.uri);
+    message.uriHash !== undefined && (obj.uriHash = message.uriHash);
     message.data !== undefined &&
-      (obj.data = message.data ? Any.toJSON(message.data) : undefined)
-    return obj
+      (obj.data = message.data ? Any.toJSON(message.data) : undefined);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<NFT>, I>>(base?: I): NFT {
-    return NFT.fromPartial(base ?? {})
+    return NFT.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<NFT>, I>>(object: I): NFT {
-    const message = createBaseNFT()
-    message.classId = object.classId ?? ''
-    message.id = object.id ?? ''
-    message.uri = object.uri ?? ''
-    message.uriHash = object.uriHash ?? ''
+    const message = createBaseNFT();
+    message.classId = object.classId ?? '';
+    message.id = object.id ?? '';
+    message.uri = object.uri ?? '';
+    message.uriHash = object.uriHash ?? '';
     message.data =
       object.data !== undefined && object.data !== null
         ? Any.fromPartial(object.data)
-        : undefined
-    return message
+        : undefined;
+    return message;
   },
-}
+};
 
 type Builtin =
   | Date
@@ -308,7 +309,7 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
+  | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -320,20 +321,20 @@ export type DeepPartial<T> = T extends Builtin
   ? ReadonlyArray<DeepPartial<U>>
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>
+  : Partial<T>;
 
-type KeysOfUnion<T> = T extends T ? keyof T : never
+type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never
-    }
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any
-  _m0.configure()
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {
-  return value !== null && value !== undefined
+  return value !== null && value !== undefined;
 }

@@ -1,27 +1,27 @@
-import { ReactNode } from 'react'
-import { useSigningClient } from 'contexts/client'
-import Loader from './Loader'
+import { ReactNode } from 'react';
+import { useSigningClient } from 'contexts/client';
+import Loader from './Loader';
 
 function WalletLoader({
   children,
   loading = false,
 }: {
-  children: ReactNode
-  loading?: boolean
+  children: ReactNode;
+  loading?: boolean;
 }) {
   const {
     walletAddress,
     loading: clientLoading,
     error,
     connectWallet,
-  } = useSigningClient()
+  } = useSigningClient();
 
   if (loading || clientLoading) {
     return (
       <div>
         <Loader />
       </div>
-    )
+    );
   }
 
   if (walletAddress === '') {
@@ -43,14 +43,14 @@ function WalletLoader({
           </button>
         </div>
       </div>
-    )
+    );
   }
 
   if (error) {
-    return <code>{JSON.stringify(error)}</code>
+    return <code>{JSON.stringify(error)}</code>;
   }
 
-  return <>{children}</>
+  return <>{children}</>;
 }
 
-export default WalletLoader
+export default WalletLoader;

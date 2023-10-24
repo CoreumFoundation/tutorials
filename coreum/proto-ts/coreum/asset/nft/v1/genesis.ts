@@ -1,37 +1,37 @@
 /* esli
 nt-disable */
-import Long from 'long'
-import _m0 from 'protobufjs/minimal'
-import { ClassDefinition } from './nft'
-import { Params } from './params'
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { ClassDefinition } from './nft';
+import { Params } from './params';
 
-export const protobufPackage = 'coreum.asset.nft.v1'
+export const protobufPackage = 'coreum.asset.nft.v1';
 
 /** GenesisState defines the nftasset module's genesis state. */
 export interface GenesisState {
   /** params defines all the parameters of the module. */
-  params?: Params
+  params?: Params;
   /** class_definitions keep the non-fungible token class definitions state */
-  classDefinitions: ClassDefinition[]
-  frozenNfts: FrozenNFT[]
-  whitelistedNftAccounts: WhitelistedNFTAccounts[]
-  burntNfts: BurntNFT[]
+  classDefinitions: ClassDefinition[];
+  frozenNfts: FrozenNFT[];
+  whitelistedNftAccounts: WhitelistedNFTAccounts[];
+  burntNfts: BurntNFT[];
 }
 
 export interface FrozenNFT {
-  classID: string
-  nftIDs: string[]
+  classID: string;
+  nftIDs: string[];
 }
 
 export interface WhitelistedNFTAccounts {
-  classID: string
-  nftID: string
-  accounts: string[]
+  classID: string;
+  nftID: string;
+  accounts: string[];
 }
 
 export interface BurntNFT {
-  classID: string
-  nftIDs: string[]
+  classID: string;
+  nftIDs: string[];
 }
 
 function createBaseGenesisState(): GenesisState {
@@ -41,86 +41,86 @@ function createBaseGenesisState(): GenesisState {
     frozenNfts: [],
     whitelistedNftAccounts: [],
     burntNfts: [],
-  }
+  };
 }
 
 export const GenesisState = {
   encode(
     message: GenesisState,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.params !== undefined) {
-      Params.encode(message.params, writer.uint32(10).fork()).ldelim()
+      Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
     for (const v of message.classDefinitions) {
-      ClassDefinition.encode(v!, writer.uint32(18).fork()).ldelim()
+      ClassDefinition.encode(v!, writer.uint32(18).fork()).ldelim();
     }
     for (const v of message.frozenNfts) {
-      FrozenNFT.encode(v!, writer.uint32(26).fork()).ldelim()
+      FrozenNFT.encode(v!, writer.uint32(26).fork()).ldelim();
     }
     for (const v of message.whitelistedNftAccounts) {
-      WhitelistedNFTAccounts.encode(v!, writer.uint32(34).fork()).ldelim()
+      WhitelistedNFTAccounts.encode(v!, writer.uint32(34).fork()).ldelim();
     }
     for (const v of message.burntNfts) {
-      BurntNFT.encode(v!, writer.uint32(42).fork()).ldelim()
+      BurntNFT.encode(v!, writer.uint32(42).fork()).ldelim();
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): GenesisState {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseGenesisState()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGenesisState();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.params = Params.decode(reader, reader.uint32())
-          continue
+          message.params = Params.decode(reader, reader.uint32());
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
           message.classDefinitions.push(
-            ClassDefinition.decode(reader, reader.uint32())
-          )
-          continue
+            ClassDefinition.decode(reader, reader.uint32()),
+          );
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.frozenNfts.push(FrozenNFT.decode(reader, reader.uint32()))
-          continue
+          message.frozenNfts.push(FrozenNFT.decode(reader, reader.uint32()));
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
           message.whitelistedNftAccounts.push(
-            WhitelistedNFTAccounts.decode(reader, reader.uint32())
-          )
-          continue
+            WhitelistedNFTAccounts.decode(reader, reader.uint32()),
+          );
+          continue;
         case 5:
           if (tag != 42) {
-            break
+            break;
           }
 
-          message.burntNfts.push(BurntNFT.decode(reader, reader.uint32()))
-          continue
+          message.burntNfts.push(BurntNFT.decode(reader, reader.uint32()));
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): GenesisState {
@@ -134,125 +134,125 @@ export const GenesisState = {
         : [],
       whitelistedNftAccounts: Array.isArray(object?.whitelistedNftAccounts)
         ? object.whitelistedNftAccounts.map((e: any) =>
-            WhitelistedNFTAccounts.fromJSON(e)
+            WhitelistedNFTAccounts.fromJSON(e),
           )
         : [],
       burntNfts: Array.isArray(object?.burntNfts)
         ? object.burntNfts.map((e: any) => BurntNFT.fromJSON(e))
         : [],
-    }
+    };
   },
 
   toJSON(message: GenesisState): unknown {
-    const obj: any = {}
+    const obj: any = {};
     message.params !== undefined &&
-      (obj.params = message.params ? Params.toJSON(message.params) : undefined)
+      (obj.params = message.params ? Params.toJSON(message.params) : undefined);
     if (message.classDefinitions) {
       obj.classDefinitions = message.classDefinitions.map((e) =>
-        e ? ClassDefinition.toJSON(e) : undefined
-      )
+        e ? ClassDefinition.toJSON(e) : undefined,
+      );
     } else {
-      obj.classDefinitions = []
+      obj.classDefinitions = [];
     }
     if (message.frozenNfts) {
       obj.frozenNfts = message.frozenNfts.map((e) =>
-        e ? FrozenNFT.toJSON(e) : undefined
-      )
+        e ? FrozenNFT.toJSON(e) : undefined,
+      );
     } else {
-      obj.frozenNfts = []
+      obj.frozenNfts = [];
     }
     if (message.whitelistedNftAccounts) {
       obj.whitelistedNftAccounts = message.whitelistedNftAccounts.map((e) =>
-        e ? WhitelistedNFTAccounts.toJSON(e) : undefined
-      )
+        e ? WhitelistedNFTAccounts.toJSON(e) : undefined,
+      );
     } else {
-      obj.whitelistedNftAccounts = []
+      obj.whitelistedNftAccounts = [];
     }
     if (message.burntNfts) {
       obj.burntNfts = message.burntNfts.map((e) =>
-        e ? BurntNFT.toJSON(e) : undefined
-      )
+        e ? BurntNFT.toJSON(e) : undefined,
+      );
     } else {
-      obj.burntNfts = []
+      obj.burntNfts = [];
     }
-    return obj
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<GenesisState>, I>>(
-    base?: I
+    base?: I,
   ): GenesisState {
-    return GenesisState.fromPartial(base ?? {})
+    return GenesisState.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<GenesisState>, I>>(
-    object: I
+    object: I,
   ): GenesisState {
-    const message = createBaseGenesisState()
+    const message = createBaseGenesisState();
     message.params =
       object.params !== undefined && object.params !== null
         ? Params.fromPartial(object.params)
-        : undefined
+        : undefined;
     message.classDefinitions =
-      object.classDefinitions?.map((e) => ClassDefinition.fromPartial(e)) || []
+      object.classDefinitions?.map((e) => ClassDefinition.fromPartial(e)) || [];
     message.frozenNfts =
-      object.frozenNfts?.map((e) => FrozenNFT.fromPartial(e)) || []
+      object.frozenNfts?.map((e) => FrozenNFT.fromPartial(e)) || [];
     message.whitelistedNftAccounts =
       object.whitelistedNftAccounts?.map((e) =>
-        WhitelistedNFTAccounts.fromPartial(e)
-      ) || []
+        WhitelistedNFTAccounts.fromPartial(e),
+      ) || [];
     message.burntNfts =
-      object.burntNfts?.map((e) => BurntNFT.fromPartial(e)) || []
-    return message
+      object.burntNfts?.map((e) => BurntNFT.fromPartial(e)) || [];
+    return message;
   },
-}
+};
 
 function createBaseFrozenNFT(): FrozenNFT {
-  return { classID: '', nftIDs: [] }
+  return { classID: '', nftIDs: [] };
 }
 
 export const FrozenNFT = {
   encode(
     message: FrozenNFT,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classID !== '') {
-      writer.uint32(10).string(message.classID)
+      writer.uint32(10).string(message.classID);
     }
     for (const v of message.nftIDs) {
-      writer.uint32(18).string(v!)
+      writer.uint32(18).string(v!);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): FrozenNFT {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseFrozenNFT()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseFrozenNFT();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classID = reader.string()
-          continue
+          message.classID = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.nftIDs.push(reader.string())
-          continue
+          message.nftIDs.push(reader.string());
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): FrozenNFT {
@@ -261,94 +261,94 @@ export const FrozenNFT = {
       nftIDs: Array.isArray(object?.nftIDs)
         ? object.nftIDs.map((e: any) => String(e))
         : [],
-    }
+    };
   },
 
   toJSON(message: FrozenNFT): unknown {
-    const obj: any = {}
-    message.classID !== undefined && (obj.classID = message.classID)
+    const obj: any = {};
+    message.classID !== undefined && (obj.classID = message.classID);
     if (message.nftIDs) {
-      obj.nftIDs = message.nftIDs.map((e) => e)
+      obj.nftIDs = message.nftIDs.map((e) => e);
     } else {
-      obj.nftIDs = []
+      obj.nftIDs = [];
     }
-    return obj
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<FrozenNFT>, I>>(base?: I): FrozenNFT {
-    return FrozenNFT.fromPartial(base ?? {})
+    return FrozenNFT.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<FrozenNFT>, I>>(
-    object: I
+    object: I,
   ): FrozenNFT {
-    const message = createBaseFrozenNFT()
-    message.classID = object.classID ?? ''
-    message.nftIDs = object.nftIDs?.map((e) => e) || []
-    return message
+    const message = createBaseFrozenNFT();
+    message.classID = object.classID ?? '';
+    message.nftIDs = object.nftIDs?.map((e) => e) || [];
+    return message;
   },
-}
+};
 
 function createBaseWhitelistedNFTAccounts(): WhitelistedNFTAccounts {
-  return { classID: '', nftID: '', accounts: [] }
+  return { classID: '', nftID: '', accounts: [] };
 }
 
 export const WhitelistedNFTAccounts = {
   encode(
     message: WhitelistedNFTAccounts,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classID !== '') {
-      writer.uint32(10).string(message.classID)
+      writer.uint32(10).string(message.classID);
     }
     if (message.nftID !== '') {
-      writer.uint32(18).string(message.nftID)
+      writer.uint32(18).string(message.nftID);
     }
     for (const v of message.accounts) {
-      writer.uint32(34).string(v!)
+      writer.uint32(34).string(v!);
     }
-    return writer
+    return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): WhitelistedNFTAccounts {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseWhitelistedNFTAccounts()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseWhitelistedNFTAccounts();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classID = reader.string()
-          continue
+          message.classID = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.nftID = reader.string()
-          continue
+          message.nftID = reader.string();
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.accounts.push(reader.string())
-          continue
+          message.accounts.push(reader.string());
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): WhitelistedNFTAccounts {
@@ -358,85 +358,85 @@ export const WhitelistedNFTAccounts = {
       accounts: Array.isArray(object?.accounts)
         ? object.accounts.map((e: any) => String(e))
         : [],
-    }
+    };
   },
 
   toJSON(message: WhitelistedNFTAccounts): unknown {
-    const obj: any = {}
-    message.classID !== undefined && (obj.classID = message.classID)
-    message.nftID !== undefined && (obj.nftID = message.nftID)
+    const obj: any = {};
+    message.classID !== undefined && (obj.classID = message.classID);
+    message.nftID !== undefined && (obj.nftID = message.nftID);
     if (message.accounts) {
-      obj.accounts = message.accounts.map((e) => e)
+      obj.accounts = message.accounts.map((e) => e);
     } else {
-      obj.accounts = []
+      obj.accounts = [];
     }
-    return obj
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<WhitelistedNFTAccounts>, I>>(
-    base?: I
+    base?: I,
   ): WhitelistedNFTAccounts {
-    return WhitelistedNFTAccounts.fromPartial(base ?? {})
+    return WhitelistedNFTAccounts.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<WhitelistedNFTAccounts>, I>>(
-    object: I
+    object: I,
   ): WhitelistedNFTAccounts {
-    const message = createBaseWhitelistedNFTAccounts()
-    message.classID = object.classID ?? ''
-    message.nftID = object.nftID ?? ''
-    message.accounts = object.accounts?.map((e) => e) || []
-    return message
+    const message = createBaseWhitelistedNFTAccounts();
+    message.classID = object.classID ?? '';
+    message.nftID = object.nftID ?? '';
+    message.accounts = object.accounts?.map((e) => e) || [];
+    return message;
   },
-}
+};
 
 function createBaseBurntNFT(): BurntNFT {
-  return { classID: '', nftIDs: [] }
+  return { classID: '', nftIDs: [] };
 }
 
 export const BurntNFT = {
   encode(
     message: BurntNFT,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classID !== '') {
-      writer.uint32(10).string(message.classID)
+      writer.uint32(10).string(message.classID);
     }
     for (const v of message.nftIDs) {
-      writer.uint32(18).string(v!)
+      writer.uint32(18).string(v!);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): BurntNFT {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseBurntNFT()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseBurntNFT();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classID = reader.string()
-          continue
+          message.classID = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.nftIDs.push(reader.string())
-          continue
+          message.nftIDs.push(reader.string());
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): BurntNFT {
@@ -445,31 +445,31 @@ export const BurntNFT = {
       nftIDs: Array.isArray(object?.nftIDs)
         ? object.nftIDs.map((e: any) => String(e))
         : [],
-    }
+    };
   },
 
   toJSON(message: BurntNFT): unknown {
-    const obj: any = {}
-    message.classID !== undefined && (obj.classID = message.classID)
+    const obj: any = {};
+    message.classID !== undefined && (obj.classID = message.classID);
     if (message.nftIDs) {
-      obj.nftIDs = message.nftIDs.map((e) => e)
+      obj.nftIDs = message.nftIDs.map((e) => e);
     } else {
-      obj.nftIDs = []
+      obj.nftIDs = [];
     }
-    return obj
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<BurntNFT>, I>>(base?: I): BurntNFT {
-    return BurntNFT.fromPartial(base ?? {})
+    return BurntNFT.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<BurntNFT>, I>>(object: I): BurntNFT {
-    const message = createBaseBurntNFT()
-    message.classID = object.classID ?? ''
-    message.nftIDs = object.nftIDs?.map((e) => e) || []
-    return message
+    const message = createBaseBurntNFT();
+    message.classID = object.classID ?? '';
+    message.nftIDs = object.nftIDs?.map((e) => e) || [];
+    return message;
   },
-}
+};
 
 type Builtin =
   | Date
@@ -478,7 +478,7 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
+  | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -490,20 +490,20 @@ export type DeepPartial<T> = T extends Builtin
   ? ReadonlyArray<DeepPartial<U>>
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>
+  : Partial<T>;
 
-type KeysOfUnion<T> = T extends T ? keyof T : never
+type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never
-    }
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any
-  _m0.configure()
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {
-  return value !== null && value !== undefined
+  return value !== null && value !== undefined;
 }

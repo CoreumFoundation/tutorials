@@ -1,45 +1,45 @@
 /* eslint-disable */
-import Long from 'long'
-import _m0 from 'protobufjs/minimal'
-import { ClassFeature, classFeatureFromJSON, classFeatureToJSON } from './nft'
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { ClassFeature, classFeatureFromJSON, classFeatureToJSON } from './nft';
 
-export const protobufPackage = 'coreum.asset.nft.v1'
+export const protobufPackage = 'coreum.asset.nft.v1';
 
 /** EventClassIssued is emitted on MsgIssueClass. */
 export interface EventClassIssued {
-  id: string
-  issuer: string
-  symbol: string
-  name: string
-  description: string
-  uri: string
-  uriHash: string
-  features: ClassFeature[]
-  royaltyRate: string
+  id: string;
+  issuer: string;
+  symbol: string;
+  name: string;
+  description: string;
+  uri: string;
+  uriHash: string;
+  features: ClassFeature[];
+  royaltyRate: string;
 }
 
 export interface EventFrozen {
-  classId: string
-  id: string
-  owner: string
+  classId: string;
+  id: string;
+  owner: string;
 }
 
 export interface EventUnfrozen {
-  classId: string
-  id: string
-  owner: string
+  classId: string;
+  id: string;
+  owner: string;
 }
 
 export interface EventAddedToWhitelist {
-  classId: string
-  id: string
-  account: string
+  classId: string;
+  id: string;
+  account: string;
 }
 
 export interface EventRemovedFromWhitelist {
-  classId: string
-  id: string
-  account: string
+  classId: string;
+  id: string;
+  account: string;
 }
 
 function createBaseEventClassIssued(): EventClassIssued {
@@ -53,133 +53,133 @@ function createBaseEventClassIssued(): EventClassIssued {
     uriHash: '',
     features: [],
     royaltyRate: '',
-  }
+  };
 }
 
 export const EventClassIssued = {
   encode(
     message: EventClassIssued,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.id !== '') {
-      writer.uint32(10).string(message.id)
+      writer.uint32(10).string(message.id);
     }
     if (message.issuer !== '') {
-      writer.uint32(18).string(message.issuer)
+      writer.uint32(18).string(message.issuer);
     }
     if (message.symbol !== '') {
-      writer.uint32(26).string(message.symbol)
+      writer.uint32(26).string(message.symbol);
     }
     if (message.name !== '') {
-      writer.uint32(34).string(message.name)
+      writer.uint32(34).string(message.name);
     }
     if (message.description !== '') {
-      writer.uint32(42).string(message.description)
+      writer.uint32(42).string(message.description);
     }
     if (message.uri !== '') {
-      writer.uint32(50).string(message.uri)
+      writer.uint32(50).string(message.uri);
     }
     if (message.uriHash !== '') {
-      writer.uint32(58).string(message.uriHash)
+      writer.uint32(58).string(message.uriHash);
     }
-    writer.uint32(66).fork()
+    writer.uint32(66).fork();
     for (const v of message.features) {
-      writer.int32(v)
+      writer.int32(v);
     }
-    writer.ldelim()
+    writer.ldelim();
     if (message.royaltyRate !== '') {
-      writer.uint32(74).string(message.royaltyRate)
+      writer.uint32(74).string(message.royaltyRate);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventClassIssued {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseEventClassIssued()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventClassIssued();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.issuer = reader.string()
-          continue
+          message.issuer = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.symbol = reader.string()
-          continue
+          message.symbol = reader.string();
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.name = reader.string()
-          continue
+          message.name = reader.string();
+          continue;
         case 5:
           if (tag != 42) {
-            break
+            break;
           }
 
-          message.description = reader.string()
-          continue
+          message.description = reader.string();
+          continue;
         case 6:
           if (tag != 50) {
-            break
+            break;
           }
 
-          message.uri = reader.string()
-          continue
+          message.uri = reader.string();
+          continue;
         case 7:
           if (tag != 58) {
-            break
+            break;
           }
 
-          message.uriHash = reader.string()
-          continue
+          message.uriHash = reader.string();
+          continue;
         case 8:
           if (tag == 64) {
-            message.features.push(reader.int32() as any)
-            continue
+            message.features.push(reader.int32() as any);
+            continue;
           }
 
           if (tag == 66) {
-            const end2 = reader.uint32() + reader.pos
+            const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.features.push(reader.int32() as any)
+              message.features.push(reader.int32() as any);
             }
 
-            continue
+            continue;
           }
 
-          break
+          break;
         case 9:
           if (tag != 74) {
-            break
+            break;
           }
 
-          message.royaltyRate = reader.string()
-          continue
+          message.royaltyRate = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): EventClassIssued {
@@ -195,107 +195,109 @@ export const EventClassIssued = {
         ? object.features.map((e: any) => classFeatureFromJSON(e))
         : [],
       royaltyRate: isSet(object.royaltyRate) ? String(object.royaltyRate) : '',
-    }
+    };
   },
 
   toJSON(message: EventClassIssued): unknown {
-    const obj: any = {}
-    message.id !== undefined && (obj.id = message.id)
-    message.issuer !== undefined && (obj.issuer = message.issuer)
-    message.symbol !== undefined && (obj.symbol = message.symbol)
-    message.name !== undefined && (obj.name = message.name)
-    message.description !== undefined && (obj.description = message.description)
-    message.uri !== undefined && (obj.uri = message.uri)
-    message.uriHash !== undefined && (obj.uriHash = message.uriHash)
+    const obj: any = {};
+    message.id !== undefined && (obj.id = message.id);
+    message.issuer !== undefined && (obj.issuer = message.issuer);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.name !== undefined && (obj.name = message.name);
+    message.description !== undefined &&
+      (obj.description = message.description);
+    message.uri !== undefined && (obj.uri = message.uri);
+    message.uriHash !== undefined && (obj.uriHash = message.uriHash);
     if (message.features) {
-      obj.features = message.features.map((e) => classFeatureToJSON(e))
+      obj.features = message.features.map((e) => classFeatureToJSON(e));
     } else {
-      obj.features = []
+      obj.features = [];
     }
-    message.royaltyRate !== undefined && (obj.royaltyRate = message.royaltyRate)
-    return obj
+    message.royaltyRate !== undefined &&
+      (obj.royaltyRate = message.royaltyRate);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<EventClassIssued>, I>>(
-    base?: I
+    base?: I,
   ): EventClassIssued {
-    return EventClassIssued.fromPartial(base ?? {})
+    return EventClassIssued.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventClassIssued>, I>>(
-    object: I
+    object: I,
   ): EventClassIssued {
-    const message = createBaseEventClassIssued()
-    message.id = object.id ?? ''
-    message.issuer = object.issuer ?? ''
-    message.symbol = object.symbol ?? ''
-    message.name = object.name ?? ''
-    message.description = object.description ?? ''
-    message.uri = object.uri ?? ''
-    message.uriHash = object.uriHash ?? ''
-    message.features = object.features?.map((e) => e) || []
-    message.royaltyRate = object.royaltyRate ?? ''
-    return message
+    const message = createBaseEventClassIssued();
+    message.id = object.id ?? '';
+    message.issuer = object.issuer ?? '';
+    message.symbol = object.symbol ?? '';
+    message.name = object.name ?? '';
+    message.description = object.description ?? '';
+    message.uri = object.uri ?? '';
+    message.uriHash = object.uriHash ?? '';
+    message.features = object.features?.map((e) => e) || [];
+    message.royaltyRate = object.royaltyRate ?? '';
+    return message;
   },
-}
+};
 
 function createBaseEventFrozen(): EventFrozen {
-  return { classId: '', id: '', owner: '' }
+  return { classId: '', id: '', owner: '' };
 }
 
 export const EventFrozen = {
   encode(
     message: EventFrozen,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classId !== '') {
-      writer.uint32(10).string(message.classId)
+      writer.uint32(10).string(message.classId);
     }
     if (message.id !== '') {
-      writer.uint32(18).string(message.id)
+      writer.uint32(18).string(message.id);
     }
     if (message.owner !== '') {
-      writer.uint32(26).string(message.owner)
+      writer.uint32(26).string(message.owner);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventFrozen {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseEventFrozen()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventFrozen();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classId = reader.string()
-          continue
+          message.classId = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.owner = reader.string()
-          continue
+          message.owner = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): EventFrozen {
@@ -303,89 +305,89 @@ export const EventFrozen = {
       classId: isSet(object.classId) ? String(object.classId) : '',
       id: isSet(object.id) ? String(object.id) : '',
       owner: isSet(object.owner) ? String(object.owner) : '',
-    }
+    };
   },
 
   toJSON(message: EventFrozen): unknown {
-    const obj: any = {}
-    message.classId !== undefined && (obj.classId = message.classId)
-    message.id !== undefined && (obj.id = message.id)
-    message.owner !== undefined && (obj.owner = message.owner)
-    return obj
+    const obj: any = {};
+    message.classId !== undefined && (obj.classId = message.classId);
+    message.id !== undefined && (obj.id = message.id);
+    message.owner !== undefined && (obj.owner = message.owner);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<EventFrozen>, I>>(base?: I): EventFrozen {
-    return EventFrozen.fromPartial(base ?? {})
+    return EventFrozen.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventFrozen>, I>>(
-    object: I
+    object: I,
   ): EventFrozen {
-    const message = createBaseEventFrozen()
-    message.classId = object.classId ?? ''
-    message.id = object.id ?? ''
-    message.owner = object.owner ?? ''
-    return message
+    const message = createBaseEventFrozen();
+    message.classId = object.classId ?? '';
+    message.id = object.id ?? '';
+    message.owner = object.owner ?? '';
+    return message;
   },
-}
+};
 
 function createBaseEventUnfrozen(): EventUnfrozen {
-  return { classId: '', id: '', owner: '' }
+  return { classId: '', id: '', owner: '' };
 }
 
 export const EventUnfrozen = {
   encode(
     message: EventUnfrozen,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classId !== '') {
-      writer.uint32(10).string(message.classId)
+      writer.uint32(10).string(message.classId);
     }
     if (message.id !== '') {
-      writer.uint32(18).string(message.id)
+      writer.uint32(18).string(message.id);
     }
     if (message.owner !== '') {
-      writer.uint32(26).string(message.owner)
+      writer.uint32(26).string(message.owner);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): EventUnfrozen {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseEventUnfrozen()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventUnfrozen();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classId = reader.string()
-          continue
+          message.classId = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.owner = reader.string()
-          continue
+          message.owner = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): EventUnfrozen {
@@ -393,94 +395,94 @@ export const EventUnfrozen = {
       classId: isSet(object.classId) ? String(object.classId) : '',
       id: isSet(object.id) ? String(object.id) : '',
       owner: isSet(object.owner) ? String(object.owner) : '',
-    }
+    };
   },
 
   toJSON(message: EventUnfrozen): unknown {
-    const obj: any = {}
-    message.classId !== undefined && (obj.classId = message.classId)
-    message.id !== undefined && (obj.id = message.id)
-    message.owner !== undefined && (obj.owner = message.owner)
-    return obj
+    const obj: any = {};
+    message.classId !== undefined && (obj.classId = message.classId);
+    message.id !== undefined && (obj.id = message.id);
+    message.owner !== undefined && (obj.owner = message.owner);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<EventUnfrozen>, I>>(
-    base?: I
+    base?: I,
   ): EventUnfrozen {
-    return EventUnfrozen.fromPartial(base ?? {})
+    return EventUnfrozen.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventUnfrozen>, I>>(
-    object: I
+    object: I,
   ): EventUnfrozen {
-    const message = createBaseEventUnfrozen()
-    message.classId = object.classId ?? ''
-    message.id = object.id ?? ''
-    message.owner = object.owner ?? ''
-    return message
+    const message = createBaseEventUnfrozen();
+    message.classId = object.classId ?? '';
+    message.id = object.id ?? '';
+    message.owner = object.owner ?? '';
+    return message;
   },
-}
+};
 
 function createBaseEventAddedToWhitelist(): EventAddedToWhitelist {
-  return { classId: '', id: '', account: '' }
+  return { classId: '', id: '', account: '' };
 }
 
 export const EventAddedToWhitelist = {
   encode(
     message: EventAddedToWhitelist,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classId !== '') {
-      writer.uint32(10).string(message.classId)
+      writer.uint32(10).string(message.classId);
     }
     if (message.id !== '') {
-      writer.uint32(18).string(message.id)
+      writer.uint32(18).string(message.id);
     }
     if (message.account !== '') {
-      writer.uint32(26).string(message.account)
+      writer.uint32(26).string(message.account);
     }
-    return writer
+    return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): EventAddedToWhitelist {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseEventAddedToWhitelist()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventAddedToWhitelist();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classId = reader.string()
-          continue
+          message.classId = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.account = reader.string()
-          continue
+          message.account = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): EventAddedToWhitelist {
@@ -488,94 +490,94 @@ export const EventAddedToWhitelist = {
       classId: isSet(object.classId) ? String(object.classId) : '',
       id: isSet(object.id) ? String(object.id) : '',
       account: isSet(object.account) ? String(object.account) : '',
-    }
+    };
   },
 
   toJSON(message: EventAddedToWhitelist): unknown {
-    const obj: any = {}
-    message.classId !== undefined && (obj.classId = message.classId)
-    message.id !== undefined && (obj.id = message.id)
-    message.account !== undefined && (obj.account = message.account)
-    return obj
+    const obj: any = {};
+    message.classId !== undefined && (obj.classId = message.classId);
+    message.id !== undefined && (obj.id = message.id);
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<EventAddedToWhitelist>, I>>(
-    base?: I
+    base?: I,
   ): EventAddedToWhitelist {
-    return EventAddedToWhitelist.fromPartial(base ?? {})
+    return EventAddedToWhitelist.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventAddedToWhitelist>, I>>(
-    object: I
+    object: I,
   ): EventAddedToWhitelist {
-    const message = createBaseEventAddedToWhitelist()
-    message.classId = object.classId ?? ''
-    message.id = object.id ?? ''
-    message.account = object.account ?? ''
-    return message
+    const message = createBaseEventAddedToWhitelist();
+    message.classId = object.classId ?? '';
+    message.id = object.id ?? '';
+    message.account = object.account ?? '';
+    return message;
   },
-}
+};
 
 function createBaseEventRemovedFromWhitelist(): EventRemovedFromWhitelist {
-  return { classId: '', id: '', account: '' }
+  return { classId: '', id: '', account: '' };
 }
 
 export const EventRemovedFromWhitelist = {
   encode(
     message: EventRemovedFromWhitelist,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.classId !== '') {
-      writer.uint32(10).string(message.classId)
+      writer.uint32(10).string(message.classId);
     }
     if (message.id !== '') {
-      writer.uint32(18).string(message.id)
+      writer.uint32(18).string(message.id);
     }
     if (message.account !== '') {
-      writer.uint32(26).string(message.account)
+      writer.uint32(26).string(message.account);
     }
-    return writer
+    return writer;
   },
 
   decode(
     input: _m0.Reader | Uint8Array,
-    length?: number
+    length?: number,
   ): EventRemovedFromWhitelist {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseEventRemovedFromWhitelist()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseEventRemovedFromWhitelist();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.classId = reader.string()
-          continue
+          message.classId = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.id = reader.string()
-          continue
+          message.id = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.account = reader.string()
-          continue
+          message.account = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): EventRemovedFromWhitelist {
@@ -583,33 +585,33 @@ export const EventRemovedFromWhitelist = {
       classId: isSet(object.classId) ? String(object.classId) : '',
       id: isSet(object.id) ? String(object.id) : '',
       account: isSet(object.account) ? String(object.account) : '',
-    }
+    };
   },
 
   toJSON(message: EventRemovedFromWhitelist): unknown {
-    const obj: any = {}
-    message.classId !== undefined && (obj.classId = message.classId)
-    message.id !== undefined && (obj.id = message.id)
-    message.account !== undefined && (obj.account = message.account)
-    return obj
+    const obj: any = {};
+    message.classId !== undefined && (obj.classId = message.classId);
+    message.id !== undefined && (obj.id = message.id);
+    message.account !== undefined && (obj.account = message.account);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<EventRemovedFromWhitelist>, I>>(
-    base?: I
+    base?: I,
   ): EventRemovedFromWhitelist {
-    return EventRemovedFromWhitelist.fromPartial(base ?? {})
+    return EventRemovedFromWhitelist.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<EventRemovedFromWhitelist>, I>>(
-    object: I
+    object: I,
   ): EventRemovedFromWhitelist {
-    const message = createBaseEventRemovedFromWhitelist()
-    message.classId = object.classId ?? ''
-    message.id = object.id ?? ''
-    message.account = object.account ?? ''
-    return message
+    const message = createBaseEventRemovedFromWhitelist();
+    message.classId = object.classId ?? '';
+    message.id = object.id ?? '';
+    message.account = object.account ?? '';
+    return message;
   },
-}
+};
 
 type Builtin =
   | Date
@@ -618,7 +620,7 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
+  | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -630,20 +632,20 @@ export type DeepPartial<T> = T extends Builtin
   ? ReadonlyArray<DeepPartial<U>>
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>
+  : Partial<T>;
 
-type KeysOfUnion<T> = T extends T ? keyof T : never
+type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never
-    }
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any
-  _m0.configure()
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {
-  return value !== null && value !== undefined
+  return value !== null && value !== undefined;
 }

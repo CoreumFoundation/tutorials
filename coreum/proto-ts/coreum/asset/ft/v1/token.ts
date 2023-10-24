@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from 'long'
-import _m0 from 'protobufjs/minimal'
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = 'coreum.asset.ft.v1'
+export const protobufPackage = 'coreum.asset.ft.v1';
 
 /** Feature defines possible features of fungible token. */
 export enum Feature {
@@ -17,76 +17,76 @@ export function featureFromJSON(object: any): Feature {
   switch (object) {
     case 0:
     case 'minting':
-      return Feature.minting
+      return Feature.minting;
     case 1:
     case 'burning':
-      return Feature.burning
+      return Feature.burning;
     case 2:
     case 'freezing':
-      return Feature.freezing
+      return Feature.freezing;
     case 3:
     case 'whitelisting':
-      return Feature.whitelisting
+      return Feature.whitelisting;
     case -1:
     case 'UNRECOGNIZED':
     default:
-      return Feature.UNRECOGNIZED
+      return Feature.UNRECOGNIZED;
   }
 }
 
 export function featureToJSON(object: Feature): string {
   switch (object) {
     case Feature.minting:
-      return 'minting'
+      return 'minting';
     case Feature.burning:
-      return 'burning'
+      return 'burning';
     case Feature.freezing:
-      return 'freezing'
+      return 'freezing';
     case Feature.whitelisting:
-      return 'whitelisting'
+      return 'whitelisting';
     case Feature.UNRECOGNIZED:
     default:
-      return 'UNRECOGNIZED'
+      return 'UNRECOGNIZED';
   }
 }
 
 /** Definition defines the fungible token settings to store. */
 export interface Definition {
-  denom: string
-  issuer: string
-  features: Feature[]
+  denom: string;
+  issuer: string;
+  features: Feature[];
   /**
    * burn_rate is a number between 0 and 1 which will be multiplied by send amount to determine
    * burn_amount. This value will be burnt on top of the send amount.
    */
-  burnRate: string
+  burnRate: string;
   /**
    * send_commission_rate is a number between 0 and 1 which will be multiplied by send amount to determine
    * amount sent to the token issuer account.
    */
-  sendCommissionRate: string
+  sendCommissionRate: string;
 }
 
 /** Token is a full representation of the fungible token. */
 export interface Token {
-  denom: string
-  issuer: string
-  symbol: string
-  subunit: string
-  precision: number
-  description: string
-  globallyFrozen: boolean
-  features: Feature[]
+  denom: string;
+  issuer: string;
+  symbol: string;
+  subunit: string;
+  precision: number;
+  description: string;
+  globallyFrozen: boolean;
+  features: Feature[];
   /**
    * burn_rate is a number between 0 and 1 which will be multiplied by send amount to determine
    * burn_amount. This value will be burnt on top of the send amount.
    */
-  burnRate: string
+  burnRate: string;
   /**
    * send_commission_rate is a number between 0 and 1 which will be multiplied by send amount to determine
    * amount sent to the token issuer account.
    */
-  sendCommissionRate: string
+  sendCommissionRate: string;
 }
 
 function createBaseDefinition(): Definition {
@@ -96,93 +96,93 @@ function createBaseDefinition(): Definition {
     features: [],
     burnRate: '',
     sendCommissionRate: '',
-  }
+  };
 }
 
 export const Definition = {
   encode(
     message: Definition,
-    writer: _m0.Writer = _m0.Writer.create()
+    writer: _m0.Writer = _m0.Writer.create(),
   ): _m0.Writer {
     if (message.denom !== '') {
-      writer.uint32(10).string(message.denom)
+      writer.uint32(10).string(message.denom);
     }
     if (message.issuer !== '') {
-      writer.uint32(18).string(message.issuer)
+      writer.uint32(18).string(message.issuer);
     }
-    writer.uint32(26).fork()
+    writer.uint32(26).fork();
     for (const v of message.features) {
-      writer.int32(v)
+      writer.int32(v);
     }
-    writer.ldelim()
+    writer.ldelim();
     if (message.burnRate !== '') {
-      writer.uint32(34).string(message.burnRate)
+      writer.uint32(34).string(message.burnRate);
     }
     if (message.sendCommissionRate !== '') {
-      writer.uint32(42).string(message.sendCommissionRate)
+      writer.uint32(42).string(message.sendCommissionRate);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Definition {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseDefinition()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseDefinition();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.denom = reader.string()
-          continue
+          message.denom = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.issuer = reader.string()
-          continue
+          message.issuer = reader.string();
+          continue;
         case 3:
           if (tag == 24) {
-            message.features.push(reader.int32() as any)
-            continue
+            message.features.push(reader.int32() as any);
+            continue;
           }
 
           if (tag == 26) {
-            const end2 = reader.uint32() + reader.pos
+            const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.features.push(reader.int32() as any)
+              message.features.push(reader.int32() as any);
             }
 
-            continue
+            continue;
           }
 
-          break
+          break;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.burnRate = reader.string()
-          continue
+          message.burnRate = reader.string();
+          continue;
         case 5:
           if (tag != 42) {
-            break
+            break;
           }
 
-          message.sendCommissionRate = reader.string()
-          continue
+          message.sendCommissionRate = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): Definition {
@@ -196,40 +196,40 @@ export const Definition = {
       sendCommissionRate: isSet(object.sendCommissionRate)
         ? String(object.sendCommissionRate)
         : '',
-    }
+    };
   },
 
   toJSON(message: Definition): unknown {
-    const obj: any = {}
-    message.denom !== undefined && (obj.denom = message.denom)
-    message.issuer !== undefined && (obj.issuer = message.issuer)
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.issuer !== undefined && (obj.issuer = message.issuer);
     if (message.features) {
-      obj.features = message.features.map((e) => featureToJSON(e))
+      obj.features = message.features.map((e) => featureToJSON(e));
     } else {
-      obj.features = []
+      obj.features = [];
     }
-    message.burnRate !== undefined && (obj.burnRate = message.burnRate)
+    message.burnRate !== undefined && (obj.burnRate = message.burnRate);
     message.sendCommissionRate !== undefined &&
-      (obj.sendCommissionRate = message.sendCommissionRate)
-    return obj
+      (obj.sendCommissionRate = message.sendCommissionRate);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<Definition>, I>>(base?: I): Definition {
-    return Definition.fromPartial(base ?? {})
+    return Definition.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Definition>, I>>(
-    object: I
+    object: I,
   ): Definition {
-    const message = createBaseDefinition()
-    message.denom = object.denom ?? ''
-    message.issuer = object.issuer ?? ''
-    message.features = object.features?.map((e) => e) || []
-    message.burnRate = object.burnRate ?? ''
-    message.sendCommissionRate = object.sendCommissionRate ?? ''
-    return message
+    const message = createBaseDefinition();
+    message.denom = object.denom ?? '';
+    message.issuer = object.issuer ?? '';
+    message.features = object.features?.map((e) => e) || [];
+    message.burnRate = object.burnRate ?? '';
+    message.sendCommissionRate = object.sendCommissionRate ?? '';
+    return message;
   },
-}
+};
 
 function createBaseToken(): Token {
   return {
@@ -243,140 +243,140 @@ function createBaseToken(): Token {
     features: [],
     burnRate: '',
     sendCommissionRate: '',
-  }
+  };
 }
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.denom !== '') {
-      writer.uint32(10).string(message.denom)
+      writer.uint32(10).string(message.denom);
     }
     if (message.issuer !== '') {
-      writer.uint32(18).string(message.issuer)
+      writer.uint32(18).string(message.issuer);
     }
     if (message.symbol !== '') {
-      writer.uint32(26).string(message.symbol)
+      writer.uint32(26).string(message.symbol);
     }
     if (message.subunit !== '') {
-      writer.uint32(34).string(message.subunit)
+      writer.uint32(34).string(message.subunit);
     }
     if (message.precision !== 0) {
-      writer.uint32(40).uint32(message.precision)
+      writer.uint32(40).uint32(message.precision);
     }
     if (message.description !== '') {
-      writer.uint32(50).string(message.description)
+      writer.uint32(50).string(message.description);
     }
     if (message.globallyFrozen === true) {
-      writer.uint32(56).bool(message.globallyFrozen)
+      writer.uint32(56).bool(message.globallyFrozen);
     }
-    writer.uint32(66).fork()
+    writer.uint32(66).fork();
     for (const v of message.features) {
-      writer.int32(v)
+      writer.int32(v);
     }
-    writer.ldelim()
+    writer.ldelim();
     if (message.burnRate !== '') {
-      writer.uint32(74).string(message.burnRate)
+      writer.uint32(74).string(message.burnRate);
     }
     if (message.sendCommissionRate !== '') {
-      writer.uint32(82).string(message.sendCommissionRate)
+      writer.uint32(82).string(message.sendCommissionRate);
     }
-    return writer
+    return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Token {
     const reader =
-      input instanceof _m0.Reader ? input : _m0.Reader.create(input)
-    let end = length === undefined ? reader.len : reader.pos + length
-    const message = createBaseToken()
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseToken();
     while (reader.pos < end) {
-      const tag = reader.uint32()
+      const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1:
           if (tag != 10) {
-            break
+            break;
           }
 
-          message.denom = reader.string()
-          continue
+          message.denom = reader.string();
+          continue;
         case 2:
           if (tag != 18) {
-            break
+            break;
           }
 
-          message.issuer = reader.string()
-          continue
+          message.issuer = reader.string();
+          continue;
         case 3:
           if (tag != 26) {
-            break
+            break;
           }
 
-          message.symbol = reader.string()
-          continue
+          message.symbol = reader.string();
+          continue;
         case 4:
           if (tag != 34) {
-            break
+            break;
           }
 
-          message.subunit = reader.string()
-          continue
+          message.subunit = reader.string();
+          continue;
         case 5:
           if (tag != 40) {
-            break
+            break;
           }
 
-          message.precision = reader.uint32()
-          continue
+          message.precision = reader.uint32();
+          continue;
         case 6:
           if (tag != 50) {
-            break
+            break;
           }
 
-          message.description = reader.string()
-          continue
+          message.description = reader.string();
+          continue;
         case 7:
           if (tag != 56) {
-            break
+            break;
           }
 
-          message.globallyFrozen = reader.bool()
-          continue
+          message.globallyFrozen = reader.bool();
+          continue;
         case 8:
           if (tag == 64) {
-            message.features.push(reader.int32() as any)
-            continue
+            message.features.push(reader.int32() as any);
+            continue;
           }
 
           if (tag == 66) {
-            const end2 = reader.uint32() + reader.pos
+            const end2 = reader.uint32() + reader.pos;
             while (reader.pos < end2) {
-              message.features.push(reader.int32() as any)
+              message.features.push(reader.int32() as any);
             }
 
-            continue
+            continue;
           }
 
-          break
+          break;
         case 9:
           if (tag != 74) {
-            break
+            break;
           }
 
-          message.burnRate = reader.string()
-          continue
+          message.burnRate = reader.string();
+          continue;
         case 10:
           if (tag != 82) {
-            break
+            break;
           }
 
-          message.sendCommissionRate = reader.string()
-          continue
+          message.sendCommissionRate = reader.string();
+          continue;
       }
       if ((tag & 7) == 4 || tag == 0) {
-        break
+        break;
       }
-      reader.skipType(tag & 7)
+      reader.skipType(tag & 7);
     }
-    return message
+    return message;
   },
 
   fromJSON(object: any): Token {
@@ -397,50 +397,51 @@ export const Token = {
       sendCommissionRate: isSet(object.sendCommissionRate)
         ? String(object.sendCommissionRate)
         : '',
-    }
+    };
   },
 
   toJSON(message: Token): unknown {
-    const obj: any = {}
-    message.denom !== undefined && (obj.denom = message.denom)
-    message.issuer !== undefined && (obj.issuer = message.issuer)
-    message.symbol !== undefined && (obj.symbol = message.symbol)
-    message.subunit !== undefined && (obj.subunit = message.subunit)
+    const obj: any = {};
+    message.denom !== undefined && (obj.denom = message.denom);
+    message.issuer !== undefined && (obj.issuer = message.issuer);
+    message.symbol !== undefined && (obj.symbol = message.symbol);
+    message.subunit !== undefined && (obj.subunit = message.subunit);
     message.precision !== undefined &&
-      (obj.precision = Math.round(message.precision))
-    message.description !== undefined && (obj.description = message.description)
+      (obj.precision = Math.round(message.precision));
+    message.description !== undefined &&
+      (obj.description = message.description);
     message.globallyFrozen !== undefined &&
-      (obj.globallyFrozen = message.globallyFrozen)
+      (obj.globallyFrozen = message.globallyFrozen);
     if (message.features) {
-      obj.features = message.features.map((e) => featureToJSON(e))
+      obj.features = message.features.map((e) => featureToJSON(e));
     } else {
-      obj.features = []
+      obj.features = [];
     }
-    message.burnRate !== undefined && (obj.burnRate = message.burnRate)
+    message.burnRate !== undefined && (obj.burnRate = message.burnRate);
     message.sendCommissionRate !== undefined &&
-      (obj.sendCommissionRate = message.sendCommissionRate)
-    return obj
+      (obj.sendCommissionRate = message.sendCommissionRate);
+    return obj;
   },
 
   create<I extends Exact<DeepPartial<Token>, I>>(base?: I): Token {
-    return Token.fromPartial(base ?? {})
+    return Token.fromPartial(base ?? {});
   },
 
   fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
-    const message = createBaseToken()
-    message.denom = object.denom ?? ''
-    message.issuer = object.issuer ?? ''
-    message.symbol = object.symbol ?? ''
-    message.subunit = object.subunit ?? ''
-    message.precision = object.precision ?? 0
-    message.description = object.description ?? ''
-    message.globallyFrozen = object.globallyFrozen ?? false
-    message.features = object.features?.map((e) => e) || []
-    message.burnRate = object.burnRate ?? ''
-    message.sendCommissionRate = object.sendCommissionRate ?? ''
-    return message
+    const message = createBaseToken();
+    message.denom = object.denom ?? '';
+    message.issuer = object.issuer ?? '';
+    message.symbol = object.symbol ?? '';
+    message.subunit = object.subunit ?? '';
+    message.precision = object.precision ?? 0;
+    message.description = object.description ?? '';
+    message.globallyFrozen = object.globallyFrozen ?? false;
+    message.features = object.features?.map((e) => e) || [];
+    message.burnRate = object.burnRate ?? '';
+    message.sendCommissionRate = object.sendCommissionRate ?? '';
+    return message;
   },
-}
+};
 
 type Builtin =
   | Date
@@ -449,7 +450,7 @@ type Builtin =
   | string
   | number
   | boolean
-  | undefined
+  | undefined;
 
 export type DeepPartial<T> = T extends Builtin
   ? T
@@ -461,20 +462,20 @@ export type DeepPartial<T> = T extends Builtin
   ? ReadonlyArray<DeepPartial<U>>
   : T extends {}
   ? { [K in keyof T]?: DeepPartial<T[K]> }
-  : Partial<T>
+  : Partial<T>;
 
-type KeysOfUnion<T> = T extends T ? keyof T : never
+type KeysOfUnion<T> = T extends T ? keyof T : never;
 export type Exact<P, I extends P> = P extends Builtin
   ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
-      [K in Exclude<keyof I, KeysOfUnion<P>>]: never
-    }
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any
-  _m0.configure()
+  _m0.util.Long = Long as any;
+  _m0.configure();
 }
 
 function isSet(value: any): boolean {
-  return value !== null && value !== undefined
+  return value !== null && value !== undefined;
 }

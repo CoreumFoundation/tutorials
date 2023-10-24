@@ -1,10 +1,10 @@
-import type { NextPage } from 'next'
-import Link from 'next/link'
-import WalletLoader from 'components/WalletLoader'
-import { useSigningClient } from 'contexts/client'
+import type { NextPage } from 'next';
+import Link from 'next/link';
+import WalletLoader from 'components/WalletLoader';
+import { useSigningClient } from 'contexts/client';
 
 const Home: NextPage = () => {
-  const { walletAddress } = useSigningClient()
+  const { walletAddress } = useSigningClient();
 
   return (
     <WalletLoader>
@@ -66,7 +66,7 @@ const Home: NextPage = () => {
         </Link>
       </div>
     </WalletLoader>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

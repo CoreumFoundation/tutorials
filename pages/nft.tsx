@@ -1,52 +1,53 @@
-import { useEffect, useState } from 'react'
-import type { NextPage } from 'next'
-import { sha256 } from 'js-sha256'
+import { useEffect, useState } from 'react';
+import type { NextPage } from 'next';
+import { sha256 } from 'js-sha256';
 
-import WalletLoader from 'components/WalletLoader'
-import { useSigningClient } from 'contexts/client'
-import { QueryNFTsResponse } from '../coreum/proto-ts/coreum/nft/v1beta1/query'
-import { AssetNFT as AssetNFTTx, NFT as NFTTx } from '../coreum/tx'
-import { EncodeObject } from '@cosmjs/proto-signing'
+import WalletLoader from 'components/WalletLoader';
+import { useSigningClient } from 'contexts/client';
+import { QueryNFTsResponse } from '../coreum/proto-ts/coreum/nft/v1beta1/query';
+import { AssetNFT as AssetNFTTx, NFT as NFTTx } from '../coreum/tx';
+import { EncodeObject } from '@cosmjs/proto-signing';
 
-const nftClassSymbol = `kittens${Date.now()}`
+const nftClassSymbol = `kittens${Date.now()}`;
 
 const generateKittenURL = () => {
   return `https://placekitten.com/${200 + Math.floor(Math.random() * 100)}/${
     200 + Math.floor(Math.random() * 100)
-  }`
-}
+  }`;
+};
 
 const NFT: NextPage = () => {
-  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient()
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [classCreated, setClassCreated] = useState(false)
-  const [nftClassDescription, setNFTClassDescription] = useState('')
+  const { walletAddress, signingClient, coreumQueryClient } =
+    useSigningClient();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [classCreated, setClassCreated] = useState(false);
+  const [nftClassDescription, setNFTClassDescription] = useState('');
   const [nfts, setNfts] = useState<
     {
-      classId: string
-      id: string
-      uri: string
-      uriHash: string
-      owner: string
+      classId: string;
+      id: string;
+      uri: string;
+      uriHash: string;
+      owner: string;
     }[]
-  >([])
-  const [kittenURI, setKittenURI] = useState(generateKittenURL())
-  const [transferID, setTransferID] = useState('')
-  const [recipientAddress, setRecipientAddress] = useState('')
-  const nftClassID = `${nftClassSymbol}-${walletAddress}`
+  >([]);
+  const [kittenURI, setKittenURI] = useState(generateKittenURL());
+  const [transferID, setTransferID] = useState('');
+  const [recipientAddress, setRecipientAddress] = useState('');
+  const nftClassID = `${nftClassSymbol}-${walletAddress}`;
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) {
-      return
+      return;
     }
-    setError('')
-    setLoading(true)
-    queryClass()
-  }, [signingClient, walletAddress])
+    setError('');
+    setLoading(true);
+    queryClass();
+  }, [signingClient, walletAddress]);
 
   const queryNFTs = () => {
-    setLoading(true)
+    setLoading(true);
     coreumQueryClient
       ?.NFTClient()
       .NFTs({
@@ -59,25 +60,25 @@ const NFT: NextPage = () => {
             const resOwner = await coreumQueryClient?.NFTClient().Owner({
               classId: nft.classId,
               id: nft.id,
-            })
+            });
             return {
               classId: nft.classId,
               id: nft.id,
               uri: nft.uri,
               uriHash: nft.uriHash,
               owner: resOwner.owner,
-            }
-          })
-        )
-        nfts.sort((a, b) => a.id.localeCompare(b.id))
-        setNfts(nfts)
-        setLoading(false)
+            };
+          }),
+        );
+        nfts.sort((a, b) => a.id.localeCompare(b.id));
+        setNfts(nfts);
+        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false)
-        setError(`Error! ${error.message}`)
-      })
-  }
+        setLoading(false);
+        setError(`Error! ${error.message}`);
+      });
+  };
 
   const queryClass = () => {
     // check that class is already created
@@ -85,22 +86,22 @@ const NFT: NextPage = () => {
       ?.NFTClient()
       .Class({ classId: nftClassID })
       .then(() => {
-        queryNFTs()
-        setClassCreated(true)
+        queryNFTs();
+        setClassCreated(true);
       })
       .catch((error) => {
-        setLoading(false)
+        setLoading(false);
         if (error.message.includes('not found class')) {
-          setClassCreated(false)
-          return
+          setClassCreated(false);
+          return;
         }
-        setError(`Error! ${error.message}`)
-      })
-  }
+        setError(`Error! ${error.message}`);
+      });
+  };
 
   const createNFTClass = () => {
-    setError('')
-    setLoading(true)
+    setError('');
+    setLoading(true);
 
     sendTx([
       AssetNFTTx.MsgIssueClass({
@@ -109,17 +110,17 @@ const NFT: NextPage = () => {
         description: nftClassDescription,
       }),
     ]).then((passed) => {
-      setClassCreated(passed)
-    })
-  }
+      setClassCreated(passed);
+    });
+  };
 
   const changeKitten = () => {
-    setKittenURI(generateKittenURL())
-  }
+    setKittenURI(generateKittenURL());
+  };
 
   const mintKitten = () => {
-    setError('')
-    setLoading(true)
+    setError('');
+    setLoading(true);
     sendTx([
       AssetNFTTx.MsgMint({
         sender: walletAddress,
@@ -130,20 +131,20 @@ const NFT: NextPage = () => {
       }),
     ]).then((passed) => {
       if (passed) {
-        queryNFTs()
+        queryNFTs();
       }
-    })
-  }
+    });
+  };
 
   const cancelTransferOwnership = () => {
-    setError('')
-    setTransferID('')
-    setRecipientAddress('')
-  }
+    setError('');
+    setTransferID('');
+    setRecipientAddress('');
+  };
 
   const transferOwnership = () => {
-    setError('')
-    setLoading(true)
+    setError('');
+    setLoading(true);
     sendTx([
       NFTTx.MsgSend({
         sender: walletAddress,
@@ -153,29 +154,29 @@ const NFT: NextPage = () => {
       }),
     ]).then((passed) => {
       if (passed) {
-        cancelTransferOwnership()
-        queryNFTs()
+        cancelTransferOwnership();
+        queryNFTs();
       }
-    })
-  }
+    });
+  };
 
   const sendTx = async (msgs: readonly EncodeObject[]) => {
     try {
       const resp = await signingClient?.signAndBroadcast(
         walletAddress,
         msgs,
-        'auto'
-      )
-      console.log(`Tx hash: ${resp?.transactionHash}`)
-      setLoading(false)
-      return true
+        'auto',
+      );
+      console.log(`Tx hash: ${resp?.transactionHash}`);
+      setLoading(false);
+      return true;
     } catch (error: any) {
-      console.error(error)
-      setLoading(false)
-      setError(`Error! ${error}`)
-      return false
+      console.error(error);
+      setLoading(false);
+      setError(`Error! ${error}`);
+      return false;
     }
-  }
+  };
 
   return (
     <WalletLoader loading={loading}>
@@ -242,7 +243,7 @@ const NFT: NextPage = () => {
                           )}
                         </td>
                       </tr>
-                    )
+                    );
                   })}
                 </tbody>
               </table>
@@ -278,7 +279,7 @@ const NFT: NextPage = () => {
         </div>
       )}
     </WalletLoader>
-  )
-}
+  );
+};
 
-export default NFT
+export default NFT;
