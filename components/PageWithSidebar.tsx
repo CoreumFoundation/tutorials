@@ -39,7 +39,11 @@ const Sidebar = () => {
           Profile <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
-          onClick={() => router.push('/management/user-profile')}
+          onClick={() =>
+            router.push(
+              '/management/user-profile/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
         >
           My profile
         </StyledListItemButton>
@@ -48,26 +52,50 @@ const Sidebar = () => {
           Guild <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
-          onClick={() => router.push('/management/guild-profile')}
+          onClick={() =>
+            router.push(
+              '/management/guild-profile/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
         >
           Guild profile
         </StyledListItemButton>
         <StyledListItemButton
-          onClick={() => router.push('/management/members')}
+          onClick={() =>
+            router.push(
+              '/management/members/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
         >
           Members
         </StyledListItemButton>
-        <StyledListItemButton onClick={() => router.push('/management/vaults')}>
-          Members
+        <StyledListItemButton
+          onClick={() =>
+            router.push(
+              '/management/vaults/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
+        >
+          Vaults
         </StyledListItemButton>
         <SidebarSubHeader>
           Governance <ChevronRightIcon />
         </SidebarSubHeader>
-        <StyledListItemButton onClick={() => router.push('/management/vote')}>
+        <StyledListItemButton
+          onClick={() =>
+            router.push(
+              '/management/vote/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
+        >
           Vote
         </StyledListItemButton>
         <StyledListItemButton
-          onClick={() => router.push('/management/purpose')}
+          onClick={() =>
+            router.push(
+              '/management/purpose/testcore1rwufsu4v98jc5zlt928ta70fjzml42fgxq03au3jedqmq79933cqm2557z', //Todo replace and create component
+            )
+          }
         >
           Purpose
         </StyledListItemButton>
