@@ -6,12 +6,14 @@ import styled from '@emotion/styled';
 import { Button, Typography, Toolbar, Box, IconButton } from '@mui/material';
 
 import { useSigningClient } from 'contexts/client';
+import { AuthContext } from 'contexts/AuthContext';
 
 import AppBar from '@mui/material/AppBar';
 
 import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
+import { useContext } from 'react';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -24,6 +26,8 @@ const LogoLink = styled(StyledLink)``;
 const ButtonContainer = styled(Box)``;
 
 function Nav() {
+  const authContext = useContext(AuthContext);
+  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
   const handleConnect = () => {
     if (walletAddress.length === 0) {
