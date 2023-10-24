@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import type { NextPage } from 'next';
 //import {Coin} from '@cosmjs/amino'
 import { decodeBech32Pubkey } from '@cosmjs/amino';
@@ -14,18 +14,21 @@ import { createMultisigFromCompressedSecp256k1Pubkeys } from 'utils/multisigHelp
 import { checkAddress } from 'utils/displayHelpers';
 
 import {
-  TextField,
-  Button,
   Alert,
+  Box,
+  Button,
   Container,
-  Typography,
+  Divider,
+  FormControl,
+  InputLabel,
   List,
   ListItem,
-  ListItemText,
   ListItemSecondaryAction,
-  Divider,
-  InputLabel,
-  Box,
+  ListItemText,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
 } from '@mui/material';
 import { NewspaperTwoTone } from '@mui/icons-material';
 
@@ -118,98 +121,13 @@ const Multisig: NextPage = () => {
       return m.pubkey;
     }); */
     console.log(JSON.stringify(members));
-
-    // needs to instantiate a group
-    // with {admin: string, members: [{addr: String, name: String, weight: u64}]}
-    // it does not work! a problem with the typeUrl required
-    /*
-    let admin = members[0].address
-    let instantiateMsg = {
-      admin,
-      members
-    }
-
-    let res = await signingClient?.instantiate(
-      walletAddress,
-      522,  // my group variant
-      instantiateMsg,
-      guildName,
-      "auto"
-    )
-    if (res) {
-      console.log(res)
-      setLoading(false)
-
-    } else {
-      console.log("no response for instantiation")
-      setLoading(false)
-    }
-     */
-    /*
-    let multisigAddress = await createMultisigFromCompressedSecp256k1Pubkeys(
-      //@ts-ignore
-      list,
-      threshold,
-      process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX || '',
-      process.env.NEXT_PUBLIC_CHAIN_ID || '',
-    );
-    if (multisigAddress) {
-      let message = `Created new multisig ${multisigAddress}`;
-      setLoading(false);
-      setSuccess(message);
-      // add link to the page
-    } else {
-      setLoading(false);
-      setError(`Error creating multisig`);
-    }
- */
   };
   return (
     <WalletLoader loading={loading}>
-      <Typography variant="h3" gutterBottom>
+      <Typography variant="h4" gutterBottom component="h1">
         Set the members for your new guild in {PUBLIC_CHAIN_NAME}
       </Typography>
 
-      <Box sx={{ width: '100%', maxWidth: 360 }}>
-        {members.length > 0 ? (
-          <List>
-            {members.map((m: Member) => (
-              <ListItem
-                key={m.address}
-                secondaryAction={
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => {
-                      let newArr = members.filter(
-                        (ms) => ms.address !== m.address,
-                      );
-                      setMembers(newArr);
-                    }}
-                  >
-                    Remove
-                  </Button>
-                }
-              >
-                <ListItemText primary={m.address} /* secondary={m.pubkey} */ />
-              </ListItem>
-            ))}
-          </List>
-        ) : (
-          <Typography align="center" variant="h6" gutterBottom>
-            A guild with no members?
-          </Typography>
-        )}
-      </Box>
-
-      <TextField
-        fullWidth
-        variant="outlined"
-        sx={{ mr: 2 }}
-        placeholder="Name your guild"
-        onChange={(e) => setGuildName(e.target.value)}
-        value={guildName}
-      />
       <Container
         sx={{
           backgroundColor: 'background.default',
@@ -220,13 +138,22 @@ const Multisig: NextPage = () => {
         }}
       >
         <TextField
+          fullWidth
+          id="recipient-name"
+          onChange={(e) => setGuildName(e.target.value)}
+          placeholder="Name your Guild"
+          sx={{ mb: 2 }}
+          value={guildName}
+          variant="outlined"
+        />
+        <TextField
+          fullWidth
           id="recipient-address"
           label={`${PUBLIC_CHAIN_NAME} Address`}
-          variant="outlined"
-          value={newAddress}
           onChange={(event) => setNewAddress(event.target.value)}
-          fullWidth
           sx={{ mb: 2 }}
+          value={newAddress}
+          variant="outlined"
         />
         <TextField
           id="recipient-name"
@@ -237,27 +164,59 @@ const Multisig: NextPage = () => {
           fullWidth
           sx={{ mb: 2 }}
         />
-        <TextField
-          id="recipient-weight"
-          label="Weight for the Member"
-          variant="outlined"
-          value={newWeight}
-          onChange={(event) => {
-            let val = parseInt(event.target.value);
-            if (val > 0) {
-              setNewWeight(val);
-            }
-          }}
-          type="number"
-          fullWidth
-          sx={{ mb: 2 }}
-        />
+
+        <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
+          <InputLabel id="role-select-label">Role</InputLabel>
+          <Select
+            labelId="role-select-label"
+            id="role-select"
+            value={newWeight}
+            onChange={(event) => setNewWeight(event.target.value as number)}
+            label="Role"
+          >
+            <MenuItem value={1}>Leader</MenuItem>
+            <MenuItem value={0}>Member</MenuItem>
+          </Select>
+        </FormControl>
+
+        <Box sx={{ width: '100%', maxWidth: 360 }}>
+          {members.length > 0 ? (
+            <Box>
+              {members.map((m: Member) => (
+                <Box
+                  key={m.address}
+                  sx={{ display: 'flex', flexDirection: 'row' }}
+                >
+                  <Typography variant="subtitle1" gutterBottom>
+                    {m.name} ({m.weight === 1 ? 'Leader' : 'Member'})
+                  </Typography>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                      let newArr = members.filter(
+                        (ms) => ms.address !== m.address,
+                      );
+                      setMembers(newArr);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </Box>
+              ))}
+            </Box>
+          ) : (
+            <Typography align="center" variant="h6" gutterBottom>
+              Yo have to add a member
+            </Typography>
+          )}
+        </Box>
         <Button variant="contained" color="primary" onClick={handleAddMember}>
           Add Member
         </Button>
       </Container>
 
-      {members.length >= 2 && (
+      {members.length >= 1 && (
         <Container sx={{ my: 2 }}>
           <Typography variant="subtitle1" gutterBottom>
             Signatures required
@@ -279,6 +238,7 @@ const Multisig: NextPage = () => {
             variant="contained"
             color="primary"
             fullWidth
+            disabled={loading || members.length === 0}
             onClick={handleCreate}
           >
             Create multisig
