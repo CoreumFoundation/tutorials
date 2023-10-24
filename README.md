@@ -1,3 +1,14 @@
-# Coreum tutorials sources
+# Build and Run
 
-[Here](https://docs.coreum.dev/tutorials/main.html) you can get the list of all tutorials.
+* Install dependencies
+
+```
+yarn install
+```
+
+* Run
+
+```
+yarn run dev
+```
+
