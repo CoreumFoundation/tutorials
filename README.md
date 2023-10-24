@@ -1,14 +1,13 @@
 # Build and Run
 
-* Install dependencies
+- Install dependencies
 
 ```
 yarn install
 ```
 
-* Run
+- Run
 
 ```
 yarn run dev
 ```
-

@@ -1,11 +1,16 @@
-import {useState} from 'react'
-import {connectKeplr} from 'services/keplr'
-import {createProtobufRpcClient, defaultRegistryTypes, GasPrice, QueryClient,} from '@cosmjs/stargate'
-import {Tendermint34Client} from "@cosmjs/tendermint-rpc";
-import {SigningCosmWasmClient} from '@cosmjs/cosmwasm-stargate'
-import {QueryClient as CoreumQueryClient} from "../coreum/query"
-import {GeneratedType, Registry} from "@cosmjs/proto-signing";
-import {coreumRegistryTypes} from "../coreum/tx";
+import { useState } from 'react'
+import { connectKeplr } from 'services/keplr'
+import {
+  createProtobufRpcClient,
+  defaultRegistryTypes,
+  GasPrice,
+  QueryClient,
+} from '@cosmjs/stargate'
+import { Tendermint34Client } from '@cosmjs/tendermint-rpc'
+import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate'
+import { QueryClient as CoreumQueryClient } from '../coreum/query'
+import { GeneratedType, Registry } from '@cosmjs/proto-signing'
+import { coreumRegistryTypes } from '../coreum/tx'
 
 export interface IClientContext {
   walletAddress: string
@@ -25,8 +30,7 @@ export const useClientContext = (): IClientContext => {
   const [walletAddress, setWalletAddress] = useState('')
   const [signingClient, setSigningClient] =
     useState<SigningCosmWasmClient | null>(null)
-  const [tmClient, setTmClient] =
-    useState<Tendermint34Client | null>(null)
+  const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null)
   const [coreumQueryClient, setCoreumQueryClient] =
     useState<CoreumQueryClient | null>(null)
   const [loading, setLoading] = useState(false)
@@ -60,18 +64,21 @@ export const useClientContext = (): IClientContext => {
         {
           registry: registry,
           gasPrice: GasPrice.fromString(GAS_PRICE),
-        },
+        }
       )
       setSigningClient(client)
 
       // rpc client
-      const tendermintClient = await Tendermint34Client.connect(PUBLIC_RPC_ENDPOINT);
+      const tendermintClient =
+        await Tendermint34Client.connect(PUBLIC_RPC_ENDPOINT)
       setTmClient(tendermintClient)
-      const queryClient = new QueryClient(tendermintClient);
-      setCoreumQueryClient(new CoreumQueryClient(createProtobufRpcClient(queryClient)))
+      const queryClient = new QueryClient(tendermintClient)
+      setCoreumQueryClient(
+        new CoreumQueryClient(createProtobufRpcClient(queryClient))
+      )
 
       // get user address
-      const [{address}] = await offlineSigner.getAccounts()
+      const [{ address }] = await offlineSigner.getAccounts()
       setWalletAddress(address)
       setLoading(false)
     } catch (error: any) {

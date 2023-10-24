@@ -1,4 +1,4 @@
-import {convertFromMicroDenom} from 'util/conversion'
+import { convertFromMicroDenom } from 'util/conversion'
 
 // extend window with CosmJS and Keplr properties
 interface CosmosKeplrWindow extends Window {
@@ -20,7 +20,12 @@ export const connectKeplr = async () => {
       const stakingDenom = convertFromMicroDenom(
         process.env.NEXT_PUBLIC_STAKING_DENOM || ''
       )
-      const gasPrice = Number((process.env.NEXT_PUBLIC_GAS_PRICE || '').replace(process.env.NEXT_PUBLIC_STAKING_DENOM || '', ''));
+      const gasPrice = Number(
+        (process.env.NEXT_PUBLIC_GAS_PRICE || '').replace(
+          process.env.NEXT_PUBLIC_STAKING_DENOM || '',
+          ''
+        )
+      )
 
       try {
         // Keplr v0.6.4 introduces an experimental feature that supports the feature to suggests the chain from a webpage.
