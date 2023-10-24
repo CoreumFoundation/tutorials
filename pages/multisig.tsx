@@ -60,6 +60,22 @@ const Multisig: NextPage = () => {
     setSuccess('');
     setLoading(true);
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
+    let instantiateMsg = {
+      leader,
+      members: [{ addr: leader.address, name: leader.name, weight: leader.weight }]
+    };
+
+    let res = await signingClient?.instantiate(
+      walletAddress,
+      522,  // my group variant
+      instantiateMsg,
+      guildName,
+      "auto"
+    );
+
+    console.log("res:::",res);
+
+
   };
   return (
     <WalletLoader loading={loading}>

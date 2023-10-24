@@ -30,9 +30,8 @@ async function getDataFromContract(signingClient: SigningCosmWasmClient) {
   if(!signingClient) {
     return [];
   }
-  console.log("29:::", signingClient);
   let data = await signingClient.getContracts(process.env.NEXT_PUBLIC_CONTRACT_NUMBER);
-  console.log(data);
+  console.log("data is ",data);
   return { "key": "value" };
 }
 
@@ -77,6 +76,7 @@ function GuildCard({ guild }: { guild: Guild }) {
 const ExploreGuilds: NextPage = () => {
   const { guilds } = useGetGuildsList();
   const { walletAddress, signingClient } = useSigningClient();
+  console.log("signingClient", signingClient);
 
   const [searchText, setSearchText] = useState('');
 
