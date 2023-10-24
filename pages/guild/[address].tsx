@@ -13,6 +13,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   Container,
   InputAdornment,
   Paper,
@@ -82,7 +83,6 @@ const Guild: NextPage = () => {
         address,
         membersMsg,
       );
-      //console.log(membersList)
       if (membersList?.members) {
         setMembers(membersList.members);
       } else {
@@ -105,27 +105,22 @@ const Guild: NextPage = () => {
       setError(err.toString());
     }
   }
-  async function getMultisig(address: string) {}
 
   useEffect(() => {
     if (guildContract && guildAddress) {
       getMembers(guildAddress);
       getAdmin(guildAddress);
-      // get multisig
-
-      // proposals
-
-      // history txs
     }
   }, [guildContract]);
 
   return (
     <WalletLoader loading={loading}>
       <Typography variant="h3" gutterBottom>
-        Guild: {guildContract ? guildContract.label : 'Loading'}
+        Guild: {guildContract ? guildContract.label : <CircularProgress />}
       </Typography>
       <Typography variant="h5" gutterBottom>
-        Created by: {guildContract ? guildContract.creator : 'Loading'}
+        Created by:{' '}
+        {guildContract ? guildContract.creator : <CircularProgress />}
       </Typography>
       {guildAdmin && (
         <Typography variant="h5" gutterBottom>

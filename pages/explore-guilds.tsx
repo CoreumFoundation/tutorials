@@ -1,5 +1,9 @@
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/router';
+import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import type { NextPage } from 'next';
 
+import { useSigningClient } from 'contexts/client';
 import {
   Box,
   CircularProgress,
@@ -10,13 +14,9 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 
 import { useGetGuildsList } from 'hooks/useGetGuildsList';
-import { SIZES } from './theme';
-import { useState, useEffect } from 'react';
-
-import { useSigningClient } from 'contexts/client';
-import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import GuildCard from 'components/GuildCard';
 
+import { SIZES } from './theme';
 async function getDataFromContract(signingClient: SigningCosmWasmClient) {
   if (!signingClient) {
     return [];
@@ -24,11 +24,13 @@ async function getDataFromContract(signingClient: SigningCosmWasmClient) {
   let data = await signingClient.getContracts(
     process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
   );
+
   console.log('data is ', data);
   return { key: 'value' };
 }
 
 const ExploreGuilds: NextPage = () => {
+  const router = useRouter();
   const { guilds } = useGetGuildsList();
   const { walletAddress, signingClient } = useSigningClient();
   console.log('signingClient', signingClient);
@@ -40,8 +42,8 @@ const ExploreGuilds: NextPage = () => {
   };
 
   useEffect(() => {
-    async function fetchData() {
-      const result = await getDataFromContract(signingClient);
+    function fetchData() {
+      const result = getDataFromContract(signingClient);
     }
 
     fetchData();
@@ -77,7 +79,11 @@ const ExploreGuilds: NextPage = () => {
           {filteredGuilds.length ? (
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
-                <GuildCard guild={guild} key={guild.name} />
+                <GuildCard
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
+                  guild={guild}
+                  key={guild.name}
+                />
               </Grid>
             ))
           ) : (
