@@ -1,51 +1,89 @@
-import { useSigningClient } from 'contexts/client'
-import Link from 'next/link'
-import Image from 'next/image'
-import Router from 'next/router'
+import Image from 'next/image';
+import Router from 'next/router';
+
+import Menu from '@mui/icons-material/Menu';
+import styled from '@emotion/styled';
+import { Button, Typography, Toolbar, Box, IconButton } from '@mui/material';
+
+import { useSigningClient } from 'contexts/client';
+
+import AppBar from '@mui/material/AppBar';
+
+import { StyledLink } from './StyledLink';
+import { shortAddress } from 'util/conversion';
+import { SIZES } from 'pages/theme';
+
+const LogoContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+`;
+
+const LogoLink = styled(StyledLink)``;
+
+const ButtonContainer = styled(Box)``;
 
 function Nav() {
-  const { walletAddress, connectWallet, disconnect } = useSigningClient()
+  const { walletAddress, connectWallet, disconnect } = useSigningClient();
   const handleConnect = () => {
     if (walletAddress.length === 0) {
-      connectWallet()
+      connectWallet();
     } else {
-      disconnect()
-      Router.push('/')
+      disconnect();
+      Router.push('/');
     }
-  }
+  };
 
-  const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || ''
+  const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
+
+  const renderNavOptions = () => {
+    return (
+      <Box>
+        <Button variant="outlined" onClick={handleConnect}>
+          Log out: {shortAddress(walletAddress)}
+        </Button>
+        <IconButton size="large">
+          <Menu />
+        </IconButton>
+      </Box>
+    );
+  };
 
   return (
-    <div>
-      <nav>
-        <div>
-          <Link href="/">
-            <a>
-              {PUBLIC_SITE_ICON_URL.length > 0 ? (
-                <Image
-                  src={PUBLIC_SITE_ICON_URL}
-                  height={32}
-                  width={32}
-                  alt="Logo"
-                />
-              ) : (
-                <span>⚛️ </span>
-              )}
-            </a>
-          </Link>
-          <Link href="/">
-            <a>{process.env.NEXT_PUBLIC_SITE_TITLE}</a>
-          </Link>
-        </div>
-        <div>
-          <button onClick={handleConnect}>
-            {walletAddress || 'Connect Wallet'}
-          </button>
-        </div>
-      </nav>
-    </div>
-  )
+    <AppBar position="static" elevation={1}>
+      <Toolbar
+        style={{
+          margin: `${SIZES['lineHeight'] / 2}rem ${SIZES['lineHeight']}rem`,
+        }}
+      >
+        <LogoContainer>
+          <LogoLink href="/" passHref>
+            {PUBLIC_SITE_ICON_URL.length > 0 ? (
+              <Image
+                src={PUBLIC_SITE_ICON_URL}
+                height={25}
+                width={150}
+                alt="Logo"
+              />
+            ) : (
+              <Typography variant="h4" component="span">
+                [GUILDAPP]
+              </Typography>
+            )}
+          </LogoLink>
+        </LogoContainer>
+        <ButtonContainer>
+          {walletAddress ? (
+            renderNavOptions()
+          ) : (
+            <Button variant="outlined" color="primary" onClick={handleConnect}>
+              Log in Guild
+            </Button>
+          )}
+        </ButtonContainer>
+      </Toolbar>
+    </AppBar>
+  );
 }
 
-export default Nav
+export default Nav;
