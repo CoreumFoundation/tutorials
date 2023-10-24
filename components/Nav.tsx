@@ -9,9 +9,9 @@ import { useSigningClient } from 'contexts/client';
 
 import AppBar from '@mui/material/AppBar';
 
-import { StyledLink } from './StyledLink';
 import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
+import { StyledLink } from './StyledLink';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -57,7 +57,7 @@ function Nav() {
         }}
       >
         <LogoContainer>
-          <LogoLink href="/" passHref>
+          <StyledLink href="/" passHref>
             {PUBLIC_SITE_ICON_URL.length > 0 ? (
               <Image
                 src={PUBLIC_SITE_ICON_URL}
@@ -70,7 +70,7 @@ function Nav() {
                 [GUILDAPP]
               </Typography>
             )}
-          </LogoLink>
+          </StyledLink>
         </LogoContainer>
         <ButtonContainer>
           {walletAddress ? (
