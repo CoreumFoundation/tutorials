@@ -13,49 +13,83 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useGetGuildsList } from 'hooks/useGetGuildsList';
 import GuildCard from 'components/GuildCard';
 
 import { SIZES } from './theme';
-async function getDataFromContract(signingClient: SigningCosmWasmClient) {
-  if (!signingClient) {
-    return [];
-  }
-  let data = await signingClient.getContracts(
-    process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
-  );
 
-  console.log('data is ', data);
-  return { key: 'value' };
-}
+//@ts-ignore
+import type { Guild } from 'util/types';
 
 const ExploreGuilds: NextPage = () => {
   const router = useRouter();
-  const { guilds } = useGetGuildsList();
+  const [guilds, setGuilds] = useState<Guild[]>([]);
   const { walletAddress, signingClient } = useSigningClient();
   console.log('signingClient', signingClient);
 
   const [searchText, setSearchText] = useState('');
+
+  async function getDataFromContract(signingClient: SigningCosmWasmClient) {
+    if (!signingClient) {
+      return [];
+    }
+    let data = await signingClient.getContracts(
+      522
+    );
+
+    let list = data.map((x) => {
+      return x;
+    });
+
+    let acu = [];
+
+    for (let i = 0; i < list.length; i++) {
+      let guild_address = list[i];
+      //@ts-ignore
+      let guild_data = await signingClient.getContract(guild_address);
+
+      // 获取 membersList
+      let membersMsg = {
+        list_members: {
+          start_after: null,
+          limit: null,
+        },
+      };
+      let membersList = await signingClient?.queryContractSmart(
+        guild_address,  // 注意这里使用 guild_address
+        membersMsg,
+      );
+
+      // 如果 membersList?.members 存在，将其添加到 guild_data
+      if (membersList?.members) {
+        guild_data.member = membersList.members;
+        guild_data.member_count = membersList.members.length;
+      } else {
+        setError('No members could be found');
+      }
+
+      acu.push(guild_data);
+    }
+    setGuilds(acu);
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
   };
 
   useEffect(() => {
-    function fetchData() {
-      const result = getDataFromContract(signingClient);
-    }
-
-    fetchData();
+    getDataFromContract(signingClient);
   }, [signingClient]);
+  console.log("guilds", guilds);
 
-  const filteredGuilds = guilds?.filter((guild) =>
-    guild.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
+
+  const filteredGuilds = guilds && guilds.length > 0
+    ? guilds.filter((guild) => guild.label.toLowerCase().includes(searchText.toLowerCase()))
+    : [];
+
 
   return (
     <>
-      {filteredGuilds.length ? (
+      {/* {filteredGuilds.length ? (
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
             fullWidth
@@ -72,16 +106,21 @@ const ExploreGuilds: NextPage = () => {
             }}
           />
         </Box>
-      ) : null}
+      ) : null} */}
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
-          {filteredGuilds.length ? (
+          {filteredGuilds.length && guilds.length > 0 ? (
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
                   handleClick={() => router.push(`/guild/${guild.address}`)}
-                  guild={guild}
+                  guild={{
+                    name: guild.label, // Todo check the types
+                    totalMembers: guild.member_count,
+                    thumbnail:
+                      'https://i.pinimg.com/564x/06/0d/21/060d2195df7a10d4fd8e37fde4cf5320.jpg',
+                  }}
                   key={guild.name}
                 />
               </Grid>
@@ -91,7 +130,7 @@ const ExploreGuilds: NextPage = () => {
               maxWidth="sm"
               sx={{ display: 'flex', justifyContent: 'center' }}
             >
-              <CircularProgress />
+              {/* <CircularProgress /> */}
             </Box>
           )}
         </Grid>

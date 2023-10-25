@@ -71,7 +71,7 @@ const Multisig: NextPage = () => {
 
     let res = await signingClient.instantiate(
       walletAddress,
-      522,  // my group variant
+      522,
       instantiateMsg,
       guildName,
       "auto"
