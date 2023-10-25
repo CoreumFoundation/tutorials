@@ -123,7 +123,7 @@ const Home: NextPage = () => {
             {guilds.map((guild) => (
               <Grid item xs={12} md={6} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/guild/${guild.address}`)}
+                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
                   guild={{
                     name: guild.label, // Todo check the types
                     totalMembers: guild.member_count, // Todo get this from the contract
