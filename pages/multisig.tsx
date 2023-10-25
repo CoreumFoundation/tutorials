@@ -26,8 +26,8 @@ type Member = {
 const Multisig: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const [balance, setBalance] = useState('');
-  const [contractCreated, setContractCreated] = useState<string | null>(null)
-  const [multisigCreated, setMultisigCreated] = useState<string | null>(null)
+  const [contractCreated, setContractCreated] = useState<string | null>(null);
+  const [multisigCreated, setMultisigCreated] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [guildName, setGuildName] = useState<string>('');
 
@@ -40,7 +40,6 @@ const Multisig: NextPage = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) {
@@ -63,14 +62,19 @@ const Multisig: NextPage = () => {
   }, [signingClient, walletAddress]);
 
   const handleCreate = async () => {
-
     setError('');
     setSuccess('');
     setLoading(true);
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
       admin: leader.address,
-      members: [{addr: leader.address, name: leader.name.toLocaleLowerCase(), weight: 1}]
+      members: [
+        {
+          addr: leader.address,
+          name: leader.name.toLocaleLowerCase(),
+          weight: 1,
+        },
+      ],
     };
 
     let res = await signingClient?.instantiate(
@@ -78,20 +82,19 @@ const Multisig: NextPage = () => {
       522,
       instantiateMsg,
       guildName.toLocaleLowerCase(),
-      "auto"
+      'auto',
     );
 
     // Check if 'res' contains 'contractAddress' property
     if (res && res.contractAddress) {
       let contractAddress = res.contractAddress;
-      if (contractAddress) setContractCreated(contractAddress)
-      
+      if (contractAddress) setContractCreated(contractAddress);
     } else {
-      console.log("contractAddress not found in the response.");
+      console.log('contractAddress not found in the response.');
     }
 
     setLoading(false);
-//    router.back();
+    //    router.back();
   };
 
   return (
@@ -165,12 +168,9 @@ const Multisig: NextPage = () => {
           Create guild
         </Button>
       </Container>
-      {contractCreated &&
-        <CreateVault
-          guildAddress={contractCreated}
-          guildName={guildName}
-          />
-      }
+      {contractCreated && (
+        <CreateVault guildAddress={contractCreated} guildName={guildName} />
+      )}
       <Container sx={{ my: 2 }}>
         {success.length > 0 && (
           <Alert severity="success" sx={{ mb: 2 }}>

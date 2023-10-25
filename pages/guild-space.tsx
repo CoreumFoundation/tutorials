@@ -25,14 +25,11 @@ const GuildSpace: NextPage = () => {
 
   const router = useRouter();
 
-
-  const [loading,setLoading] = useState(false);
-
+  const [loading, setLoading] = useState(false);
 
   const { walletAddress, signingClient } = useSigningClient();
 
   async function getContracts() {
-
     setLoading(true);
     //@ts-ignore
     let data = await signingClient.getContracts(522);
@@ -54,7 +51,7 @@ const GuildSpace: NextPage = () => {
         },
       };
       let membersList = await signingClient?.queryContractSmart(
-        guild_address,  // 注意这里使用 guild_address
+        guild_address, // 注意这里使用 guild_address
         membersMsg,
       );
 
