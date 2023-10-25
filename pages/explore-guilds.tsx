@@ -84,7 +84,7 @@ const ExploreGuilds: NextPage = () => {
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/guild/${guild.address}`)}
+                  handleClick={() => router.push(`/public-guild-view`)}
                   guild={ guild }
                   key={guild.name}
                 />
