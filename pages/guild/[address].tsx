@@ -45,6 +45,7 @@ const Guild: NextPage = () => {
   useEffect(() => {
     if (!guildAddress) {
       let address = router.query.address;
+      console.log("address::48 ", address);
       if (typeof address == 'string') {
         setGuildAddress(address);
       }

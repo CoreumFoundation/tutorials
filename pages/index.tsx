@@ -29,7 +29,7 @@ const Home: NextPage = () => {
 
   async function getContracts() {
     //@ts-ignore
-    let data = await signingClient.getContracts(process.env.NEXT_PUBLIC_CONTRACT_NUMBER);
+    let data = await signingClient.getContracts(522);
     //    console.log(JSON.stringify(data))
     let list = data.map((x) => {
       return x;
@@ -37,10 +37,29 @@ const Home: NextPage = () => {
     let acu = [];
     for (let i = 0; i < list.length; i++) {
       let guild_address = list[i];
-      //      console.log(`calling ${guild_address}`)
       //@ts-ignore
       let guild_data = await signingClient.getContract(guild_address);
-      //      console.log(`::> ${JSON.stringify(guild_data)}`)
+
+      // 获取 membersList
+      let membersMsg = {
+        list_members: {
+          start_after: null,
+          limit: null,
+        },
+      };
+      let membersList = await signingClient?.queryContractSmart(
+        guild_address,  // 注意这里使用 guild_address
+        membersMsg,
+      );
+
+      // 如果 membersList?.members 存在，将其添加到 guild_data
+      if (membersList?.members) {
+        guild_data.member = membersList.members;
+        guild_data.member_count = membersList.members.length;
+      } else {
+        setError('No members could be found');
+      }
+
       acu.push(guild_data);
     }
     setGuilds(acu);
@@ -97,10 +116,10 @@ const Home: NextPage = () => {
             {guilds.map((guild) => (
               <Grid item xs={12} md={6} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
                   guild={{
                     name: guild.label, // Todo check the types
-                    totalMembers: 2, // Todo get this from the contract
+                    totalMembers: guild.member_count, // Todo get this from the contract
                     thumbnail:
                       'https://i.pinimg.com/564x/06/0d/21/060d2195df7a10d4fd8e37fde4cf5320.jpg',
                   }}

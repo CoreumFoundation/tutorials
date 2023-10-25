@@ -33,7 +33,7 @@ const ExploreGuilds: NextPage = () => {
       return [];
     }
     let data = await signingClient.getContracts(
-      process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
+      522
     );
 
     let list = data.map((x) => {
@@ -41,16 +41,35 @@ const ExploreGuilds: NextPage = () => {
     });
 
     let acu = [];
+
     for (let i = 0; i < list.length; i++) {
       let guild_address = list[i];
-      //      console.log(`calling ${guild_address}`)
       //@ts-ignore
       let guild_data = await signingClient.getContract(guild_address);
-      //      console.log(`::> ${JSON.stringify(guild_data)}`)
+
+      // 获取 membersList
+      let membersMsg = {
+        list_members: {
+          start_after: null,
+          limit: null,
+        },
+      };
+      let membersList = await signingClient?.queryContractSmart(
+        guild_address,  // 注意这里使用 guild_address
+        membersMsg,
+      );
+
+      // 如果 membersList?.members 存在，将其添加到 guild_data
+      if (membersList?.members) {
+        guild_data.member = membersList.members;
+        guild_data.member_count = membersList.members.length;
+      } else {
+        setError('No members could be found');
+      }
+
       acu.push(guild_data);
     }
     setGuilds(acu);
-    console.log("guilds", guilds);
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,9 +79,10 @@ const ExploreGuilds: NextPage = () => {
   useEffect(() => {
     getDataFromContract(signingClient);
   }, [signingClient]);
+  console.log("guilds", guilds);
 
 
-  const filteredGuilds = guilds && guilds.length > 0 
+  const filteredGuilds = guilds && guilds.length > 0
     ? guilds.filter((guild) => guild.label.toLowerCase().includes(searchText.toLowerCase()))
     : [];
 
@@ -90,14 +110,14 @@ const ExploreGuilds: NextPage = () => {
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
-          {filteredGuilds.length && guilds.length>0 ? (
+          {filteredGuilds.length && guilds.length > 0 ? (
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
                   handleClick={() => router.push(`/metaverse/${guild.address}`)}
                   guild={{
                     name: guild.label, // Todo check the types
-                    totalMembers: 2, // Todo get this from the contract
+                    totalMembers: guild.member_count,
                     thumbnail:
                       'https://i.pinimg.com/564x/06/0d/21/060d2195df7a10d4fd8e37fde4cf5320.jpg',
                   }}
@@ -110,7 +130,7 @@ const ExploreGuilds: NextPage = () => {
               maxWidth="sm"
               sx={{ display: 'flex', justifyContent: 'center' }}
             >
-              <CircularProgress />
+              {/* <CircularProgress /> */}
             </Box>
           )}
         </Grid>
