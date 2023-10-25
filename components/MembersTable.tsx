@@ -14,6 +14,8 @@ import { useSigningClient } from 'contexts/client';
 const MembersTable = ({ members }: { members: Member[] }) => {
   console.log('members', members);
   const { walletAddress } = useSigningClient();
+
+  console.log('members', members);
   return (
     <Table>
       <TableHead>
