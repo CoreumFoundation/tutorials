@@ -14,6 +14,7 @@ import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
 import { useContext, useState, useEffect } from 'react';
+import { ACTION_SERVER_PATCH } from 'next/dist/client/components/router-reducer/router-reducer-types';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -36,17 +37,18 @@ function Nav() {
     } else {
       disconnect();
       Router.push('/');
+      authContext.clearLoggedAddress();
     }
   };
 
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
 
 
-  // useEffect(() => {
-  //   if (authContext?.loggedAddress.length !== 0) {
-  //     connectWallet();
-  //   }
-  // }, [authContext]);
+  useEffect(() => {
+    if (authContext?.loggedAddress.length !== 0) {
+      connectWallet();
+    }
+  }, [authContext]);
 
   const renderNavOptions = () => {
     return (
