@@ -28,7 +28,11 @@ import PageWithSidebar from 'components/PageWithSidebar';
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
 
-const Vaults: NextPage = () => {
+interface IProps {
+  guildAddress: string;
+}
+
+const Vaults: NextPage = (props: IProps) => {
   const { walletAddress, signingClient } = useSigningClient();
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
@@ -41,15 +45,6 @@ const Vaults: NextPage = () => {
   const [members, setMembers] = useState<Member[]>([]);
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!guildAddress) {
-      let address = router.query.address;
-      if (typeof address == 'string') {
-        setGuildAddress(address);
-      }
-    }
-  }, [router]);
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0 || !guildAddress) {
@@ -71,48 +66,6 @@ const Vaults: NextPage = () => {
         setError(`Error! ${error.message}`);
       });
   }, [signingClient, walletAddress, guildAddress]);
-
-  async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      let membersList = await signingClient?.queryContractSmart(
-        address,
-        membersMsg,
-      );
-      if (membersList?.members) {
-        setMembers(membersList.members);
-      } else {
-        setError('No members could be found');
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-  async function getAdmin(address: string) {
-    try {
-      let adminMsg = {
-        admin: {},
-      };
-      let admin = await signingClient?.queryContractSmart(address, adminMsg);
-      if (admin?.admin) {
-        setGuildAdmin(admin.admin);
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-
-  useEffect(() => {
-    if (guildContract && guildAddress) {
-      getMembers(guildAddress);
-      getAdmin(guildAddress);
-    }
-  }, [guildContract]);
 
   return (
     <WalletLoader loading={loading}>

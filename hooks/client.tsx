@@ -52,7 +52,6 @@ export const useClientContext = (): IClientContext => {
       //  ["/cosmwasm.wasm.v1.MsgStoreCode", MsgStoreCode], 
         ["/cosmwasm.wasm.v1.MsgExecuteContract", MsgExecuteContract],
         ["/cosmwasm.wasm.v1.MsgInstantiateContract", MsgInstantiateContract],
-//        ["/cosmos.tx.v1beta1.Service/Simulate", ]
       ];
 
       // register default and custom messages
