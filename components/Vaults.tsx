@@ -24,7 +24,6 @@ import {
 import { Guild, Member } from 'util/types';
 import MembersTable from 'components/MembersTable';
 import PageWithSidebar from 'components/PageWithSidebar';
-import CreateVault from './CreateVault';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
@@ -32,7 +31,7 @@ const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
 interface IProps {
   guildAddress: string;
 }
-//@ts-ignore
+
 const Vaults: NextPage = (props: IProps) => {
   const { walletAddress, signingClient } = useSigningClient();
   const router = useRouter();
@@ -47,8 +46,6 @@ const Vaults: NextPage = (props: IProps) => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  
-
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0 || !guildAddress) {
       return;
@@ -59,8 +56,11 @@ const Vaults: NextPage = (props: IProps) => {
     signingClient
       .getContract(guildAddress)
       .then((response: Guild) => {
-        console.log(response)
         setGuildContract(response);
+        /* const { amount, denom }: { amount: number; denom: string } = response;
+                setBalance(
+                `${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`,
+                ); */
       })
       .catch((error) => {
         setError(`Error! ${error.message}`);
@@ -72,13 +72,6 @@ const Vaults: NextPage = (props: IProps) => {
       <Typography variant="h4" gutterBottom>
         Vaults
       </Typography>
-      {guildContract &&
-        <CreateVault
-          //@ts-ignore
-          guildAddress={guildAddress}
-          guildName={guildContract.guildName}
-        />
-      }
     </WalletLoader>
   );
 };
