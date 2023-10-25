@@ -15,7 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
   const {pathname} = useRouter();
 
   let isMetaverse = pathname.includes('metaverse')
-
+  
   return (
     <AuthProvider>
       <ThemeProvider theme={theme}>
