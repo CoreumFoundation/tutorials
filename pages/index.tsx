@@ -25,9 +25,15 @@ const Home: NextPage = () => {
 
   const router = useRouter();
 
+
+  const [loading,setLoading] = useState(false);
+
+
   const { walletAddress, signingClient } = useSigningClient();
 
   async function getContracts() {
+
+    setLoading(true);
     //@ts-ignore
     let data = await signingClient.getContracts(522);
     //    console.log(JSON.stringify(data))
@@ -63,6 +69,7 @@ const Home: NextPage = () => {
       acu.push(guild_data);
     }
     setGuilds(acu);
+    setLoading(false);
   }
 
   useEffect(() => {
@@ -73,7 +80,7 @@ const Home: NextPage = () => {
   }, [signingClient, fetched]);
 
   return (
-    <WalletLoader>
+    <WalletLoader loading={loading}>
       {guilds.length === 0 && (
         <Container>
           <Box sx={{ marginBottom: 8 }}>

@@ -66,7 +66,7 @@ const Multisig: NextPage = () => {
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
       admin: leader.address,
-      members: []
+      members: [{addr:leader.address, name:leader.name, weight: leader.weight}]
     };
 
     let res = await signingClient.instantiate(
