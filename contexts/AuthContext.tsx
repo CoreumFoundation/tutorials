@@ -17,7 +17,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loggedAddress, setLoggedAddress] = useState<string[]>([]);
 
-  // 新增的清空方法
+  // 
   const clearLoggedAddress = () => {
     setLoggedAddress([]);
   };

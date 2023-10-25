@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import type { NextPage } from 'next';
@@ -21,12 +21,17 @@ import { SIZES } from './theme';
 import type { Guild } from 'util/types';
 
 import WalletLoader from 'components/WalletLoader';
+import { AuthContext } from 'contexts/AuthContext';
+
+import { useGetGuildsList } from 'hooks/useGetGuildsList';
 
 const ExploreGuilds: NextPage = () => {
+  const authContext = useContext(AuthContext);
   const router = useRouter();
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const { walletAddress, signingClient } = useSigningClient();
-  console.log('signingClient', signingClient);
+  const { fakeList } = useGetGuildsList();
+  console.log("fakedata is",fakeList);
 
   const [searchText, setSearchText] = useState('');
 
@@ -81,7 +86,6 @@ const ExploreGuilds: NextPage = () => {
   useEffect(() => {
     getDataFromContract(signingClient);
   }, [signingClient]);
-  console.log("guilds", guilds);
 
 
   const filteredGuilds = guilds && guilds.length > 0
@@ -89,6 +93,7 @@ const ExploreGuilds: NextPage = () => {
     : [];
 
 
+  console.log("filtered ",filteredGuilds.length);
   return (
     <WalletLoader>
       {filteredGuilds.length ? (
@@ -126,15 +131,30 @@ const ExploreGuilds: NextPage = () => {
                   key={guild.name}
                 />
               </Grid>
-            ))
+              )
+            )
           ) : (
-            <Box
-              maxWidth="sm"
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
-              {/* <CircularProgress /> */}
-            </Box>
-          )}
+            fakeList.map((guild) => (
+              <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
+                <GuildCard
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
+                  guild={{
+                    name: guild.name, // Todo check the types
+                    totalMembers: guild.totalMembers,
+                    thumbnail:guild.thumbnail,
+                  }}
+                  key={guild.name}
+                />
+              </Grid>
+              )
+            )
+
+
+          )
+          
+      }
+
+
         </Grid>
       </Box>
     </WalletLoader>
