@@ -50,6 +50,7 @@ const ExploreGuilds: NextPage = () => {
       acu.push(guild_data);
     }
     setGuilds(acu);
+    console.log("guilds", guilds);
   }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,18 +58,14 @@ const ExploreGuilds: NextPage = () => {
   };
 
   useEffect(() => {
-    function fetchData() {
-      const result = getDataFromContract(signingClient);
-    }
-
-    fetchData();
+    getDataFromContract(signingClient);
   }, [signingClient]);
 
-  const filteredGuilds = guilds?.filter((guild) =>
-    guild.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
 
-  console.log("guilds",guilds);
+  const filteredGuilds = guilds && guilds.length > 0 
+    ? guilds.filter((guild) => guild.label.toLowerCase().includes(searchText.toLowerCase()))
+    : [];
+
 
   return (
     <>
@@ -93,12 +90,17 @@ const ExploreGuilds: NextPage = () => {
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
-          {filteredGuilds.length ? (
+          {filteredGuilds.length && guilds.length>0 ? (
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/guild/${guild.address}`)}
-                  guild={guild}
+                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  guild={{
+                    name: guild.label, // Todo check the types
+                    totalMembers: 2, // Todo get this from the contract
+                    thumbnail:
+                      'https://i.pinimg.com/564x/06/0d/21/060d2195df7a10d4fd8e37fde4cf5320.jpg',
+                  }}
                   key={guild.name}
                 />
               </Grid>
