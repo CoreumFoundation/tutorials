@@ -4,14 +4,32 @@ import type { NextPage } from 'next';
 
 import WalletLoader from 'components/WalletLoader';
 import { useSigningClient } from 'contexts/client';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Button, Tab, Tabs, Typography } from '@mui/material';
 //@ts-ignore
-import { Guild, Member } from 'util/types';
-import { Token } from '../hooks/coreum-ts/coreum/asset/ft/v1/token';
+
+const NoTokensView = () => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+      }}
+    >
+      <Typography variant="body1">
+        You don't have any tokens yet. Create some!
+      </Typography>
+      <Box>
+        <Button variant="contained">Create token</Button>
+      </Box>
+    </Box>
+  );
+};
 
 const TokenCreation = () => {
   let hasTokens = false;
-  return <> </>;
+
+  return hasTokens ? <p>form</p> : <NoTokensView />;
 };
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;

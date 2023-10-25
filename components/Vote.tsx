@@ -116,20 +116,14 @@ const Vote: NextPage = () => {
   }, [guildContract]);
 
   return (
-    <WalletLoader loading={loading}>
+    <div>
       <Typography variant="h4" gutterBottom>
         Vote
       </Typography>
       <Box>
         <VoteProposal />
       </Box>
-      <Box>
-        <VoteProposal />
-      </Box>
-      <Box>
-        <VoteProposal />
-      </Box>
-    </WalletLoader>
+    </div>
   );
 };
 
