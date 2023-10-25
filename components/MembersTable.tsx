@@ -9,27 +9,28 @@ import {
   TableHead,
   TableRow,
 } from '@mui/material';
+import { useSigningClient } from 'contexts/client';
 
 const MembersTable = ({ members }: { members: Member[] }) => {
   console.log('members', members);
-
+  const { walletAddress } = useSigningClient();
   return (
     <Table>
       <TableHead>
         <TableRow>
-          <TableCell>User Name</TableCell>
+          <TableCell>User name</TableCell>
+          <TableCell>User wallet</TableCell>
           <TableCell>Role</TableCell>
           <TableCell>Join Date</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {members?.map((member) => (
-          <TableRow key={member.name}>
+          <TableRow key={member.name} selected={member.addr === walletAddress}>
+            <TableCell>{member.name}</TableCell>
             <TableCell>{member.addr}</TableCell>
-            <TableCell>{member.weight}</TableCell>
-            <TableCell>
-              {new Date(member.joinDate).toLocaleDateString()}
-            </TableCell>
+            <TableCell>{member.weight === 1 ? 'Admin' : 'Member'}</TableCell>
+            <TableCell>{new Date().toLocaleDateString()}</TableCell>
           </TableRow>
         ))}
       </TableBody>
