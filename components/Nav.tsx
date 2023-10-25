@@ -14,6 +14,7 @@ import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
 import { useContext, useState, useEffect } from 'react';
+import { ACTION_SERVER_PATCH } from 'next/dist/client/components/router-reducer/router-reducer-types';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -32,11 +33,15 @@ function Nav() {
   const handleConnect = () => {
     if (walletAddress.length === 0) {
       connectWallet();
+      Router.push('/guild-space');
     } else {
       disconnect();
       Router.push('/');
+      authContext.clearLoggedAddress();
     }
   };
+
+  authContext?.loggedAddress
 
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
 
@@ -68,7 +73,7 @@ function Nav() {
         }}
       >
         <LogoContainer>
-          <StyledLink href="/" passHref>
+          <StyledLink href={authContext?.loggedAddress?.length > 0 ? "/guild-space" : "/"} passHref>
             {PUBLIC_SITE_ICON_URL.length > 0 ? (
               <Image
                 src={PUBLIC_SITE_ICON_URL}
@@ -82,6 +87,7 @@ function Nav() {
               </Typography>
             )}
           </StyledLink>
+
         </LogoContainer>
         <ButtonContainer>
           {walletAddress ? (

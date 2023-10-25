@@ -25,7 +25,7 @@ const MembersTable = ({ members }: { members: Member[] }) => {
       <TableBody>
         {members?.map((member) => (
           <TableRow key={member.name}>
-            <TableCell>{member.address}</TableCell>
+            <TableCell>{member.addr}</TableCell>
             <TableCell>{member.weight}</TableCell>
             <TableCell>
               {new Date(member.joinDate).toLocaleDateString()}

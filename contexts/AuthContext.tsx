@@ -3,6 +3,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 
 interface AuthContextProps {
   loggedAddress: string[];
+  clearLoggedAddress: () => void;  // 新增的方法
 }
 
 export const AuthContext = createContext<AuthContextProps | undefined>(
@@ -15,6 +16,11 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loggedAddress, setLoggedAddress] = useState<string[]>([]);
+
+  // 
+  const clearLoggedAddress = () => {
+    setLoggedAddress([]);
+  };
 
   useEffect(() => {
     const chainId = 'coreum-testnet-1';
@@ -32,7 +38,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ loggedAddress }}>
+    <AuthContext.Provider value={{ loggedAddress, clearLoggedAddress }}>
       {children}
     </AuthContext.Provider>
   );

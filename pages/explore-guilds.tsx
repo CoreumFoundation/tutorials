@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { SigningCosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import type { NextPage } from 'next';
@@ -13,27 +13,36 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useGetGuildsList } from 'hooks/useGetGuildsList';
 import GuildCard from 'components/GuildCard';
 
 import { SIZES } from './theme';
-async function getDataFromContract(signingClient: SigningCosmWasmClient) {
-  if (!signingClient) {
-    return [];
-  }
-  let data = await signingClient.getContracts(
-    process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
-  );
 
-  console.log('data is ', data);
-  return { key: 'value' };
-}
+//@ts-ignore
+import type { Guild } from 'util/types';
+
+import WalletLoader from 'components/WalletLoader';
+import { AuthContext } from 'contexts/AuthContext';
+
+import { useGetGuildsList } from 'hooks/useGetGuildsList';
 
 const ExploreGuilds: NextPage = () => {
+  const authContext = useContext(AuthContext);
+
+  const [makeFake, setMakeFake] = useState(false);
+
+
   const router = useRouter();
-  const { guilds } = useGetGuildsList();
   const { walletAddress, signingClient } = useSigningClient();
-  console.log('signingClient', signingClient);
+  const { fakeList } = useGetGuildsList();
+  const [guilds, setGuilds] = useState<Guild[]>(fakeList);
+  console.log("fakedata is", fakeList);
+
+  useEffect(() => {
+    if (authContext?.loggedAddress.length === 0) {
+      setMakeFake(true);
+      setGuilds(fakeList);
+    }
+  }, []); // Dependency array
 
   const [searchText, setSearchText] = useState('');
 
@@ -41,21 +50,16 @@ const ExploreGuilds: NextPage = () => {
     setSearchText(event.target.value);
   };
 
-  useEffect(() => {
-    function fetchData() {
-      const result = getDataFromContract(signingClient);
-    }
 
-    fetchData();
-  }, [signingClient]);
+  const filteredGuilds = guilds && guilds.length > 0
+    ? guilds.filter((guild) => guild.name.toLowerCase().includes(searchText.toLowerCase()))
+    : [];
 
-  const filteredGuilds = guilds?.filter((guild) =>
-    guild.name.toLowerCase().includes(searchText.toLowerCase()),
-  );
 
+  console.log("filtered ", filteredGuilds.length);
   return (
     <>
-      {filteredGuilds.length ? (
+      {
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
             fullWidth
@@ -72,31 +76,26 @@ const ExploreGuilds: NextPage = () => {
             }}
           />
         </Box>
-      ) : null}
+      }
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
-          {filteredGuilds.length ? (
+          {
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
                   handleClick={() => router.push(`/guild/${guild.address}`)}
-                  guild={guild}
+                  guild={ guild }
                   key={guild.name}
                 />
               </Grid>
-            ))
-          ) : (
-            <Box
-              maxWidth="sm"
-              sx={{ display: 'flex', justifyContent: 'center' }}
-            >
-              <CircularProgress />
-            </Box>
-          )}
+            )
+            )
+          }
+
+
         </Grid>
-      </Box>
-    </>
+      </Box></>
   );
 };
 

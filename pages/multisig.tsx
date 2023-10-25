@@ -8,7 +8,11 @@ import {
 } from 'util/conversion';
 import { checkAddress } from 'utils/displayHelpers';
 
+import { useRouter } from 'next/router';
 import { Alert, Button, Container, TextField, Typography } from '@mui/material';
+import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
+import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
+import CreateVault from 'components/CreateVault';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
@@ -22,7 +26,8 @@ type Member = {
 const Multisig: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const [balance, setBalance] = useState('');
-
+  const [contractCreated, setContractCreated] = useState<string | null>(null)
+  const [multisigCreated, setMultisigCreated] = useState<string | null>(null)
   const [loading, setLoading] = useState(false);
   const [guildName, setGuildName] = useState<string>('');
 
@@ -34,6 +39,8 @@ const Multisig: NextPage = () => {
 
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
+
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) {
@@ -56,27 +63,37 @@ const Multisig: NextPage = () => {
   }, [signingClient, walletAddress]);
 
   const handleCreate = async () => {
+
     setError('');
     setSuccess('');
     setLoading(true);
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
-      leader,
-      members: [{ addr: leader.address, name: leader.name, weight: leader.weight }]
+      admin: leader.address,
+      members: [{addr: leader.address, name: leader.name.toLocaleLowerCase(), weight: 1}]
     };
 
     let res = await signingClient?.instantiate(
       walletAddress,
-      522,  // my group variant
+      522,
       instantiateMsg,
-      guildName,
+      guildName.toLocaleLowerCase(),
       "auto"
     );
 
-    console.log("res:::",res);
+    // Check if 'res' contains 'contractAddress' property
+    if (res && res.contractAddress) {
+      let contractAddress = res.contractAddress;
+      if (contractAddress) setContractCreated(contractAddress)
+      
+    } else {
+      console.log("contractAddress not found in the response.");
+    }
 
-
+    setLoading(false);
+//    router.back();
   };
+
   return (
     <WalletLoader loading={loading}>
       <Typography variant="h4" gutterBottom component="h1">
@@ -148,7 +165,12 @@ const Multisig: NextPage = () => {
           Create guild
         </Button>
       </Container>
-
+      {contractCreated &&
+        <CreateVault
+          guildAddress={contractCreated}
+          guildName={guildName}
+          />
+      }
       <Container sx={{ my: 2 }}>
         {success.length > 0 && (
           <Alert severity="success" sx={{ mb: 2 }}>
