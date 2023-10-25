@@ -68,7 +68,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
         let hooks = await signingClient?.queryContractSmart(
             address, hooksMsg
         )
-        if (hooks?.hooks) { setGuildVaults([hooks.hooks]) }
+        if (hooks?.hooks) { setGuildVaults(hooks.hooks) }
     } catch (err: any) {
         console.error(err.toString())
     }            
@@ -86,7 +86,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
         address,
         membersMsg,
       );
-      console.log(`members list ${membersList}`)
+//      console.log(`members list ${membersList}`)
       if (membersList?.members) {
         setGuildMembers(membersList.members);
       } else {
