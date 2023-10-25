@@ -13,10 +13,13 @@ const StyledMain = styled(Box)`
   justify-content: center;
   padding: 2rem;
   text-align: center;
-  min-height: 80vh;
+  min-height: 100vh;
+  flex-grow: 1;
 `;
 
 const StyledBox = styled(Box)`
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
 `;
 

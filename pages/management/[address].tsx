@@ -1,13 +1,5 @@
 import { useState } from 'react';
-import {
-  Box,
-  Drawer,
-  List,
-  ListItemButton,
-  ListSubheader,
-} from '@mui/material';
-//@ts-ignore
-import { Guild, Member } from 'util/types'
+import { Box, List, ListItemButton, ListSubheader } from '@mui/material';
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -18,12 +10,16 @@ import UserProfile from 'components/UserProfile';
 import Vaults from 'components/Vaults';
 import Vote from 'components/Vote';
 import { GuildProvider } from 'contexts/guildContext';
+import Tokens from 'components/Tokens';
+//@ts-ignore
+import { Guild, Member } from 'util/types';
 
 const MANAGEMENT_CONTENT = {
-  USER_PROFILE: 'user-profile',
-  GUILD_PROFILE: 'guild-profile',
   GUILD_MEMBERS: 'guild-members',
+  GUILD_PROFILE: 'guild-profile',
   PURPOSE: 'purpose',
+  TOKENS: 'tokens',
+  USER_PROFILE: 'user-profile',
   VAULTS: 'vaults',
   VOTE: 'vote',
 } as const;
@@ -46,9 +42,14 @@ const StyledListItemButton = styled(ListItemButton)`
 
 type SidebarProps = {
   setSelectedMenuOption: (option: ManagementContent) => void;
+  selectedMenuOption: ManagementContent;
 };
 
-const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
+
+const Sidebar = ({
+  setSelectedMenuOption,
+  selectedMenuOption,
+}: SidebarProps) => {
   return (
     <Box>
       <List>
@@ -56,6 +57,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Profile <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.USER_PROFILE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.USER_PROFILE)}
         >
           My profile
@@ -65,6 +67,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Guild <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.GUILD_PROFILE}
           onClick={() =>
             setSelectedMenuOption(MANAGEMENT_CONTENT.GUILD_PROFILE)
           }
@@ -72,6 +75,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Guild profile
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.GUILD_MEMBERS}
           onClick={() =>
             setSelectedMenuOption(MANAGEMENT_CONTENT.GUILD_MEMBERS)
           }
@@ -79,6 +83,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Members
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.VAULTS}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.VAULTS)}
         >
           Vaults
@@ -87,14 +92,25 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Governance <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.VOTE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.VOTE)}
         >
           Vote
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.PURPOSE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.PURPOSE)}
         >
           Purpose
+        </StyledListItemButton>
+        <SidebarSubHeader>
+          Economy <ChevronRightIcon />
+        </SidebarSubHeader>
+        <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.TOKENS}
+          onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.TOKENS)}
+        >
+          Tokens
         </StyledListItemButton>
       </List>
     </Box>
@@ -107,13 +123,13 @@ const Content = styled('div')`
 `;
 
 interface IProps {
-  guildContract: Guild,
-  guildMembers: Member[],
-  guildAdmin: string,
-  guildMultisigs: string[],
+  guildContract: Guild;
+  guildMembers: Member[];
+  guildAdmin: string;
+  guildMultisigs: string[];
 }
 
-const PageWithSidebar = (props: IProps) => {
+const Management = (props: IProps) => {
   const [selectedMenuOption, setSelectedMenuOption] =
     useState<ManagementContent>(MANAGEMENT_CONTENT.USER_PROFILE);
 
@@ -131,19 +147,31 @@ const PageWithSidebar = (props: IProps) => {
         return <Vaults />;
       case MANAGEMENT_CONTENT.VOTE:
         return <Vote />;
+      case MANAGEMENT_CONTENT.TOKENS:
+        return <Tokens />;
       default:
         return <div>This could not be a possible option</div>;
     }
   };
 
   return (
-    <Box style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      <GuildProvider>
-        <Sidebar setSelectedMenuOption={setSelectedMenuOption} />
-        <Content>{renderContent()}</Content>
-      </GuildProvider>
+  <GuildProvider>
+    <Box
+      style={{
+        textAlign: 'left',
+        display: 'flex',
+        width: '100vw',
+        height: '100vh',
+      }}
+      >
+      <Sidebar
+        setSelectedMenuOption={setSelectedMenuOption}
+        selectedMenuOption={selectedMenuOption}
+        />
+      <Content>{renderContent()}</Content>
     </Box>
+    </GuildProvider>
   );
 };
 
-export default PageWithSidebar;
+export default Management;

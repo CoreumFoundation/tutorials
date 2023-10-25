@@ -35,8 +35,8 @@ interface IProps {
   guildAdmin: string;
   members: Member[];    
 }
-//@ts-ignore
-const GuildProfile: NextPage = (props: IProps) => {
+
+const GuildProfile: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const ctx = useContext(GuildContext)
   return (
@@ -51,7 +51,7 @@ const GuildProfile: NextPage = (props: IProps) => {
         Created by:{' '}
         {ctx?.guildContract ? ctx.guildContract.creator : <CircularProgress />}
       </Typography>
-      {props.guildAdmin && (
+      {ctx?.guildAdmin && (
         <Typography variant="h5" gutterBottom>
           Admin is: {ctx?.guildAdmin == walletAddress ? 'YOU' : ctx?.guildAdmin}
         </Typography>
