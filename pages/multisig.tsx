@@ -61,11 +61,11 @@ const Multisig: NextPage = () => {
     setLoading(true);
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
-      leader,
+      admin: leader.address,
       members: [{ addr: leader.address, name: leader.name, weight: leader.weight }]
     };
 
-    let res = await signingClient?.instantiate(
+    let res = await signingClient.instantiate(
       walletAddress,
       522,  // my group variant
       instantiateMsg,
@@ -73,9 +73,20 @@ const Multisig: NextPage = () => {
       "auto"
     );
 
-    console.log("res:::",res);
+    // Check if 'res' contains 'contractAddress' property
+    if (res && res.contractAddress) {
+      let contractAddress = res.contractAddress;
 
+      // Convert the 'contractAddress' to a JSON string
+      let jsonString = JSON.stringify({ contractAddress: contractAddress });
 
+      // If you want to print it out
+      console.log(jsonString);
+    } else {
+      console.log("contractAddress not found in the response.");
+    }
+
+    setLoading(false);
   };
   return (
     <WalletLoader loading={loading}>
