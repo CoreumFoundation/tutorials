@@ -1,5 +1,4 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useContext } from 'react';
 import type { NextPage } from 'next';
 import { Coin } from '@cosmjs/amino';
 import WalletLoader from 'components/WalletLoader';
@@ -24,6 +23,7 @@ import {
 import { Guild, Member } from 'util/types';
 import MembersTable from 'components/MembersTable';
 import PageWithSidebar from 'components/PageWithSidebar';
+import { GuildContext } from 'contexts/guildContext';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
@@ -35,29 +35,32 @@ interface IProps {
 //@ts-ignore
 const GuildMembers: NextPage = (props: IProps) => {
   const { walletAddress, signingClient } = useSigningClient();
-  
+  const ctx = useContext(GuildContext)  
+  const members = ctx?.guildMembers
+   
   return (
     <>
       <Typography variant="h4" gutterBottom>
         Members
       </Typography>
-
-      {props.members?.length > 0 && (
+      {members &&
+      <>
+      {members?.length > 0 && (
         <Paper>
-          <Typography variant="h6" gutterBottom>
-            Members:
-          </Typography>
-          <Box>
-            {props.members.map((m: Member) => {
+        <Typography variant="h6" gutterBottom>
+        Members:
+        </Typography>
+        <Box>
+            {members.map((m: Member) => {
               return (
                 <Typography
-                  variant="body1"
-                  style={
-                    m.addr === walletAddress
-                      ? { fontWeight: 700 }
-                      : { fontWeight: 400 }
-                  }
-                  key={m.addr}
+                variant="body1"
+                style={
+                  m.addr === walletAddress
+                  ? { fontWeight: 700 }
+                  : { fontWeight: 400 }
+                }
+                key={m.addr}
                 >
                   {m.name} ({m.weight})
                 </Typography>
@@ -66,11 +69,13 @@ const GuildMembers: NextPage = (props: IProps) => {
           </Box>
         </Paper>
       )}
-      {props.members?.length > 0 && (
+      {members?.length > 0 && (
         <Paper>
-          <MembersTable members={props.members} />
+        <MembersTable members={members} />
         </Paper>
-      )}
+        )}
+      </>
+      }
     </>
   );
 };

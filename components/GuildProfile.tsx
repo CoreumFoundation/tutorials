@@ -24,6 +24,8 @@ import {
 import { Guild, Member } from 'util/types';
 import MembersTable from 'components/MembersTable';
 import PageWithSidebar from 'components/PageWithSidebar';
+import { useContext } from 'react'
+import { GuildContext } from 'contexts/guildContext';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
@@ -33,35 +35,36 @@ interface IProps {
   guildAdmin: string;
   members: Member[];    
 }
-//@ts-ignore
-const GuildProfile: NextPage = (props: IProps) => {
-  const { walletAddress, signingClient } = useSigningClient();
 
+const GuildProfile: NextPage = () => {
+  const { walletAddress, signingClient } = useSigningClient();
+  const ctx = useContext(GuildContext)
+  console.log( `context is ${JSON.stringify(ctx)}`)
   return (
     <>
       <Typography variant="h4" gutterBottom>
         Guild Profile
       </Typography>
       <Typography variant="h4" gutterBottom>
-        Guild: {props.guildContract ? props.guildContract.label : <CircularProgress />}
+        Guild: {ctx?.guildContract ? ctx?.guildContract.label : <CircularProgress />}
       </Typography>
       <Typography variant="h5" gutterBottom>
         Created by:{' '}
-        {props.guildContract ? props.guildContract.creator : <CircularProgress />}
+        {ctx?.guildContract ? ctx.guildContract.creator : <CircularProgress />}
       </Typography>
-      {props.guildAdmin && (
+      {ctx?.guildAdmin && (
         <Typography variant="h5" gutterBottom>
-          Admin is: {props.guildAdmin == walletAddress ? 'YOU' : props.guildAdmin}
+          Admin is: {ctx?.guildAdmin == walletAddress ? 'YOU' : ctx?.guildAdmin}
         </Typography>
       )}
       <hr />
-      {props.members?.length > 0 && (
+      {ctx?.guildMembers && ctx?.guildMembers?.length > 0 && (
         <Paper>
           <Typography variant="h6" gutterBottom>
             Members:
           </Typography>
           <Box>
-            {props.members?.map((m: Member) => {
+            {ctx?.guildMembers?.map((m: Member) => {
               return (
                 <Typography
                   variant="body1"

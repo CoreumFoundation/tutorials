@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Box, List, ListItemButton, ListSubheader } from '@mui/material';
-//@ts-ignore
-import { Guild, Member } from 'util/types';
-import { useSigningClient } from 'contexts/client';
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
@@ -12,8 +9,10 @@ import Purpose from 'components/Purpose';
 import UserProfile from 'components/UserProfile';
 import Vaults from 'components/Vaults';
 import Vote from 'components/Vote';
-import { useSearchParams } from 'next/navigation';
+import { GuildProvider } from 'contexts/guildContext';
 import Tokens from 'components/Tokens';
+//@ts-ignore
+import { Guild, Member } from 'util/types';
 
 const MANAGEMENT_CONTENT = {
   GUILD_MEMBERS: 'guild-members',
@@ -46,90 +45,11 @@ type SidebarProps = {
   selectedMenuOption: ManagementContent;
 };
 
+
 const Sidebar = ({
   setSelectedMenuOption,
   selectedMenuOption,
 }: SidebarProps) => {
-  const { walletAddress, signingClient } = useSigningClient();
-  const [guildContract, setGuildContract] = useState<Guild | null>(null);
-  const [guildMultisigs, setGuildMultisigs] = useState<string[]>([]);
-  const [guildMembers, setGuildMembers] = useState<Member[]>([]);
-  const [guildAdmin, setGuildAdmin] = useState<string>('');
-  const searchParams = useSearchParams();
-  const guildAddress = searchParams.get('address');
-
-  useEffect(() => {
-    if (!signingClient || !walletAddress || !guildAddress) {
-      return;
-    }
-
-    signingClient
-      .getContract(guildAddress)
-      .then((response: Guild) => {
-        console.log(`contract ${response}`);
-        setGuildContract(response);
-      })
-      .catch((error) => {
-        console.error(`Error! ${error.message}`);
-      });
-  }, [signingClient, walletAddress, guildAddress]);
-
-  async function getMultisigs(address: string) {
-    try {
-      let hooksMsg = {
-        hooks: {},
-      };
-      let hooks = await signingClient?.queryContractSmart(address, hooksMsg);
-      if (hooks?.hooks) {
-        setGuildMultisigs([hooks.hooks]);
-      }
-    } catch (err: any) {
-      console.error(err.toString());
-    }
-  }
-
-  async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      let membersList = await signingClient?.queryContractSmart(
-        address,
-        membersMsg,
-      );
-      if (membersList?.members) {
-        setGuildMembers(membersList.members);
-      } else {
-        console.error('No members could be found');
-      }
-    } catch (err: any) {
-      console.error(err.toString());
-    }
-  }
-  async function getAdmin(address: string) {
-    try {
-      let adminMsg = {
-        admin: {},
-      };
-      let admin = await signingClient?.queryContractSmart(address, adminMsg);
-      if (admin?.admin) {
-        setGuildAdmin(admin.admin);
-      }
-    } catch (err: any) {
-      console.error(err.toString());
-    }
-  }
-  useEffect(() => {
-    if (guildAddress) {
-      getMultisigs(guildAddress);
-      getMembers(guildAddress);
-      getAdmin(guildAddress);
-    }
-  }, [guildAddress]);
-
   return (
     <Box>
       <List>
@@ -216,7 +136,7 @@ const Management = (props: IProps) => {
   const renderContent = () => {
     switch (selectedMenuOption) {
       case MANAGEMENT_CONTENT.USER_PROFILE:
-        return <UserProfile />;
+        return (<UserProfile />);
       case MANAGEMENT_CONTENT.GUILD_PROFILE:
         return <GuildProfile />;
       case MANAGEMENT_CONTENT.GUILD_MEMBERS:
@@ -235,6 +155,7 @@ const Management = (props: IProps) => {
   };
 
   return (
+  <GuildProvider>
     <Box
       style={{
         textAlign: 'left',
@@ -242,13 +163,14 @@ const Management = (props: IProps) => {
         width: '100vw',
         height: '100vh',
       }}
-    >
+      >
       <Sidebar
         setSelectedMenuOption={setSelectedMenuOption}
         selectedMenuOption={selectedMenuOption}
-      />
+        />
       <Content>{renderContent()}</Content>
     </Box>
+    </GuildProvider>
   );
 };
 
