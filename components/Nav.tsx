@@ -41,11 +41,11 @@ function Nav() {
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
 
 
-  useEffect(() => {
-    if (authContext?.loggedAddress.length !== 0) {
-      connectWallet();
-    }
-  }, [authContext]);
+  // useEffect(() => {
+  //   if (authContext?.loggedAddress.length !== 0) {
+  //     connectWallet();
+  //   }
+  // }, [authContext]);
 
   const renderNavOptions = () => {
     return (
