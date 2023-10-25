@@ -8,6 +8,7 @@ import {
 } from 'util/conversion';
 import { checkAddress } from 'utils/displayHelpers';
 
+import { useRouter } from 'next/router';
 import { Alert, Button, Container, TextField, Typography } from '@mui/material';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
@@ -34,6 +35,8 @@ const Multisig: NextPage = () => {
 
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
+  const router = useRouter();
+
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) {
@@ -56,13 +59,14 @@ const Multisig: NextPage = () => {
   }, [signingClient, walletAddress]);
 
   const handleCreate = async () => {
+
     setError('');
     setSuccess('');
     setLoading(true);
     console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
       admin: leader.address,
-      members: [{ addr: leader.address, name: leader.name, weight: leader.weight }]
+      members: []
     };
 
     let res = await signingClient.instantiate(
@@ -82,11 +86,13 @@ const Multisig: NextPage = () => {
 
       // If you want to print it out
       console.log(jsonString);
+      
     } else {
       console.log("contractAddress not found in the response.");
     }
 
     setLoading(false);
+    router.back();
   };
   return (
     <WalletLoader loading={loading}>
