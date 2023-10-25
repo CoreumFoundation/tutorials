@@ -115,52 +115,50 @@ const Guild: NextPage = () => {
   }, [guildContract]);
 
   return (
-    <PageWithSidebar>
-      <WalletLoader loading={loading}>
-        <Typography variant="h3" gutterBottom>
-          Guild: {guildContract ? guildContract.label : <CircularProgress />}
-        </Typography>
+    <WalletLoader loading={loading}>
+      <Typography variant="h4" gutterBottom>
+        Guild: {guildContract ? guildContract.label : <CircularProgress />}
+      </Typography>
+      <Typography variant="h5" gutterBottom>
+        Created by:{' '}
+        {guildContract ? guildContract.creator : <CircularProgress />}
+      </Typography>
+      {guildAdmin && (
         <Typography variant="h5" gutterBottom>
-          Created by:{' '}
-          {guildContract ? guildContract.creator : <CircularProgress />}
+          Admin is: {guildAdmin == walletAddress ? 'YOU' : guildAdmin}
         </Typography>
-        {guildAdmin && (
-          <Typography variant="h5" gutterBottom>
-            Admin is: {guildAdmin == walletAddress ? 'YOU' : guildAdmin}
+      )}
+      <hr />
+      {members.length > 0 && (
+        <Paper>
+          <Typography variant="h6" gutterBottom>
+            Members:
           </Typography>
-        )}
-        <hr />
-        {members.length > 0 && (
-          <Paper>
-            <Typography variant="h6" gutterBottom>
-              Members:
-            </Typography>
-            <Box>
-              {members.map((m: Member) => {
-                return (
-                  <Typography
-                    variant="body1"
-                    style={
-                      m.addr === walletAddress
-                        ? { fontWeight: 700 }
-                        : { fontWeight: 400 }
-                    }
-                    key={m.addr}
-                  >
-                    {m.name} ({m.weight})
-                  </Typography>
-                );
-              })}
-            </Box>
-          </Paper>
-        )}
-        {members.length > 0 && (
-          <Paper>
-            <MembersTable members={members} />
-          </Paper>
-        )}
-      </WalletLoader>
-    </PageWithSidebar>
+          <Box>
+            {members.map((m: Member) => {
+              return (
+                <Typography
+                  variant="body1"
+                  style={
+                    m.addr === walletAddress
+                      ? { fontWeight: 700 }
+                      : { fontWeight: 400 }
+                  }
+                  key={m.addr}
+                >
+                  {m.name} ({m.weight})
+                </Typography>
+              );
+            })}
+          </Box>
+        </Paper>
+      )}
+      {members.length > 0 && (
+        <Paper>
+          <MembersTable members={members} />
+        </Paper>
+      )}
+    </WalletLoader>
   );
 };
 

@@ -28,7 +28,7 @@ import PageWithSidebar from 'components/PageWithSidebar';
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
 
-const Guild: NextPage = () => {
+const Vaults: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
@@ -115,53 +115,12 @@ const Guild: NextPage = () => {
   }, [guildContract]);
 
   return (
-    <PageWithSidebar>
-      <WalletLoader loading={loading}>
-        <Typography variant="h3" gutterBottom>
-          Guild: {guildContract ? guildContract.label : <CircularProgress />}
-        </Typography>
-        <Typography variant="h5" gutterBottom>
-          Created by:{' '}
-          {guildContract ? guildContract.creator : <CircularProgress />}
-        </Typography>
-        {guildAdmin && (
-          <Typography variant="h5" gutterBottom>
-            Admin is: {guildAdmin == walletAddress ? 'YOU' : guildAdmin}
-          </Typography>
-        )}
-        <hr />
-        {members.length > 0 && (
-          <Paper>
-            <Typography variant="h6" gutterBottom>
-              Members:
-            </Typography>
-            <Box>
-              {members.map((m: Member) => {
-                return (
-                  <Typography
-                    variant="body1"
-                    style={
-                      m.addr === walletAddress
-                        ? { fontWeight: 700 }
-                        : { fontWeight: 400 }
-                    }
-                    key={m.addr}
-                  >
-                    {m.name} ({m.weight})
-                  </Typography>
-                );
-              })}
-            </Box>
-          </Paper>
-        )}
-        {members.length > 0 && (
-          <Paper>
-            <MembersTable members={members} />
-          </Paper>
-        )}
-      </WalletLoader>
-    </PageWithSidebar>
+    <WalletLoader loading={loading}>
+      <Typography variant="h4" gutterBottom>
+        Vaults
+      </Typography>
+    </WalletLoader>
   );
 };
 
-export default Guild;
+export default Vaults;

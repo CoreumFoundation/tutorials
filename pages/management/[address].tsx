@@ -6,8 +6,8 @@ type Props = {
   children: React.ReactNode;
 };
 
-const SidebarPage = ({ children }: Props) => {
-  return <PageWithSidebar>{children}</PageWithSidebar>;
+const SidebarPage = (props: Props) => {
+  return <PageWithSidebar />;
 };
 
 export default SidebarPage;
