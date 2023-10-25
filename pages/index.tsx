@@ -29,7 +29,7 @@ const Home: NextPage = () => {
 
   async function getContracts() {
     //@ts-ignore
-    let data = await signingClient.getContracts(522);
+    let data = await signingClient.getContracts(process.env.NEXT_PUBLIC_CONTRACT_NUMBER);
     //    console.log(JSON.stringify(data))
     let list = data.map((x) => {
       return x;

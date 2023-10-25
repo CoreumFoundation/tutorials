@@ -13,29 +13,44 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
-import { useGetGuildsList } from 'hooks/useGetGuildsList';
 import GuildCard from 'components/GuildCard';
 
 import { SIZES } from './theme';
-async function getDataFromContract(signingClient: SigningCosmWasmClient) {
-  if (!signingClient) {
-    return [];
-  }
-  let data = await signingClient.getContracts(
-    process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
-  );
 
-  console.log('data is ', data);
-  return { key: 'value' };
-}
+//@ts-ignore
+import type { Guild } from 'util/types';
 
 const ExploreGuilds: NextPage = () => {
   const router = useRouter();
-  const { guilds } = useGetGuildsList();
+  const [guilds, setGuilds] = useState<Guild[]>([]);
   const { walletAddress, signingClient } = useSigningClient();
   console.log('signingClient', signingClient);
 
   const [searchText, setSearchText] = useState('');
+
+  async function getDataFromContract(signingClient: SigningCosmWasmClient) {
+    if (!signingClient) {
+      return [];
+    }
+    let data = await signingClient.getContracts(
+      process.env.NEXT_PUBLIC_CONTRACT_NUMBER,
+    );
+
+    let list = data.map((x) => {
+      return x;
+    });
+
+    let acu = [];
+    for (let i = 0; i < list.length; i++) {
+      let guild_address = list[i];
+      //      console.log(`calling ${guild_address}`)
+      //@ts-ignore
+      let guild_data = await signingClient.getContract(guild_address);
+      //      console.log(`::> ${JSON.stringify(guild_data)}`)
+      acu.push(guild_data);
+    }
+    setGuilds(acu);
+  }
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchText(event.target.value);
@@ -53,9 +68,11 @@ const ExploreGuilds: NextPage = () => {
     guild.name.toLowerCase().includes(searchText.toLowerCase()),
   );
 
+  console.log("guilds",guilds);
+
   return (
     <>
-      {filteredGuilds.length ? (
+      {/* {filteredGuilds.length ? (
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
             fullWidth
@@ -72,7 +89,7 @@ const ExploreGuilds: NextPage = () => {
             }}
           />
         </Box>
-      ) : null}
+      ) : null} */}
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
