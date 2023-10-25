@@ -1,11 +1,11 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Drawer, List, ListItemButton, ListSubheader } from '@mui/material';
 
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
-import { useRouter } from 'next/navigation';
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Guild from 'pages/guild/[address]';
+
 import GuildMembers from './GuildMembers';
 import UserProfile from './UserProfile';
 import Vote from './Vote';
@@ -43,7 +43,6 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
-  const router = useRouter();
   return (
     <Drawer
       variant="permanent"

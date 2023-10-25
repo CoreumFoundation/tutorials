@@ -8,7 +8,6 @@ import {
   CardContent,
   CircularProgress,
   Container,
-  InputAdornment,
   Typography,
 } from '@mui/material';
 import { SIZES } from 'pages/theme';
@@ -20,7 +19,7 @@ type Props = {
   fake?: boolean;
 };
 
-const WalletLoader = ({ children, loading = false,fake = false }: Props) => {
+const WalletLoader = ({ children, loading = false, fake = false }: Props) => {
   const {
     connectWallet,
     error,

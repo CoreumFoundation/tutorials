@@ -45,30 +45,6 @@ const GuildMembers: NextPage = (props: IProps) => {
       </Typography>
       {members && (
         <>
-          {/* {members?.length > 0 && (
-            <Paper>
-              <Typography variant="h6" gutterBottom>
-                Members:
-              </Typography>
-              <Box>
-                {members.map((m: Member) => {
-                  return (
-                    <Typography
-                      variant="body1"
-                      style={
-                        m.addr === walletAddress
-                          ? { fontWeight: 700 }
-                          : { fontWeight: 400 }
-                      }
-                      key={m.addr}
-                    >
-                      {m.name} ({m.weight})
-                    </Typography>
-                  );
-                })}
-              </Box>
-            </Paper>
-          )} */}
           {members?.length > 0 && (
             <Paper>
               <MembersTable members={members} />
