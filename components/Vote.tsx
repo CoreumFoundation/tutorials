@@ -24,6 +24,7 @@ import {
 import { Guild, Member } from 'util/types';
 import MembersTable from 'components/MembersTable';
 import PageWithSidebar from 'components/PageWithSidebar';
+import { VoteProposal } from './VoteProposal';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
@@ -119,6 +120,15 @@ const Vote: NextPage = () => {
       <Typography variant="h4" gutterBottom>
         Vote
       </Typography>
+      <Box>
+        <VoteProposal />
+      </Box>
+      <Box>
+        <VoteProposal />
+      </Box>
+      <Box>
+        <VoteProposal />
+      </Box>
     </WalletLoader>
   );
 };
