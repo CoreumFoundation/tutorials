@@ -27,11 +27,14 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     // Uncomment the line below once the Keplr extension is properly configured
     // await window.keplr.enable(chainId);
-
-    const offlineSigner = window.keplr.getOfflineSigner(chainId);
-    offlineSigner.getAccounts().then((response: any) => {
-      setLoggedAddress(response.map((x: { address: string }) => x.address));
-    });
+    if(window.keplr)
+    {
+      const offlineSigner = window.keplr.getOfflineSigner(chainId);
+      offlineSigner.getAccounts().then((response: any) => {
+        setLoggedAddress(response.map((x: { address: string }) => x.address));
+      });
+    }
+    
   }, []);
 
   return (

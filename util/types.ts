@@ -18,3 +18,4 @@ type GuildType = {
 };
 
 export type { GuildType };
+export type { Guild };
