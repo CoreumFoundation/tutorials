@@ -33,7 +33,7 @@ function Nav() {
   const handleConnect = () => {
     if (walletAddress.length === 0) {
       connectWallet();
-      Router.push('/');
+      Router.push('/guild-space');
     } else {
       disconnect();
       Router.push('/');

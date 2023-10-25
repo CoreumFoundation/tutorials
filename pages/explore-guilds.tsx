@@ -27,11 +27,20 @@ import { useGetGuildsList } from 'hooks/useGetGuildsList';
 
 const ExploreGuilds: NextPage = () => {
   const authContext = useContext(AuthContext);
+
+  const [makeFake, setMakeFake] = useState(false);
+
+  useEffect(() => {
+    if (authContext?.loggedAddress.length === 0) {
+      setMakeFake(true);
+    }
+  }, [authContext?.loggedAddress]); // Dependency array
+
   const router = useRouter();
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const { walletAddress, signingClient } = useSigningClient();
   const { fakeList } = useGetGuildsList();
-  console.log("fakedata is",fakeList);
+  console.log("fakedata is", fakeList);
 
   const [searchText, setSearchText] = useState('');
 
@@ -93,9 +102,9 @@ const ExploreGuilds: NextPage = () => {
     : [];
 
 
-  console.log("filtered ",filteredGuilds.length);
+  console.log("filtered ", filteredGuilds.length);
   return (
-    <WalletLoader>
+    <WalletLoader fake={makeFake}>
       {filteredGuilds.length ? (
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
@@ -121,7 +130,7 @@ const ExploreGuilds: NextPage = () => {
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
                   guild={{
                     name: guild.label, // Todo check the types
                     totalMembers: guild.member_count,
@@ -131,28 +140,28 @@ const ExploreGuilds: NextPage = () => {
                   key={guild.name}
                 />
               </Grid>
-              )
+            )
             )
           ) : (
             fakeList.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
                   guild={{
                     name: guild.name, // Todo check the types
                     totalMembers: guild.totalMembers,
-                    thumbnail:guild.thumbnail,
+                    thumbnail: guild.thumbnail,
                   }}
                   key={guild.name}
                 />
               </Grid>
-              )
+            )
             )
 
 
           )
-          
-      }
+
+          }
 
 
         </Grid>
