@@ -86,6 +86,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
         address,
         membersMsg,
       );
+      console.log(`members list ${membersList}`)
       if (membersList?.members) {
         setGuildMembers(membersList.members);
       } else {
@@ -114,7 +115,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
       getMembers(guildAddress)
       getAdmin(guildAddress)      
     }
-  }, [guildAddress])
+  }, [guildContract])
 
 
 

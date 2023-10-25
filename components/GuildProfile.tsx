@@ -39,6 +39,7 @@ interface IProps {
 const GuildProfile: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const ctx = useContext(GuildContext)
+  console.log( `context is ${JSON.stringify(ctx)}`)
   return (
     <>
       <Typography variant="h4" gutterBottom>
