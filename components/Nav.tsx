@@ -41,6 +41,8 @@ function Nav() {
     }
   };
 
+  authContext?.loggedAddress
+
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
 
 
@@ -71,7 +73,7 @@ function Nav() {
         }}
       >
         <LogoContainer>
-          <StyledLink href="/" passHref>
+          <StyledLink href={authContext?.loggedAddress?.length > 0 ? "/guild-space" : "/"} passHref>
             {PUBLIC_SITE_ICON_URL.length > 0 ? (
               <Image
                 src={PUBLIC_SITE_ICON_URL}
@@ -85,6 +87,7 @@ function Nav() {
               </Typography>
             )}
           </StyledLink>
+
         </LogoContainer>
         <ButtonContainer>
           {walletAddress ? (

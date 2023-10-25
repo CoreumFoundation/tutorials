@@ -1,47 +1,41 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client'
 import { useSigningClient } from 'contexts/client'
+import { GuildContext } from 'contexts/guildContext'
 
-interface IProps {
-    guildName: string,
-    guildAddress: string,
-}
-
-export default function CreateVault(props: IProps) {
+export default function VaultCreator() {
     const { walletAddress, signingClient } = useSigningClient()
     const [multisigCreated, setMultisigCreated] = useState<string | null>(null)
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string>('')
     const [success, setSuccess] = useState<string>('')    
-    
-    const createVault = async () => {
+    const ctx = useContext(GuildContext)
+
+    const createVault = async () => {   
         setError('');
         setSuccess('');
         setLoading(true);
-    //    console.log(JSON.stringify(leader), JSON.stringify(guildName));
+    //  console.log(JSON.stringify(leader), JSON.stringify(guildName));
         let instantiateVaultMsg = {
-        group_addr: props.guildAddress,
-        threshold: {absolute_count: {weight: 2}},
-        max_voting_period: {time: 172800},
-        executor: null,
-        proposal_deposit: null
+            group_addr: ctx?.guildAddress,
+            threshold: {absolute_count: {weight: 2}},
+            max_voting_period: {time: 172800},
+            executor: null,
+            proposal_deposit: null
         };
 
         let res = await signingClient?.instantiate(
-        walletAddress,
-        521,
-        instantiateVaultMsg,
-        "bank",
-        "auto"
+            walletAddress,
+            521,
+            instantiateVaultMsg,
+            "bank",
+            "auto"
         );
-
-        // Check if 'res' contains 'contractAddress' property
         if (res && res.contractAddress) {
-        let contractAddress = res.contractAddress;
-        if (contractAddress) setMultisigCreated(contractAddress)
-        
+            let contractAddress = res.contractAddress;
+            setMultisigCreated(contractAddress)
         } else {
-        console.error("Error creating multisig.");
+            console.error("Error creating multisig.");
         }
 
         setLoading(false);
@@ -52,12 +46,12 @@ export default function CreateVault(props: IProps) {
         setSuccess('');
         setLoading(true);
 
-        if (!signingClient || !multisigCreated) return
-        let client = new Cw4GroupNamedClient(signingClient, walletAddress, props.guildAddress)
+        if (!signingClient || !multisigCreated || !ctx?.guildAddress) return
+        let client = new Cw4GroupNamedClient(signingClient, walletAddress, ctx.guildAddress)
         let res = await client.addHook({addr: multisigCreated}, "auto") 
 
         if (res) {
-        setSuccess("Perfect! you have a new multisig")     
+            setSuccess("Perfect! you have a new multisig")     
         } else {
         console.error("Error creating multisig.");
         }
@@ -66,7 +60,7 @@ export default function CreateVault(props: IProps) {
 
     return (
     <>
-        {loading ? 
+        {!success ?
             <>
                 {multisigCreated ? 
                 <>
@@ -77,16 +71,16 @@ export default function CreateVault(props: IProps) {
                 </>
                 :
                 <>
-                Create a vault for {props.guildName}
-                <hr />
+                Create a vault for {ctx?.guildContract?.guildName}
+                <br />
                 <button
-                onClick={createVault}
-                >Create</button>
+                    onClick={createVault}
+                    >Create</button>
                 </>
                 }
             </>
-            :
-            <p>Loading</p>
+        :
+            <b>{success}</b>
         }
     </>)
 }
