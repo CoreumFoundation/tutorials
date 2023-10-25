@@ -92,6 +92,7 @@ function TokenForm() {
         margin="normal"
         label="Supply"
         name="supply"
+        placeholder="Supply (e.g., 1,000,000)"
         value={formData.supply}
         onChange={handleInputChange}
       />
@@ -199,7 +200,12 @@ const Tokens: NextPage = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={tabNumber} index={0}>
-          <TokenForm />
+          <Box>
+            <Typography variant="body1">
+              Create the tokens you need for your guild
+            </Typography>
+            <TokenForm />
+          </Box>
         </CustomTabPanel>
         <CustomTabPanel value={tabNumber} index={1}>
           <MyTokensTab onButtonCreateTokenClick={() => setTabNumber(0)} />
