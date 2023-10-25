@@ -45,10 +45,13 @@ const StyledListItemButton = styled(ListItemButton)`
 
 type SidebarProps = {
   setSelectedMenuOption: (option: ManagementContent) => void;
+  selectedMenuOption: ManagementContent;
 };
 
-const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
-  const router = useRouter();
+const Sidebar = ({
+  setSelectedMenuOption,
+  selectedMenuOption,
+}: SidebarProps) => {
   return (
     <Box>
       <List>
@@ -56,6 +59,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Profile <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.USER_PROFILE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.USER_PROFILE)}
         >
           My profile
@@ -65,6 +69,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Guild <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.GUILD_PROFILE}
           onClick={() =>
             setSelectedMenuOption(MANAGEMENT_CONTENT.GUILD_PROFILE)
           }
@@ -72,6 +77,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Guild profile
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.GUILD_MEMBERS}
           onClick={() =>
             setSelectedMenuOption(MANAGEMENT_CONTENT.GUILD_MEMBERS)
           }
@@ -79,6 +85,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Members
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.VAULTS}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.VAULTS)}
         >
           Vaults
@@ -87,11 +94,13 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
           Governance <ChevronRightIcon />
         </SidebarSubHeader>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.VOTE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.VOTE)}
         >
           Vote
         </StyledListItemButton>
         <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.PURPOSE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.PURPOSE)}
         >
           Purpose
@@ -106,7 +115,7 @@ const Content = styled('div')`
   flex: 1;
 `;
 
-const PageWithSidebar = () => {
+const Management = () => {
   const [selectedMenuOption, setSelectedMenuOption] =
     useState<ManagementContent>(MANAGEMENT_CONTENT.USER_PROFILE);
 
@@ -130,11 +139,21 @@ const PageWithSidebar = () => {
   };
 
   return (
-    <Box style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      <Sidebar setSelectedMenuOption={setSelectedMenuOption} />
+    <Box
+      style={{
+        textAlign: 'left',
+        display: 'flex',
+        width: '100vw',
+        height: '100vh',
+      }}
+    >
+      <Sidebar
+        setSelectedMenuOption={setSelectedMenuOption}
+        selectedMenuOption={selectedMenuOption}
+      />
       <Content>{renderContent()}</Content>
     </Box>
   );
 };
 
-export default PageWithSidebar;
+export default Management;
