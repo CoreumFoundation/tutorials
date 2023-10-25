@@ -114,7 +114,7 @@ const ExploreGuilds: NextPage = () => {
             filteredGuilds.map((guild) => (
               <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
                 <GuildCard
-                  handleClick={() => router.push(`/metaverse/${guild.address}`)}
+                  handleClick={() => router.push(`/guild/${guild.address}`)}
                   guild={{
                     name: guild.label, // Todo check the types
                     totalMembers: guild.member_count,
