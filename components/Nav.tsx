@@ -32,7 +32,7 @@ function Nav() {
   const handleConnect = () => {
     if (walletAddress.length === 0) {
       connectWallet();
-      Router.push('/explore-guilds');
+      Router.push('/');
     } else {
       disconnect();
       Router.push('/');

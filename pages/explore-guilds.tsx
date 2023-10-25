@@ -20,6 +20,8 @@ import { SIZES } from './theme';
 //@ts-ignore
 import type { Guild } from 'util/types';
 
+import WalletLoader from 'components/WalletLoader';
+
 const ExploreGuilds: NextPage = () => {
   const router = useRouter();
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -88,8 +90,8 @@ const ExploreGuilds: NextPage = () => {
 
 
   return (
-    <>
-      {/* {filteredGuilds.length ? (
+    <WalletLoader>
+      {filteredGuilds.length ? (
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
             fullWidth
@@ -106,7 +108,7 @@ const ExploreGuilds: NextPage = () => {
             }}
           />
         </Box>
-      ) : null} */}
+      ) : null}
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
@@ -135,7 +137,7 @@ const ExploreGuilds: NextPage = () => {
           )}
         </Grid>
       </Box>
-    </>
+    </WalletLoader>
   );
 };
 
