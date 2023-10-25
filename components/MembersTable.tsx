@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 //@ts-ignore
 import { Member } from 'util/types';
 import {
@@ -9,11 +9,16 @@ import {
   TableRow,
 } from '@mui/material';
 import { useSigningClient } from 'contexts/client';
+import { GuildContext } from 'contexts/guildContext';
+import MembersManager from './MembersManager';
 
 const MembersTable = ({ members }: { members: Member[] }) => {
   const { walletAddress } = useSigningClient();
+  const ctx = useContext(GuildContext)
+  let admin = ctx?.guildAdmin
 
   return (
+    <>
     <Table>
       <TableHead>
         <TableRow>
@@ -32,6 +37,8 @@ const MembersTable = ({ members }: { members: Member[] }) => {
         ))}
       </TableBody>
     </Table>
+    <MembersManager />
+    </>
   );
 };
 
