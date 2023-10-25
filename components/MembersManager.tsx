@@ -2,7 +2,6 @@ import { useContext, useState } from 'react'
 //@ts-ignore
 import { Member } from 'util/types'
 import { Container, Button, ListItem, List, ListItemText } from '@mui/material';
-import { checkAddress } from 'utils/displayHelpers';
 import { useSigningClient } from 'contexts/client';
 import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
 import { GuildContext } from 'contexts/guildContext';
@@ -79,10 +78,6 @@ function MembersManager() {
                 variant="contained"
                 color="primary"
                 onClick={async () => {
-                    let err = checkAddress(
-                    newAddress,
-                    process.env.NEXT_PUBLIC_CHAIN_BECH32_PREFIX || '',
-                    );
                     setAddMembers((members) => [
                         ...members,
                         { addr: newAddress, name: newName, weight: newWeight/* , pubkey: pk */ },
