@@ -1,13 +1,7 @@
 import { useState, useEffect } from 'react';
-import {
-  Box,
-  Drawer,
-  List,
-  ListItemButton,
-  ListSubheader,
-} from '@mui/material';
+import { Box, List, ListItemButton, ListSubheader } from '@mui/material';
 //@ts-ignore
-import { Guild, Member } from 'util/types'
+import { Guild, Member } from 'util/types';
 import { useSigningClient } from 'contexts/client';
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
@@ -18,13 +12,15 @@ import Purpose from 'components/Purpose';
 import UserProfile from 'components/UserProfile';
 import Vaults from 'components/Vaults';
 import Vote from 'components/Vote';
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation';
+import Tokens from 'components/Tokens';
 
 const MANAGEMENT_CONTENT = {
-  USER_PROFILE: 'user-profile',
-  GUILD_PROFILE: 'guild-profile',
   GUILD_MEMBERS: 'guild-members',
+  GUILD_PROFILE: 'guild-profile',
   PURPOSE: 'purpose',
+  TOKENS: 'tokens',
+  USER_PROFILE: 'user-profile',
   VAULTS: 'vaults',
   VOTE: 'vote',
 } as const;
@@ -50,14 +46,17 @@ type SidebarProps = {
   selectedMenuOption: ManagementContent;
 };
 
-const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
-  const { walletAddress, signingClient } = useSigningClient()
-  const [guildContract, setGuildContract] = useState<Guild | null>(null)
-  const [guildMultisigs, setGuildMultisigs] = useState<string[]>([])
-  const [guildMembers, setGuildMembers] = useState<Member[]>([])
-  const [guildAdmin, setGuildAdmin] = useState<string>("")
-  const searchParams = useSearchParams()
-  const guildAddress = searchParams.get('address')
+const Sidebar = ({
+  setSelectedMenuOption,
+  selectedMenuOption,
+}: SidebarProps) => {
+  const { walletAddress, signingClient } = useSigningClient();
+  const [guildContract, setGuildContract] = useState<Guild | null>(null);
+  const [guildMultisigs, setGuildMultisigs] = useState<string[]>([]);
+  const [guildMembers, setGuildMembers] = useState<Member[]>([]);
+  const [guildAdmin, setGuildAdmin] = useState<string>('');
+  const searchParams = useSearchParams();
+  const guildAddress = searchParams.get('address');
 
   useEffect(() => {
     if (!signingClient || !walletAddress || !guildAddress) {
@@ -67,7 +66,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
     signingClient
       .getContract(guildAddress)
       .then((response: Guild) => {
-        console.log(`contract ${response}`)
+        console.log(`contract ${response}`);
         setGuildContract(response);
       })
       .catch((error) => {
@@ -75,20 +74,20 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
       });
   }, [signingClient, walletAddress, guildAddress]);
 
-  async function getMultisigs(address:string) {
+  async function getMultisigs(address: string) {
     try {
-        let hooksMsg = {
-            hooks: {}
-        }
-        let hooks = await signingClient?.queryContractSmart(
-            address, hooksMsg
-        )
-        if (hooks?.hooks) { setGuildMultisigs([hooks.hooks]) }
+      let hooksMsg = {
+        hooks: {},
+      };
+      let hooks = await signingClient?.queryContractSmart(address, hooksMsg);
+      if (hooks?.hooks) {
+        setGuildMultisigs([hooks.hooks]);
+      }
     } catch (err: any) {
-        console.error(err.toString())
-    }            
+      console.error(err.toString());
+    }
   }
-  
+
   async function getMembers(address: string) {
     try {
       let membersMsg = {
@@ -125,12 +124,12 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
   }
   useEffect(() => {
     if (guildAddress) {
-      getMultisigs(guildAddress)
-      getMembers(guildAddress)
-      getAdmin(guildAddress)      
+      getMultisigs(guildAddress);
+      getMembers(guildAddress);
+      getAdmin(guildAddress);
     }
-  }, [guildAddress])
-    
+  }, [guildAddress]);
+
   return (
     <Box>
       <List>
@@ -184,6 +183,15 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
         >
           Purpose
         </StyledListItemButton>
+        <SidebarSubHeader>
+          Economy <ChevronRightIcon />
+        </SidebarSubHeader>
+        <StyledListItemButton
+          selected={selectedMenuOption === MANAGEMENT_CONTENT.TOKENS}
+          onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.TOKENS)}
+        >
+          Tokens
+        </StyledListItemButton>
       </List>
     </Box>
   );
@@ -195,10 +203,10 @@ const Content = styled('div')`
 `;
 
 interface IProps {
-  guildContract: Guild,
-  guildMembers: Member[],
-  guildAdmin: string,
-  guildMultisigs: string[],
+  guildContract: Guild;
+  guildMembers: Member[];
+  guildAdmin: string;
+  guildMultisigs: string[];
 }
 
 const Management = (props: IProps) => {
@@ -219,6 +227,8 @@ const Management = (props: IProps) => {
         return <Vaults />;
       case MANAGEMENT_CONTENT.VOTE:
         return <Vote />;
+      case MANAGEMENT_CONTENT.TOKENS:
+        return <Tokens />;
       default:
         return <div>This could not be a possible option</div>;
     }

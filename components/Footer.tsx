@@ -13,11 +13,12 @@ import EmailIcon from '@mui/icons-material/Email';
 const StyledFooter = styled(Box)`
   align-items: center;
   display: flex;
-  margin: ${SIZES['lineHeight'] * 3}rem 0;
+  height: ${SIZES['lineHeight'] * 3}rem;
   justify-content: center;
   display: flex;
   flex-direction: column;
   gap: ${SIZES['lineHeight']}rem;
+  flex-grow: 1;
 `;
 
 const LinkContainer = styled(Box)`

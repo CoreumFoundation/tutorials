@@ -95,8 +95,8 @@ export const VoteProposal: React.FC = () => {
               display="flex"
               flexDirection="column"
             >
-              <Typography style={{ flex: '1' }}>Submitted By:</Typography>
-              <Typography style={{ flex: '1' }}>Igor.piratesbcn</Typography>
+              <Typography>Submitted By:</Typography>
+              <Typography>Igor.piratesbcn</Typography>
             </Box>
           </Box>
 
