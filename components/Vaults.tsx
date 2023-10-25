@@ -24,11 +24,16 @@ import {
 import { Guild, Member } from 'util/types';
 import MembersTable from 'components/MembersTable';
 import PageWithSidebar from 'components/PageWithSidebar';
+import CreateVault from './CreateVault';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
 
-const Vaults: NextPage = () => {
+interface IProps {
+  guildAddress: string;
+}
+//@ts-ignore
+const Vaults: NextPage = (props: IProps) => {
   const { walletAddress, signingClient } = useSigningClient();
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
@@ -42,14 +47,7 @@ const Vaults: NextPage = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (!guildAddress) {
-      let address = router.query.address;
-      if (typeof address == 'string') {
-        setGuildAddress(address);
-      }
-    }
-  }, [router]);
+  
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0 || !guildAddress) {
@@ -61,64 +59,26 @@ const Vaults: NextPage = () => {
     signingClient
       .getContract(guildAddress)
       .then((response: Guild) => {
+        console.log(response)
         setGuildContract(response);
-        /* const { amount, denom }: { amount: number; denom: string } = response;
-                setBalance(
-                `${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`,
-                ); */
       })
       .catch((error) => {
         setError(`Error! ${error.message}`);
       });
   }, [signingClient, walletAddress, guildAddress]);
 
-  async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      let membersList = await signingClient?.queryContractSmart(
-        address,
-        membersMsg,
-      );
-      if (membersList?.members) {
-        setMembers(membersList.members);
-      } else {
-        setError('No members could be found');
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-  async function getAdmin(address: string) {
-    try {
-      let adminMsg = {
-        admin: {},
-      };
-      let admin = await signingClient?.queryContractSmart(address, adminMsg);
-      if (admin?.admin) {
-        setGuildAdmin(admin.admin);
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-
-  useEffect(() => {
-    if (guildContract && guildAddress) {
-      getMembers(guildAddress);
-      getAdmin(guildAddress);
-    }
-  }, [guildContract]);
-
   return (
     <WalletLoader loading={loading}>
       <Typography variant="h4" gutterBottom>
         Vaults
       </Typography>
+      {guildContract &&
+        <CreateVault
+          //@ts-ignore
+          guildAddress={guildAddress}
+          guildName={guildContract.guildName}
+        />
+      }
     </WalletLoader>
   );
 };

@@ -49,6 +49,7 @@ type SidebarProps = {
 
 const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
   const router = useRouter();
+  
   return (
     <Box>
       <List>
