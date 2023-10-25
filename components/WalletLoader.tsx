@@ -17,9 +17,10 @@ import { CallToActionButtons } from './Buttons/CallToActionButtons';
 type Props = {
   children: ReactNode;
   loading?: boolean;
+  fake?: boolean;
 };
 
-const WalletLoader = ({ children, loading = false }: Props) => {
+const WalletLoader = ({ children, loading = false,fake = false }: Props) => {
   const {
     connectWallet,
     error,
@@ -35,7 +36,7 @@ const WalletLoader = ({ children, loading = false }: Props) => {
     );
   }
 
-  if (walletAddress === '') {
+  if (walletAddress === '' && fake === false) {
     return (
       <Container maxWidth="lg">
         <Typography variant="h1">Gaming Guilds Go </Typography>
