@@ -11,7 +11,6 @@ import type { Guild } from 'util/types';
 
 import { useSigningClient } from 'contexts/client';
 
-import WalletLoader from 'components/WalletLoader';
 import GuildCard from 'components/GuildCard';
 
 const StyledTitle = styled(Typography)`
@@ -27,13 +26,13 @@ const GuildSpace: NextPage = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const { walletAddress, signingClient } = useSigningClient();
+  const { signingClient } = useSigningClient();
 
   async function getContracts() {
     setLoading(true);
     //@ts-ignore
     let data = await signingClient.getContracts(522);
-    //    console.log(JSON.stringify(data))
+
     let list = data.map((x) => {
       return x;
     });
@@ -43,7 +42,6 @@ const GuildSpace: NextPage = () => {
       //@ts-ignore
       let guild_data = await signingClient.getContract(guild_address);
 
-      // 获取 membersList
       let membersMsg = {
         list_members: {
           start_after: null,
@@ -51,11 +49,10 @@ const GuildSpace: NextPage = () => {
         },
       };
       let membersList = await signingClient?.queryContractSmart(
-        guild_address, // 注意这里使用 guild_address
+        guild_address,
         membersMsg,
       );
 
-      // 如果 membersList?.members 存在，将其添加到 guild_data
       if (membersList?.members) {
         guild_data.member = membersList.members;
         guild_data.member_count = membersList.members.length;
@@ -77,7 +74,7 @@ const GuildSpace: NextPage = () => {
   }, [signingClient, fetched]);
 
   return (
-    <WalletLoader loading={loading}>
+    <>
       {guilds.length === 0 && (
         <Container>
           <Box sx={{ marginBottom: 8 }}>
@@ -142,7 +139,7 @@ const GuildSpace: NextPage = () => {
           </Box>
         </Container>
       )}
-    </WalletLoader>
+    </>
   );
 };
 

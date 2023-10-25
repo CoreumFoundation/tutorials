@@ -19,7 +19,6 @@ const MembersTable = ({ members }: { members: Member[] }) => {
         <TableRow>
           <TableCell>User name</TableCell>
           <TableCell>User wallet</TableCell>
-          {/* <TableCell>Role</TableCell> */}
           <TableCell>Join Date</TableCell>
         </TableRow>
       </TableHead>
@@ -28,7 +27,6 @@ const MembersTable = ({ members }: { members: Member[] }) => {
           <TableRow key={member.name} selected={member.addr === walletAddress}>
             <TableCell>{member.name}</TableCell>
             <TableCell>{member.addr}</TableCell>
-            {/* <TableCell>{member.role === 1 ? 'Admin' : 'Member'}</TableCell> */}
             <TableCell>{new Date().toLocaleDateString()}</TableCell>
           </TableRow>
         ))}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, List, ListItemButton, ListSubheader } from '@mui/material';
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
@@ -13,6 +13,7 @@ import { GuildProvider } from 'contexts/guildContext';
 import Tokens from 'components/Tokens';
 //@ts-ignore
 import type { Guild, Member } from 'util/types';
+import { useSigningClient } from 'contexts/client';
 
 const MANAGEMENT_CONTENT = {
   GUILD_MEMBERS: 'guild-members',
@@ -131,6 +132,11 @@ interface IProps {
 const Management = (props: IProps) => {
   const [selectedMenuOption, setSelectedMenuOption] =
     useState<ManagementContent>(MANAGEMENT_CONTENT.USER_PROFILE);
+  const { connectWallet, loading: isClientLoading } = useSigningClient();
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
 
   const renderContent = () => {
     switch (selectedMenuOption) {
@@ -167,7 +173,7 @@ const Management = (props: IProps) => {
           setSelectedMenuOption={setSelectedMenuOption}
           selectedMenuOption={selectedMenuOption}
         />
-        <Content>{renderContent()}</Content>
+        <Content>{isClientLoading ? <>loading...</> : renderContent()}</Content>
       </Box>
     </GuildProvider>
   );
