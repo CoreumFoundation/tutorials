@@ -105,6 +105,24 @@ const ExploreGuilds: NextPage = () => {
   console.log("filtered ", filteredGuilds.length);
   return (
     <WalletLoader fake={makeFake}>
+      {(
+        <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Search Guilds"
+            value={searchText}
+            onChange={handleSearchChange}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </Box>
+      )}
       {filteredGuilds.length ? (
         <Box sx={{ marginBottom: 4, textAlign: 'left' }}>
           <TextField
