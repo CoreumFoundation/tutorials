@@ -101,7 +101,7 @@ const Multisig: NextPage = () => {
     }
 
     setLoading(false);
-    router.back();
+    router.push('/guild-space');
   };
 
   return (

@@ -65,12 +65,7 @@ const CardComponent = ({
 };
 
 const WalletLoader = ({ children, loading = false, fake = false }: Props) => {
-  const {
-    connectWallet,
-    error,
-    loading: clientLoading,
-    walletAddress,
-  } = useSigningClient();
+  const { error, loading: clientLoading, walletAddress } = useSigningClient();
 
   if (loading || clientLoading) {
     return (

@@ -8,6 +8,7 @@ import type { Guild } from 'util/types';
 import { useSigningClient } from 'contexts/client';
 
 import WalletLoader from 'components/WalletLoader';
+import Main from 'components/Main';
 
 const Home: NextPage = () => {
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -63,7 +64,7 @@ const Home: NextPage = () => {
     }
   }, [signingClient, fetched]);
 
-  return <WalletLoader loading={!!loading} />;
+  return <Main />;
 };
 
 export default Home;

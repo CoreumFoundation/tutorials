@@ -22,11 +22,19 @@ const LogoContainer = styled(Box)`
 `;
 
 const ButtonContainer = styled(Box)``;
+const AddressContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3.125rem;
+  background: #504f4f;
+  padding: 0.5rem 1.5rem;
+`;
 
 function Nav() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
-//  console.log('authContext', authContext);
+  //  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
   const handleConnect = () => {
     if (walletAddress.length === 0) {
@@ -45,10 +53,10 @@ function Nav() {
 
   const renderNavOptions = () => {
     return (
-      <Box>
-        <Button variant="outlined" onClick={handleConnect}>
+      <Box display="flex" flexDirection="row">
+        <AddressContainer>
           Log out: {shortAddress(walletAddress)}
-        </Button>
+        </AddressContainer>
         <IconButton size="large">
           <Menu />
         </IconButton>
