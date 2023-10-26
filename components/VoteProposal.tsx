@@ -130,7 +130,7 @@ export const VoteProposal: React.FC = (props: IProps) => {
           {props.prop.title}
         </Typography>
         <Box sx={{ marginLeft: '5rem' }}>
-          <Badge badgeContent="Active" color="primary" />
+          <Badge badgeContent={props.prop.status} color="primary" />
         </Box>
       </Box>
 
@@ -169,7 +169,7 @@ export const VoteProposal: React.FC = (props: IProps) => {
                 </Typography>
               </Box>
             </Box>
-            <Box
+            {/* <Box
               sx={{
                 borderRight: 1,
                 borderColor: 'grey.800',
@@ -178,7 +178,7 @@ export const VoteProposal: React.FC = (props: IProps) => {
             >
               <Typography>Creation Date: </Typography>
               <Typography>28-Ago-2023</Typography>
-            </Box>
+            </Box> */}
             <Box
               flexGrow={1}
               flexBasis={0}
