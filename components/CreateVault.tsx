@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
 import { useSigningClient } from 'contexts/client';
 import { GuildContext } from 'contexts/guildContext';
+import { vaultCreatorCodeId } from 'util/constants';
 
 export default function VaultCreator() {
   const { walletAddress, signingClient } = useSigningClient();
@@ -26,7 +27,7 @@ export default function VaultCreator() {
 
     let res = await signingClient?.instantiate(
       walletAddress,
-      521,
+      vaultCreatorCodeId,
       instantiateVaultMsg,
       'bank',
       'auto',
