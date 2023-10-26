@@ -6,8 +6,8 @@ import {
   convertFromMicroDenom,
   convertMicroDenomToDenom,
 } from 'util/conversion';
-import { checkAddress } from 'utils/displayHelpers';
-
+//import { checkAddress } from 'utils/displayHelpers';
+import { guildCreatorCodeId } from 'util/constants';
 import { useRouter } from 'next/router';
 import {
   Alert,
@@ -72,7 +72,7 @@ const Multisig: NextPage = () => {
     setError('');
     setSuccess('');
     setLoading(true);
-    console.log(JSON.stringify(leader), JSON.stringify(guildName));
+//    console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
       admin: leader.address,
       members: [
@@ -86,7 +86,7 @@ const Multisig: NextPage = () => {
 
     let res = await signingClient?.instantiate(
       walletAddress,
-      522,
+      guildCreatorCodeId,
       instantiateMsg,
       guildName.toLocaleLowerCase(),
       'auto',
@@ -101,7 +101,7 @@ const Multisig: NextPage = () => {
     }
 
     setLoading(false);
-    router.push('/guild-space');
+    router.push(`management/${contractCreated}`);
   };
 
   return (
@@ -174,9 +174,9 @@ const Multisig: NextPage = () => {
           Create guild
         </Button>
       </Container>
-      {contractCreated && (
+      {/* contractCreated && (
         <CreateVault guildAddress={contractCreated} guildName={guildName} />
-      )}
+      ) */}
       <Container sx={{ my: 2 }}>
         {success.length > 0 && (
           <Alert severity="success" sx={{ mb: 2 }}>

@@ -19,6 +19,7 @@ import type { Guild } from 'util/types';
 import { useSigningClient } from 'contexts/client';
 
 import GuildCard from 'components/GuildCard';
+import { guildCreatorCodeId, vaultCreatorCodeId } from 'util/constants';
 
 const StyledTitle = styled(Typography)`
   color: ${(props) => props.theme.palette.primary.main};
@@ -38,8 +39,8 @@ const GuildSpace: NextPage = () => {
   async function getContracts() {
     setLoading(true);
     //@ts-ignore
-    let data = await signingClient.getContracts(522);
-
+    let data = await signingClient.getContracts(guildCreatorCodeId);
+    console.log(data)
     let list = data.map((x) => {
       return x;
     });
