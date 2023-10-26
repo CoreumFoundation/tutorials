@@ -13,7 +13,7 @@ import AppBar from '@mui/material/AppBar';
 import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -36,6 +36,11 @@ function Nav() {
   const authContext = useContext(AuthContext);
   //  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
+
   const handleConnect = () => {
     if (walletAddress.length === 0) {
       connectWallet();

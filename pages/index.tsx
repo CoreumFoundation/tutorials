@@ -7,7 +7,6 @@ import type { Guild } from 'util/types';
 
 import { useSigningClient } from 'contexts/client';
 
-import WalletLoader from 'components/WalletLoader';
 import Main from 'components/Main';
 
 const Home: NextPage = () => {

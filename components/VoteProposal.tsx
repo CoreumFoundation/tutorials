@@ -12,7 +12,7 @@ type VoteProposal = {
   status: 'Active' | 'Passed' | 'Rejected';
   votes: Vote[];
 };
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react';
 import styled from '@emotion/styled';
 import {
   Typography,
@@ -24,7 +24,7 @@ import {
 } from '@mui/material';
 import { getDatetime } from 'util/helpers';
 //@ts-ignore
-import { Proposal } from 'util/types'
+import { Proposal } from 'util/types';
 import { useSigningClient } from 'contexts/client';
 import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
 
@@ -40,12 +40,12 @@ interface IProps {
 }
 //@ts-ignore
 export const VoteProposal: React.FC = (props: IProps) => {
-  const { signingClient, walletAddress } = useSigningClient()
-  const [votes, setVotes] = useState<Vote[]>([])
-  const fetched = useRef<boolean>(false)
-  const [loading, setLoading] = useState<boolean>(false) 
-  const [voted, setVoted] = useState<boolean>(false)
-  const [isExpired, setIsExpired] = useState<boolean>(false)
+  const { signingClient, walletAddress } = useSigningClient();
+  const [votes, setVotes] = useState<Vote[]>([]);
+  const fetched = useRef<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [voted, setVoted] = useState<boolean>(false);
+  const [isExpired, setIsExpired] = useState<boolean>(false);
 
   //const yes_pct = () => {} get the sum of weight for Yes / total weight
 
@@ -53,53 +53,63 @@ export const VoteProposal: React.FC = (props: IProps) => {
     try {
       let votesMsg = {
         list_votes: {
-            proposal_id: props.prop.id,
-            start_after: null,
-            limit: null
-        }
-      }
+          proposal_id: props.prop.id,
+          start_after: null,
+          limit: null,
+        },
+      };
       let votesList = await signingClient?.queryContractSmart(
-          props.prop.vault,
-          votesMsg
-      )
+        props.prop.vault,
+        votesMsg,
+      );
       //console.log(votesList)
       if (votesList?.votes) {
-        setVotes(votesList.votes)
-        let userVoted = votesList.votes.some((v: any) => v.voter === walletAddress)
-        setVoted(userVoted)
+        setVotes(votesList.votes);
+        let userVoted = votesList.votes.some(
+          (v: any) => v.voter === walletAddress,
+        );
+        setVoted(userVoted);
       } else {
-          console.error("No votes could be found")
+        console.error('No votes could be found');
       }
-      } catch(err: any) {
-          console.error(err.toString())
-      }
+    } catch (err: any) {
+      console.error(err.toString());
+    }
   }
 
   useEffect(() => {
     if (!fetched.current) {
-      let now = new Date()
-      let now_t = now.getTime() * 1_000_000
+      let now = new Date();
+      let now_t = now.getTime() * 1_000_000;
       //console.log(`gonna compare ${props.prop.expires.at_time} and ${now_t}`)
       if (now_t > props.prop.expires.at_time) {
-        setIsExpired(true)
-      } else { setIsExpired(false) } 
+        setIsExpired(true);
+      } else {
+        setIsExpired(false);
+      }
 
-      getVotes()
-      fetched.current = true
+      getVotes();
+      fetched.current = true;
     }
-  },[fetched, props])
+  }, [fetched, props]);
 
-  async function handleVote(vote: 'yes' | 'no' ) {
-    setLoading(true)
-    if (!signingClient) return
-    let client = new Cw3FlexMultisigNamedClient(signingClient, walletAddress, props.prop.vault)
-    let res = await client.vote({ proposalId: props.prop.id, vote: vote }, 'auto')
+  async function handleVote(vote: 'yes' | 'no') {
+    setLoading(true);
+    if (!signingClient) return;
+    let client = new Cw3FlexMultisigNamedClient(
+      signingClient,
+      walletAddress,
+      props.prop.vault,
+    );
+    let res = await client.vote(
+      { proposalId: props.prop.id, vote: vote },
+      'auto',
+    );
     if (res) {
-      setVoted(true)
+      setVoted(true);
     }
-    setLoading(false)
+    setLoading(false);
   }
-
 
   return (
     <Paper
@@ -132,26 +142,28 @@ export const VoteProposal: React.FC = (props: IProps) => {
             </Typography>
           </Box>
           <Box sx={{ borderBottom: 1, borderColor: 'grey.800' }}>
-            {props.prop.msgs.length > 0 ?
-            <>
-            <Typography variant="h5" gutterBottom mt={2}>
-              Transaction to be Executed:
-            </Typography>
-            <Typography paragraph gutterBottom>
-              TODO: decode tx
-            </Typography>
-            </>
-            :
-            <Typography variant="h5" gutterBottom mt={2}>
-              No transaction to be executed from this proposal.
-            </Typography>
-            }
+            {props.prop.msgs.length > 0 ? (
+              <>
+                <Typography variant="h5" gutterBottom mt={2}>
+                  Transaction to be Executed:
+                </Typography>
+                <Typography paragraph gutterBottom>
+                  TODO: decode tx
+                </Typography>
+              </>
+            ) : (
+              <Typography variant="h5" gutterBottom mt={2}>
+                No transaction to be executed from this proposal.
+              </Typography>
+            )}
           </Box>
           <Box display="flex" mt={2}>
             <Box flexGrow={1} flexBasis={0} display="flex">
               <Box>
                 <Typography>Expiration Date: </Typography>
-                <Typography>{getDatetime(props.prop.expires.at_time)}</Typography>
+                <Typography>
+                  {getDatetime(props.prop.expires.at_time)}
+                </Typography>
               </Box>
             </Box>
             <Box
@@ -209,31 +221,36 @@ export const VoteProposal: React.FC = (props: IProps) => {
               *To be valid need 100 casted votes in total.
             </Typography>
           </Box>
-          {isExpired ? 
+          {isExpired ? (
             <Typography variant="h6">Expired</Typography>
-          :
+          ) : (
             <>
-              {!voted &&
+              {!voted && (
                 <Box
-                sx={{
-                  display: 'flex',
-                  marginTop: '1rem',
-                  justifyContent: 'center',
-                  gap: '2rem',
-                }}
+                  sx={{
+                    display: 'flex',
+                    marginTop: '1rem',
+                    justifyContent: 'center',
+                    gap: '2rem',
+                  }}
                 >
-                  <VotingButton 
-                    onClick={() => handleVote("yes")}
-                    variant="outlined" size="small">
+                  <VotingButton
+                    onClick={() => handleVote('yes')}
+                    variant="outlined"
+                    size="small"
+                  >
                     Yes
                   </VotingButton>
-                  <VotingButton 
-                    onClick={() => handleVote("no")}
-                    variant="outlined">No</VotingButton>
+                  <VotingButton
+                    onClick={() => handleVote('no')}
+                    variant="outlined"
+                  >
+                    No
+                  </VotingButton>
                 </Box>
-              }
+              )}
             </>
-          }
+          )}
         </Box>
       </Box>
     </Paper>
