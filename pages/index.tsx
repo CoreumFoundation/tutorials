@@ -63,7 +63,7 @@ const Home: NextPage = () => {
     }
   }, [signingClient, fetched]);
 
-  return <WalletLoader loading={loading}></WalletLoader>;
+  return <WalletLoader loading={!!loading} />;
 };
 
 export default Home;

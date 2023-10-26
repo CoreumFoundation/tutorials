@@ -57,7 +57,11 @@ function Nav() {
   };
 
   return (
-    <AppBar position="static" elevation={1}>
+    <AppBar
+      position="static"
+      elevation={1}
+      sx={{ backgroundColor: 'transparent' }}
+    >
       <Toolbar
         style={{
           margin: `${SIZES['lineHeight'] / 2}rem ${SIZES['lineHeight']}rem`,

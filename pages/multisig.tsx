@@ -9,7 +9,14 @@ import {
 import { checkAddress } from 'utils/displayHelpers';
 
 import { useRouter } from 'next/router';
-import { Alert, Button, Container, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Box,
+} from '@mui/material';
 import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
 import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
 import CreateVault from 'components/CreateVault';
@@ -99,10 +106,6 @@ const Multisig: NextPage = () => {
 
   return (
     <WalletLoader loading={loading}>
-      <Typography variant="h4" gutterBottom component="h1">
-        Create your Guild
-      </Typography>
-
       <Container
         sx={{
           backgroundColor: 'background.default',
@@ -112,43 +115,46 @@ const Multisig: NextPage = () => {
           alignItems: 'start',
         }}
       >
-        <Typography variant="h5" component="h2">
+        <Typography variant="h4" gutterBottom component="h1" sx={{ mb: 8 }}>
+          Create your Guild
+        </Typography>
+        <Typography variant="h5" component="h2" gutterBottom>
           Guild Leader
         </Typography>
-        <Typography variant="body1" gutterBottom component="p">
+        <Typography variant="subtitle2" gutterBottom component="p">
           Once you create the guild, you will become the guild leader.
         </Typography>
-
-        <TextField
-          label="Leader Address"
-          onChange={(event) =>
-            setLeader((prev) => ({ ...prev, address: event.target.value }))
-          }
-          sx={{ mb: 2 }}
-          value={leader.address}
-          variant="outlined"
-        />
-        <TextField
-          label="Leader Name"
-          onChange={(event) =>
-            setLeader((prev) => ({ ...prev, name: event.target.value }))
-          }
-          sx={{ mb: 2 }}
-          value={leader.name}
-          variant="outlined"
-        />
-
-        <Typography variant="h5" component="h2">
+        <Box sx={{ mb: 8, mt: 3, display: 'flex', gap: '1rem' }}>
+          <TextField
+            label="Leader Address"
+            onChange={(event) =>
+              setLeader((prev) => ({ ...prev, address: event.target.value }))
+            }
+            sx={{ mb: 2 }}
+            value={leader.address}
+            variant="outlined"
+          />
+          <TextField
+            label="Leader Name"
+            onChange={(event) =>
+              setLeader((prev) => ({ ...prev, name: event.target.value }))
+            }
+            sx={{ mb: 2 }}
+            value={leader.name}
+            variant="outlined"
+          />
+        </Box>
+        <Typography variant="h5" component="h2" gutterBottom>
           Guild name
         </Typography>
-        <Typography variant="body1" gutterBottom component="p">
+        <Typography variant="subtitle2" gutterBottom component="p">
           Do you have already a guild name? If not, it is your time to be
           creative.
         </Typography>
         <TextField
           label="Guild Name"
           onChange={(e) => setGuildName(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: 4, mt: 3, display: 'flex', gap: '1rem' }}
           value={guildName}
           variant="outlined"
         />

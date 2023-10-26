@@ -65,7 +65,7 @@ export const VoteProposal: React.FC = (props: IProps) => {
       //console.log(votesList)
       if (votesList?.votes) {
         setVotes(votesList.votes)
-        let userVoted = votesList.votes.some((v) => v.voter === walletAddress)
+        let userVoted = votesList.votes.some((v: any) => v.voter === walletAddress)
         setVoted(userVoted)
       } else {
           console.error("No votes could be found")
