@@ -11,6 +11,12 @@ import {
   Typography,
 } from '@mui/material';
 
+import { useSigningClient } from 'contexts/client';
+
+import {AssetFT as AssetFTTx, FT as FTTx} from "../coreum/tx";
+
+
+
 function CustomTabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
 
@@ -45,6 +51,8 @@ import {
   Select,
   MenuItem,
 } from '@mui/material';
+import { AuthContext } from 'contexts/AuthContext';
+import { useContext, useEffect } from 'react';
 
 function TokenForm() {
   const [formData, setFormData] = useState({
@@ -54,6 +62,81 @@ function TokenForm() {
     supply: '',
     decimals: 0,
   });
+  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient();
+  const authContext = useContext(AuthContext);
+
+  const sendTx = async (msgs: readonly EncodeObject[]) => {
+    try {
+      console.log("SendTx walletAddress " + authContext.loggedAddress[0])
+      const resp = await signingClient
+        ?.signAndBroadcast(authContext.loggedAddress[0], msgs, 'auto')
+      console.log(`Tx hash: ${resp?.transactionHash}`)
+      console.log(resp)
+
+      return true
+    } catch (error: any) {
+      console.error(error)
+      console.log(error)
+      return false
+    }
+  }
+
+  async function createFt(){
+
+    sendTx([AssetFTTx.MsgIssue({
+      issuer: authContext.loggedAddress[0],
+      symbol: formData.tokenSymbol,
+      subunit: formData.tokenSymbol,
+      precision: formData.decimals,
+      initialAmount: formData.supply,
+      description: formData.description,
+      // To get valid values for the features go inside "Issue" object and then click at "token" within "./asset/ft/v1/token" path.
+      features: ["minting"],
+    })]).then((passed) => {
+      if (passed) {
+
+      }
+    })
+  }
+
+  async function mintFT(){
+    sendTx([AssetFTTx.MsgMint({
+      sender: authContext.loggedAddress[0],
+      coin: {
+          denom: "subunit23-testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph",
+          amount: "1",
+      }
+    })]).then((passed) => {
+      if (passed) {
+
+      }
+    })
+  }
+
+  const queryFTs = () => {
+    coreumQueryClient?.FTClient().Tokens({
+      issuer: authContext.loggedAddress[0],
+    }).then(async (res: QueryTokensResponse) => {
+      const fts = await Promise.all(
+        res.tokens.map(async (ft) => {
+          return {
+            denom: ft.denom,
+            description: ft.description,
+            issuer: ft.issuer,
+            precision: ft.precision,
+            subunit: ft.subunit,
+            symbol: ft.symbol
+          }
+        })
+      )
+      console.log(fts)
+      return fts;
+    })
+      .catch((error) => {
+        console.log("Query FT's Error" + error)
+      })
+  }
+  queryFTs();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -106,7 +189,7 @@ function TokenForm() {
         onChange={handleInputChange}
         inputProps={{ min: 0, max: 18 }} // This constrains input to the range 0-18
       />
-      <Button variant="contained" color="primary" sx={{ mt: 3 }}>
+      <Button onClick={createFt} variant="contained" color="primary" sx={{ mt: 3 }}>
         Add
       </Button>
     </Box>
