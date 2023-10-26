@@ -2,6 +2,13 @@ import {useEffect, useState, useCallback, useLayoutEffect} from 'react'
 import { Unity, useUnityContext } from "react-unity-webgl";
 import { useRouter } from 'next/router';
 
+// wallet name
+import { Guild, Member } from 'util/types';
+
+//NFTs
+import { useSigningClient } from 'contexts/client';
+//import {QueryNFTsResponse} from 'hooks/coreum-ts/coreum/nft/v1beta1/query';
+
 
 const Metaverse = () => {
   const router = useRouter();
@@ -18,7 +25,7 @@ const Metaverse = () => {
 
   // Comunication to Unity
   const [isReady,setIsReady] = useState(false);
-  //const [members, setMembers] = useState<Member[]>([]);
+  const [isChangePage,setIsChangePage] = useState(false);
 
   const { unityProvider, addEventListener, removeEventListener, sendMessage } = useUnityContext({
     loaderUrl: "../unity/Build/clientBuild.loader.js",
@@ -27,9 +34,11 @@ const Metaverse = () => {
     codeUrl: "../unity/Build/clientBuild.wasm",
   });
 
+
+  // ---- Unity is Ready to comunicate ----
+
   const handleReady = useCallback((_ready) => {
     setIsReady(!!_ready);
-    console.log("true ready is on react: " + _ready);
   }, []);
 
   useEffect(() => {
@@ -39,10 +48,17 @@ const Metaverse = () => {
     };
   }, [addEventListener, removeEventListener, handleReady]);
 
-  useLayoutEffect(() => {
-    if (isReady) {
-      sendGuildName("jaja");
-      sendNFTnum(10);
+  useEffect(() => {
+    if (isReady) {   
+      sendGuildName("Key1"); // TODO: Get the name <name.guild> from function
+
+      /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
+      //let a = GetNFTs();
+      //console.log("console de nfts: " + a);
+      //let frutas = [{name: "manzana", cost: 10, quality: "Excelent"}, {name: "banana", cost: 5, quality: "Good"}];
+      //sendNFTs(JSON.stringify(frutas));
+      sendNFTnum(5); // TODO: Get the number from the function ?? necessary?
+      //sendNFTs(JSON.stringify(frutas));
     }
   }, [isReady]);
 
@@ -51,8 +67,65 @@ const Metaverse = () => {
   }
 
   function sendNFTnum(num){
-    console.log("numero:" + num)
     sendMessage("CanvasHUD", "setNFTNumber", num);
+  }
+
+  function sendNFTs(value){
+    sendMessage("CanvasHUD", "setNFTs", value);
+  }
+
+  //---- Change page to management page -----
+
+  const handleChangePage = useCallback((_changePage) => {
+    setIsChangePage(!!_changePage);
+  }, []);
+
+  useEffect(() => {
+    if (isChangePage) {
+      router.push(`/management/${guildAddress}`)
+    }
+  }, [isChangePage]);
+
+  useEffect(() => {
+    addEventListener("ChangePage", handleChangePage);
+    return () => {
+      removeEventListener("ChangePage", handleChangePage);
+    };
+  }, [addEventListener, removeEventListener, handleChangePage]);
+
+  //----Wallet Name------------
+
+
+
+  //---------- NFTs ----------------
+  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient();
+
+  function GetNFTs(){
+    const nftClassID = "testclass2-testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph"
+    coreumQueryClient?.NFTClient().NFTs({
+      classId: nftClassID,
+      owner: "testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph",
+    }).then(async (res: QueryNFTsResponse) => {
+      const nfts = await Promise.all(
+        res.nfts.map(async (nft) => {
+          const resOwner = await coreumQueryClient?.NFTClient().Owner({
+            classId: nft.classId,
+            id: nft.id
+          })
+          return {
+            classId: nft.classId,
+            id: nft.id,
+            uri: nft.uri,
+            uriHash: nft.uriHash,
+            owner: resOwner.owner,
+          }
+        })
+      )
+      console.log(nfts); // Todo: How to return that to send to Unity
+    })
+      .catch((error) => {
+        console.log("Query NFT's Error" + error)
+      })
   }
 
 
