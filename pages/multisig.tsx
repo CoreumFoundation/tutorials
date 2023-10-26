@@ -6,6 +6,7 @@ import {
   convertFromMicroDenom,
   convertMicroDenomToDenom,
 } from 'util/conversion';
+import { checkAddress } from 'utils/displayHelpers';
 
 import { useRouter } from 'next/router';
 import {
@@ -16,7 +17,8 @@ import {
   Typography,
   Box,
 } from '@mui/material';
-
+import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
+import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
 import CreateVault from 'components/CreateVault';
 
 const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
@@ -32,6 +34,7 @@ const Multisig: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const [balance, setBalance] = useState('');
   const [contractCreated, setContractCreated] = useState<string | null>(null);
+  const [multisigCreated, setMultisigCreated] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [guildName, setGuildName] = useState<string>('');
 
