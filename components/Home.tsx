@@ -5,15 +5,15 @@ import { SIZES } from 'pages/theme';
 const Home = () => {
   return (
     <Container maxWidth="lg">
-      <Typography variant="h1">Gaming Guilds Go </Typography>
-      <Typography variant="h1">Digital: Dive into Web3!</Typography>
+      <Typography variant="h1">Enter the gaming</Typography>
+      <Typography variant="h1">guild ecosystem</Typography>
       <Typography
         variant="h4"
         gutterBottom
         component="h2"
         style={{ marginTop: `${SIZES['lineHeight'] * 2}rem` }}
       >
-        JOIN AND CREATE YOUR GUILD
+        JOIN A GUILD OR MANAGE YOUR OWN
       </Typography>
 
       <CallToActionButtons />

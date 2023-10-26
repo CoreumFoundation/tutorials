@@ -101,7 +101,7 @@ const Sidebar = ({
           selected={selectedMenuOption === MANAGEMENT_CONTENT.PURPOSE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.PURPOSE)}
         >
-          Purpose
+          Propose
         </StyledListItemButton>
         <SidebarSubHeader>
           Economy <ChevronRightIcon />
