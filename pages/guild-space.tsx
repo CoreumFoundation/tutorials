@@ -4,7 +4,14 @@ import type { NextPage } from 'next';
 
 import styled from '@emotion/styled';
 
-import { Typography, Box, Grid, Container, Button } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Grid,
+  Container,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 
 //@ts-ignore
 import type { Guild } from 'util/types';
@@ -24,7 +31,7 @@ const GuildSpace: NextPage = () => {
 
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const { signingClient } = useSigningClient();
 
@@ -72,6 +79,14 @@ const GuildSpace: NextPage = () => {
       fetched.current = true;
     }
   }, [signingClient, fetched]);
+
+  if (loading) {
+    return (
+      <Box maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <>

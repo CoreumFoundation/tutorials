@@ -101,7 +101,7 @@ const Multisig: NextPage = () => {
     }
 
     setLoading(false);
-    //    router.back();
+    router.back();
   };
 
   return (
@@ -154,7 +154,7 @@ const Multisig: NextPage = () => {
         <TextField
           label="Guild Name"
           onChange={(e) => setGuildName(e.target.value)}
-          sx={{ mb: 4, mt: 3, display: 'flex', gap: '1rem' }}
+          sx={{ mb: 2, mt: 3, display: 'flex', gap: '1rem' }}
           value={guildName}
           variant="outlined"
         />
