@@ -26,7 +26,7 @@ const ButtonContainer = styled(Box)``;
 function Nav() {
   const router = useRouter();
   const authContext = useContext(AuthContext);
-  console.log('authContext', authContext);
+//  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
   const handleConnect = () => {
     if (walletAddress.length === 0) {
