@@ -17,5 +17,18 @@ type GuildType = {
   totalMembers: number;
 };
 
+type Proposal = {
+  id: number,
+  title: string,
+  description: string,
+  msgs: any[],
+  status: any,
+  expires: any,
+  threshold: any,
+  proposer: string,
+  deposit: any,
+  vault: string,
+}
+
 export type { GuildType };
 export type { Guild };

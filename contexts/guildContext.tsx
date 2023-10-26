@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useRef } from 'react';
 //@ts-ignore
 import { Guild, Member } from 'util/types';
 import { useSigningClient } from './client';
@@ -10,6 +10,7 @@ interface GuildContextProps {
   guildVaults: string[];
   guildAdmin: string;
   guildMembers: Member[];
+  guildProposals: any;//Proposal[];
 }
 
 export const GuildContext = createContext<GuildContextProps | undefined>(
@@ -35,6 +36,8 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
   const [guildVaults, setGuildVaults] = useState<string[]>([]);
   const [guildMembers, setGuildMembers] = useState<Member[]>([]);
   const [guildAdmin, setGuildAdmin] = useState<string>('');
+  const [guildProposals, setGuildProposals] = useState<any[]>([])
+  const fetched = useRef<boolean>(false)
 
   useEffect(() => {
     let guildAddress = router.query.address;
@@ -51,7 +54,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
     signingClient
       .getContract(guildAddress)
       .then((response: Guild) => {
-        console.log(`contract ${response}`);
+        //console.log(`contract ${response}`);
         setGuildContract(response);
       })
       .catch((error) => {
@@ -108,6 +111,29 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
       console.error(err.toString());
     }
   }
+  async function getProposals(guildVaults:string[]) {
+    try {
+      let proposalsMsg = {
+        reverse_proposals: {
+            start_before: null,
+            limit: null
+        }
+      }
+      for (let i = 0; i < guildVaults.length; i++) {
+//        console.log(`searching proposals for vault: ${guildVaults[i]}`)
+        let proposals = await signingClient?.queryContractSmart(
+          guildVaults[i], proposalsMsg
+        )
+        if (proposals?.proposals) { 
+          let proposals_o = proposals.proposals.map((p: any) => ({...p, vault: guildVaults[i]}))
+          setGuildProposals((guildProposals) => [...guildProposals, ...proposals_o]) 
+        }
+      }
+      //console.log(`proposals ${acu}`)
+    } catch (err: any) {
+        console.error(err.toString())
+    }            
+  }
   useEffect(() => {
     if (guildAddress) {
       getMultisigs(guildAddress);
@@ -115,6 +141,13 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
       getAdmin(guildAddress);
     }
   }, [guildContract]);
+  
+  useEffect(() => {
+    if (guildVaults.length > 0 && !fetched.current) {
+      getProposals(guildVaults)
+      fetched.current = true 
+    }
+  }, [guildVaults])
 
   return (
     <GuildContext.Provider
@@ -124,6 +157,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
         guildContract,
         guildAdmin,
         guildMembers,
+        guildProposals,
       }}
     >
       {children}

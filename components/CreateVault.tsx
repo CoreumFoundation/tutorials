@@ -73,7 +73,7 @@ export default function VaultCreator() {
             </>
           ) : (
             <>
-              Create a vault for {ctx?.guildContract?.guildName}
+              Create a vault for {ctx?.guildContract?.label}
               <br />
               <button onClick={createVault}>Create</button>
             </>
