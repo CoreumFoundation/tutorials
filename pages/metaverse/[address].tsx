@@ -13,6 +13,9 @@ import { useSigningClient } from 'contexts/client';
 const Metaverse = () => {
   const router = useRouter();
   const [guildAddress, setGuildAddress] = useState<string | null>(null);
+  const [walletName, setWalletName] = useState<string | null>(null);
+  const [error, setError] = useState('');
+
   useEffect(() => {
     if (!guildAddress) {
       let address = router.query.address;
@@ -49,8 +52,13 @@ const Metaverse = () => {
   }, [addEventListener, removeEventListener, handleReady]);
 
   useEffect(() => {
-    if (isReady) {   
-      sendGuildName("Key1"); // TODO: Get the name <name.guild> from function
+    if (isReady) {
+      if(guildAddress)
+      {
+        getMembers(guildAddress);
+      }
+      
+      //sendGuildName(walletName); // TODO: Get the name <name.guild> from function
 
       /// TODO: Get the NFTs info from the function and contrcut the array with [{NftHash, uriImage?},...]
       //let a = GetNFTs();
@@ -95,6 +103,42 @@ const Metaverse = () => {
 
   //----Wallet Name------------
 
+  useEffect(() => {
+    if (walletName == null && guildAddress) {
+      getMembers(guildAddress);
+      console.log("Aqui llega");
+    }
+  }, [walletName, guildAddress]);
+
+  async function getMembers(address: string) {
+    try {
+      let membersMsg = {
+        list_members: {
+          start_after: null,
+          limit: null,
+        },
+      };
+      if(signingClient)
+      {
+        let membersList = await signingClient.queryContractSmart(
+          address,
+          membersMsg,
+        );
+        if (membersList.members) {
+          membersList.members.forEach(m => {
+            if(m.addr == walletAddress)
+            {
+              console.log(m.name);
+            }
+          });
+        } else {
+          setError('No members could be found');
+        }
+      }
+    } catch (err: any) {
+      setError(err.toString());
+    }
+  }
 
 
   //---------- NFTs ----------------
@@ -102,6 +146,7 @@ const Metaverse = () => {
 
   function GetNFTs(){
     const nftClassID = "testclass2-testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph"
+    let nftTotal;
     coreumQueryClient?.NFTClient().NFTs({
       classId: nftClassID,
       owner: "testcore1pcf50v775jlky863sws00qlqyttq6v62r885ph",
@@ -121,11 +166,13 @@ const Metaverse = () => {
           }
         })
       )
-      console.log(nfts); // Todo: How to return that to send to Unity
+      //return nfts;
+      nftTotal = nfts;
+      //console.log(nfts); // Todo: How to return that to send to Unity
     })
       .catch((error) => {
         console.log("Query NFT's Error" + error)
-      })
+      }).then(()=>{return nftTotal;})
   }
 
 
