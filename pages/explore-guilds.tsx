@@ -30,12 +30,11 @@ const ExploreGuilds: NextPage = () => {
 
   const [makeFake, setMakeFake] = useState(false);
 
-
   const router = useRouter();
   const { walletAddress, signingClient } = useSigningClient();
   const { fakeList } = useGetGuildsList();
   const [guilds, setGuilds] = useState<Guild[]>(fakeList);
-  console.log("fakedata is", fakeList);
+  console.log('fakedata is', fakeList);
 
   useEffect(() => {
     if (authContext?.loggedAddress.length === 0) {
@@ -50,13 +49,14 @@ const ExploreGuilds: NextPage = () => {
     setSearchText(event.target.value);
   };
 
+  const filteredGuilds =
+    guilds && guilds.length > 0
+      ? guilds.filter((guild) =>
+          guild.name.toLowerCase().includes(searchText.toLowerCase()),
+        )
+      : [];
 
-  const filteredGuilds = guilds && guilds.length > 0
-    ? guilds.filter((guild) => guild.name.toLowerCase().includes(searchText.toLowerCase()))
-    : [];
-
-
-  console.log("filtered ", filteredGuilds.length);
+  console.log('filtered ', filteredGuilds.length);
   return (
     <>
       {
@@ -80,22 +80,18 @@ const ExploreGuilds: NextPage = () => {
 
       <Box sx={{ margin: SIZES['lineHeight'] }}>
         <Grid container spacing={4}>
-          {
-            filteredGuilds.map((guild) => (
-              <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
-                <GuildCard
-                  handleClick={() => router.push(`/guild/${guild.address}`)}
-                  guild={ guild }
-                  key={guild.name}
-                />
-              </Grid>
-            )
-            )
-          }
-
-
+          {filteredGuilds.map((guild) => (
+            <Grid item xs={12} md={6} lg={4} xl={3} key={guild.name}>
+              <GuildCard
+                handleClick={() => router.push(`/public-guild-view`)}
+                guild={guild}
+                key={guild.name}
+              />
+            </Grid>
+          ))}
         </Grid>
-      </Box></>
+      </Box>
+    </>
   );
 };
 

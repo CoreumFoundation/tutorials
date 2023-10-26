@@ -1,9 +1,9 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
-import { Any } from "../../../../google/protobuf/any";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { Any } from '../../../../google/protobuf/any';
 
-export const protobufPackage = "coreum.asset.nft.v1";
+export const protobufPackage = 'coreum.asset.nft.v1';
 
 /** ClassFeature defines possible features of non-fungible token class. */
 export enum ClassFeature {
@@ -17,19 +17,19 @@ export enum ClassFeature {
 export function classFeatureFromJSON(object: any): ClassFeature {
   switch (object) {
     case 0:
-    case "burning":
+    case 'burning':
       return ClassFeature.burning;
     case 1:
-    case "freezing":
+    case 'freezing':
       return ClassFeature.freezing;
     case 2:
-    case "whitelisting":
+    case 'whitelisting':
       return ClassFeature.whitelisting;
     case 3:
-    case "disable_sending":
+    case 'disable_sending':
       return ClassFeature.disable_sending;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return ClassFeature.UNRECOGNIZED;
   }
@@ -38,16 +38,16 @@ export function classFeatureFromJSON(object: any): ClassFeature {
 export function classFeatureToJSON(object: ClassFeature): string {
   switch (object) {
     case ClassFeature.burning:
-      return "burning";
+      return 'burning';
     case ClassFeature.freezing:
-      return "freezing";
+      return 'freezing';
     case ClassFeature.whitelisting:
-      return "whitelisting";
+      return 'whitelisting';
     case ClassFeature.disable_sending:
-      return "disable_sending";
+      return 'disable_sending';
     case ClassFeature.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return 'UNRECOGNIZED';
   }
 }
 
@@ -84,15 +84,18 @@ export interface Class {
 }
 
 function createBaseClassDefinition(): ClassDefinition {
-  return { id: "", issuer: "", features: [], royaltyRate: "" };
+  return { id: '', issuer: '', features: [], royaltyRate: '' };
 }
 
 export const ClassDefinition = {
-  encode(message: ClassDefinition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
+  encode(
+    message: ClassDefinition,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       writer.uint32(18).string(message.issuer);
     }
     writer.uint32(26).fork();
@@ -100,14 +103,15 @@ export const ClassDefinition = {
       writer.int32(v);
     }
     writer.ldelim();
-    if (message.royaltyRate !== "") {
+    if (message.royaltyRate !== '') {
       writer.uint32(34).string(message.royaltyRate);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ClassDefinition {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseClassDefinition();
     while (reader.pos < end) {
@@ -162,79 +166,85 @@ export const ClassDefinition = {
 
   fromJSON(object: any): ClassDefinition {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      issuer: isSet(object.issuer) ? String(object.issuer) : "",
-      features: Array.isArray(object?.features) ? object.features.map((e: any) => classFeatureFromJSON(e)) : [],
-      royaltyRate: isSet(object.royaltyRate) ? String(object.royaltyRate) : "",
+      id: isSet(object.id) ? String(object.id) : '',
+      issuer: isSet(object.issuer) ? String(object.issuer) : '',
+      features: Array.isArray(object?.features)
+        ? object.features.map((e: any) => classFeatureFromJSON(e))
+        : [],
+      royaltyRate: isSet(object.royaltyRate) ? String(object.royaltyRate) : '',
     };
   },
 
   toJSON(message: ClassDefinition): unknown {
     const obj: any = {};
-    if (message.id !== "") {
+    if (message.id !== '') {
       obj.id = message.id;
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       obj.issuer = message.issuer;
     }
     if (message.features?.length) {
       obj.features = message.features.map((e) => classFeatureToJSON(e));
     }
-    if (message.royaltyRate !== "") {
+    if (message.royaltyRate !== '') {
       obj.royaltyRate = message.royaltyRate;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<ClassDefinition>, I>>(base?: I): ClassDefinition {
+  create<I extends Exact<DeepPartial<ClassDefinition>, I>>(
+    base?: I,
+  ): ClassDefinition {
     return ClassDefinition.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ClassDefinition>, I>>(object: I): ClassDefinition {
+  fromPartial<I extends Exact<DeepPartial<ClassDefinition>, I>>(
+    object: I,
+  ): ClassDefinition {
     const message = createBaseClassDefinition();
-    message.id = object.id ?? "";
-    message.issuer = object.issuer ?? "";
+    message.id = object.id ?? '';
+    message.issuer = object.issuer ?? '';
     message.features = object.features?.map((e) => e) || [];
-    message.royaltyRate = object.royaltyRate ?? "";
+    message.royaltyRate = object.royaltyRate ?? '';
     return message;
   },
 };
 
 function createBaseClass(): Class {
   return {
-    id: "",
-    issuer: "",
-    name: "",
-    symbol: "",
-    description: "",
-    uri: "",
-    uriHash: "",
+    id: '',
+    issuer: '',
+    name: '',
+    symbol: '',
+    description: '',
+    uri: '',
+    uriHash: '',
     data: undefined,
     features: [],
-    royaltyRate: "",
+    royaltyRate: '',
   };
 }
 
 export const Class = {
   encode(message: Class, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       writer.uint32(18).string(message.issuer);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(26).string(message.name);
     }
-    if (message.symbol !== "") {
+    if (message.symbol !== '') {
       writer.uint32(34).string(message.symbol);
     }
-    if (message.description !== "") {
+    if (message.description !== '') {
       writer.uint32(42).string(message.description);
     }
-    if (message.uri !== "") {
+    if (message.uri !== '') {
       writer.uint32(50).string(message.uri);
     }
-    if (message.uriHash !== "") {
+    if (message.uriHash !== '') {
       writer.uint32(58).string(message.uriHash);
     }
     if (message.data !== undefined) {
@@ -245,14 +255,15 @@ export const Class = {
       writer.int32(v);
     }
     writer.ldelim();
-    if (message.royaltyRate !== "") {
+    if (message.royaltyRate !== '') {
       writer.uint32(82).string(message.royaltyRate);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Class {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseClass();
     while (reader.pos < end) {
@@ -349,40 +360,42 @@ export const Class = {
 
   fromJSON(object: any): Class {
     return {
-      id: isSet(object.id) ? String(object.id) : "",
-      issuer: isSet(object.issuer) ? String(object.issuer) : "",
-      name: isSet(object.name) ? String(object.name) : "",
-      symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      description: isSet(object.description) ? String(object.description) : "",
-      uri: isSet(object.uri) ? String(object.uri) : "",
-      uriHash: isSet(object.uriHash) ? String(object.uriHash) : "",
+      id: isSet(object.id) ? String(object.id) : '',
+      issuer: isSet(object.issuer) ? String(object.issuer) : '',
+      name: isSet(object.name) ? String(object.name) : '',
+      symbol: isSet(object.symbol) ? String(object.symbol) : '',
+      description: isSet(object.description) ? String(object.description) : '',
+      uri: isSet(object.uri) ? String(object.uri) : '',
+      uriHash: isSet(object.uriHash) ? String(object.uriHash) : '',
       data: isSet(object.data) ? Any.fromJSON(object.data) : undefined,
-      features: Array.isArray(object?.features) ? object.features.map((e: any) => classFeatureFromJSON(e)) : [],
-      royaltyRate: isSet(object.royaltyRate) ? String(object.royaltyRate) : "",
+      features: Array.isArray(object?.features)
+        ? object.features.map((e: any) => classFeatureFromJSON(e))
+        : [],
+      royaltyRate: isSet(object.royaltyRate) ? String(object.royaltyRate) : '',
     };
   },
 
   toJSON(message: Class): unknown {
     const obj: any = {};
-    if (message.id !== "") {
+    if (message.id !== '') {
       obj.id = message.id;
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       obj.issuer = message.issuer;
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       obj.name = message.name;
     }
-    if (message.symbol !== "") {
+    if (message.symbol !== '') {
       obj.symbol = message.symbol;
     }
-    if (message.description !== "") {
+    if (message.description !== '') {
       obj.description = message.description;
     }
-    if (message.uri !== "") {
+    if (message.uri !== '') {
       obj.uri = message.uri;
     }
-    if (message.uriHash !== "") {
+    if (message.uriHash !== '') {
       obj.uriHash = message.uriHash;
     }
     if (message.data !== undefined) {
@@ -391,7 +404,7 @@ export const Class = {
     if (message.features?.length) {
       obj.features = message.features.map((e) => classFeatureToJSON(e));
     }
-    if (message.royaltyRate !== "") {
+    if (message.royaltyRate !== '') {
       obj.royaltyRate = message.royaltyRate;
     }
     return obj;
@@ -402,31 +415,50 @@ export const Class = {
   },
   fromPartial<I extends Exact<DeepPartial<Class>, I>>(object: I): Class {
     const message = createBaseClass();
-    message.id = object.id ?? "";
-    message.issuer = object.issuer ?? "";
-    message.name = object.name ?? "";
-    message.symbol = object.symbol ?? "";
-    message.description = object.description ?? "";
-    message.uri = object.uri ?? "";
-    message.uriHash = object.uriHash ?? "";
-    message.data = (object.data !== undefined && object.data !== null) ? Any.fromPartial(object.data) : undefined;
+    message.id = object.id ?? '';
+    message.issuer = object.issuer ?? '';
+    message.name = object.name ?? '';
+    message.symbol = object.symbol ?? '';
+    message.description = object.description ?? '';
+    message.uri = object.uri ?? '';
+    message.uriHash = object.uriHash ?? '';
+    message.data =
+      object.data !== undefined && object.data !== null
+        ? Any.fromPartial(object.data)
+        : undefined;
     message.features = object.features?.map((e) => e) || [];
-    message.royaltyRate = object.royaltyRate ?? "";
+    message.royaltyRate = object.royaltyRate ?? '';
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

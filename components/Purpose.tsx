@@ -1,125 +1,74 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
-import { Coin } from '@cosmjs/amino';
-import WalletLoader from 'components/WalletLoader';
+import { useContext, useState } from 'react'
+import { Button, Typography, TextField } from '@mui/material';
+import { GuildContext } from 'contexts/guildContext';
+import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
 import { useSigningClient } from 'contexts/client';
-import {
-  convertDenomToMicroDenom,
-  convertFromMicroDenom,
-  convertMicroDenomToDenom,
-} from 'util/conversion';
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
-//@ts-ignore
-import { Guild, Member } from 'util/types';
-import MembersTable from 'components/MembersTable';
-import PageWithSidebar from 'components/PageWithSidebar';
-
-const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
-const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
-
+/* 
+TO FIX:
+- select the vault to send the proposal
+- Add tx generator
+- handle response 
+*/
 const Purpose: NextPage = () => {
-  const { walletAddress, signingClient } = useSigningClient();
-  const router = useRouter();
-  const [guildAddress, setGuildAddress] = useState<string | null>(null);
-  const [guildContract, setGuildContract] = useState<Guild | null>(null);
-  const [guildAdmin, setGuildAdmin] = useState<string>('');
-  const [guildMultisig, setGuildMultisig] = useState<string | null>(null);
+  const { signingClient, walletAddress } = useSigningClient()
+  const ctx = useContext(GuildContext)
+  const vaults = ctx?.guildVaults
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    msgs: [],
+  });
+  const [success, setSuccess] = useState<string>('')
+  const handleInputChange = (e: any) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-  const [balance, setBalance] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!guildAddress) {
-      let address = router.query.address;
-      if (typeof address == 'string') {
-        setGuildAddress(address);
-      }
+  async function createProposal() {
+    if (!vaults || !signingClient) return
+    let v1 = vaults[0]
+    let msg = {
+      title: formData.title,
+      description: formData.description,
+      msgs: [],
+      latest: undefined
     }
-  }, [router]);
-
-  useEffect(() => {
-    if (!signingClient || walletAddress.length === 0 || !guildAddress) {
-      return;
-    }
-    setError('');
-    setSuccess('');
-
-    signingClient
-      .getContract(guildAddress)
-      .then((response: Guild) => {
-        setGuildContract(response);
-        /* const { amount, denom }: { amount: number; denom: string } = response;
-                setBalance(
-                `${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`,
-                ); */
-      })
-      .catch((error) => {
-        setError(`Error! ${error.message}`);
-      });
-  }, [signingClient, walletAddress, guildAddress]);
-
-  async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      let membersList = await signingClient?.queryContractSmart(
-        address,
-        membersMsg,
-      );
-      if (membersList?.members) {
-        setMembers(membersList.members);
-      } else {
-        setError('No members could be found');
-      }
-    } catch (err: any) {
-      setError(err.toString());
+    let client_o = new Cw3FlexMultisigNamedClient(signingClient, walletAddress, v1)
+    let res = await client_o.propose(msg, "auto") 
+    if (res) {
+      setSuccess("your proposal has been created!")
     }
   }
-  async function getAdmin(address: string) {
-    try {
-      let adminMsg = {
-        admin: {},
-      };
-      let admin = await signingClient?.queryContractSmart(address, adminMsg);
-      if (admin?.admin) {
-        setGuildAdmin(admin.admin);
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-
-  useEffect(() => {
-    if (guildContract && guildAddress) {
-      getMembers(guildAddress);
-      getAdmin(guildAddress);
-    }
-  }, [guildContract]);
 
   return (
-    <WalletLoader loading={loading}>
-      <Typography variant="h4" gutterBottom>
-        Purpose
-      </Typography>
-    </WalletLoader>
+    <>
+    <Typography variant="h4" gutterBottom>
+      Proposal
+    </Typography>
+      <>
+        <TextField
+          margin="normal"
+          label="Title"
+          name="title"
+          value={formData.title}
+          onChange={handleInputChange}
+        />
+        <TextField
+          margin="normal"
+          label="Description"
+          name="description"
+          value={formData.description}
+          onChange={handleInputChange}
+        />
+        <Button
+          disabled
+        >Add tx</Button>
+      </>
+      <Button
+        onClick={() => createProposal()}
+      >Create</Button>
+    </>
   );
 };
 

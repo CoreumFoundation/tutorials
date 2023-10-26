@@ -1,23 +1,25 @@
-import { ReactNode, useState } from 'react';
+import { useState } from 'react';
 import { Drawer, List, ListItemButton, ListSubheader } from '@mui/material';
 
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
-import { useRouter } from 'next/navigation';
+
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import Guild from 'pages/guild/[address]';
+
 import GuildMembers from './GuildMembers';
-import UserProfile from './UserProfile';
-import Vote from './Vote';
-import Vaults from './Vaults';
-import Purpose from './Purpose';
 import GuildProfile from './GuildProfile';
+import Purpose from './Purpose';
+import Tokens from './Tokens';
+import UserProfile from './UserProfile';
+import Vaults from './Vaults';
+import Vote from './Vote';
 
 const MANAGEMENT_CONTENT = {
-  USER_PROFILE: 'user-profile',
-  GUILD_PROFILE: 'guild-profile',
   GUILD_MEMBERS: 'guild-members',
+  GUILD_PROFILE: 'guild-profile',
   PURPOSE: 'purpose',
+  TOKENS: 'tokens',
+  USER_PROFILE: 'user-profile',
   VAULTS: 'vaults',
   VOTE: 'vote',
 } as const;
@@ -43,7 +45,6 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
-  const router = useRouter();
   return (
     <Drawer
       variant="permanent"
@@ -100,7 +101,7 @@ const Sidebar = ({ setSelectedMenuOption }: SidebarProps) => {
         <StyledListItemButton
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.PURPOSE)}
         >
-          Purpose
+          Propose
         </StyledListItemButton>
       </List>
     </Drawer>
@@ -120,6 +121,8 @@ const PageWithSidebar = () => {
     switch (selectedMenuOption) {
       case MANAGEMENT_CONTENT.USER_PROFILE:
         return <UserProfile />;
+      case MANAGEMENT_CONTENT.TOKENS:
+        return <Tokens />;
       case MANAGEMENT_CONTENT.GUILD_PROFILE:
         return <GuildProfile />;
       case MANAGEMENT_CONTENT.GUILD_MEMBERS:

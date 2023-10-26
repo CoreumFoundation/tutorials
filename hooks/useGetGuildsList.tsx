@@ -82,7 +82,7 @@ const fakeList = [
 ];
 
 const useGetGuildsList = () => {
-  return {fakeList};
+  return { fakeList };
 };
 
 export { useGetGuildsList };

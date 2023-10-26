@@ -4,15 +4,22 @@ import type { NextPage } from 'next';
 
 import styled from '@emotion/styled';
 
-import { Typography, Box, Grid, Container, Button } from '@mui/material';
+import {
+  Typography,
+  Box,
+  Grid,
+  Container,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 
 //@ts-ignore
 import type { Guild } from 'util/types';
 
 import { useSigningClient } from 'contexts/client';
 
-import WalletLoader from 'components/WalletLoader';
 import GuildCard from 'components/GuildCard';
+import { guildCreatorCodeId, vaultCreatorCodeId } from 'util/constants';
 
 const StyledTitle = styled(Typography)`
   color: ${(props) => props.theme.palette.primary.main};
@@ -25,18 +32,15 @@ const GuildSpace: NextPage = () => {
 
   const router = useRouter();
 
+  const [loading, setLoading] = useState(true);
 
-  const [loading,setLoading] = useState(false);
-
-
-  const { walletAddress, signingClient } = useSigningClient();
+  const { signingClient } = useSigningClient();
 
   async function getContracts() {
-
     setLoading(true);
     //@ts-ignore
-    let data = await signingClient.getContracts(522);
-    //    console.log(JSON.stringify(data))
+    let data = await signingClient.getContracts(guildCreatorCodeId);
+    console.log(data)
     let list = data.map((x) => {
       return x;
     });
@@ -46,7 +50,6 @@ const GuildSpace: NextPage = () => {
       //@ts-ignore
       let guild_data = await signingClient.getContract(guild_address);
 
-      // 获取 membersList
       let membersMsg = {
         list_members: {
           start_after: null,
@@ -54,11 +57,10 @@ const GuildSpace: NextPage = () => {
         },
       };
       let membersList = await signingClient?.queryContractSmart(
-        guild_address,  // 注意这里使用 guild_address
+        guild_address,
         membersMsg,
       );
 
-      // 如果 membersList?.members 存在，将其添加到 guild_data
       if (membersList?.members) {
         guild_data.member = membersList.members;
         guild_data.member_count = membersList.members.length;
@@ -79,8 +81,16 @@ const GuildSpace: NextPage = () => {
     }
   }, [signingClient, fetched]);
 
+  if (loading) {
+    return (
+      <Box maxWidth="sm" sx={{ display: 'flex', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
-    <WalletLoader loading={loading}>
+    <>
       {guilds.length === 0 && (
         <Container>
           <Box sx={{ marginBottom: 8 }}>
@@ -145,7 +155,7 @@ const GuildSpace: NextPage = () => {
           </Box>
         </Container>
       )}
-    </WalletLoader>
+    </>
   );
 };
 

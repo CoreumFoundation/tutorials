@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "coreum.customparams.v1";
+export const protobufPackage = 'coreum.customparams.v1';
 
 /** StakingParams defines the set of additional staking params for the staking module wrapper. */
 export interface StakingParams {
@@ -11,19 +11,23 @@ export interface StakingParams {
 }
 
 function createBaseStakingParams(): StakingParams {
-  return { minSelfDelegation: "" };
+  return { minSelfDelegation: '' };
 }
 
 export const StakingParams = {
-  encode(message: StakingParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.minSelfDelegation !== "") {
+  encode(
+    message: StakingParams,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.minSelfDelegation !== '') {
       writer.uint32(10).string(message.minSelfDelegation);
     }
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): StakingParams {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseStakingParams();
     while (reader.pos < end) {
@@ -46,38 +50,62 @@ export const StakingParams = {
   },
 
   fromJSON(object: any): StakingParams {
-    return { minSelfDelegation: isSet(object.minSelfDelegation) ? String(object.minSelfDelegation) : "" };
+    return {
+      minSelfDelegation: isSet(object.minSelfDelegation)
+        ? String(object.minSelfDelegation)
+        : '',
+    };
   },
 
   toJSON(message: StakingParams): unknown {
     const obj: any = {};
-    if (message.minSelfDelegation !== "") {
+    if (message.minSelfDelegation !== '') {
       obj.minSelfDelegation = message.minSelfDelegation;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<StakingParams>, I>>(base?: I): StakingParams {
+  create<I extends Exact<DeepPartial<StakingParams>, I>>(
+    base?: I,
+  ): StakingParams {
     return StakingParams.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<StakingParams>, I>>(object: I): StakingParams {
+  fromPartial<I extends Exact<DeepPartial<StakingParams>, I>>(
+    object: I,
+  ): StakingParams {
     const message = createBaseStakingParams();
-    message.minSelfDelegation = object.minSelfDelegation ?? "";
+    message.minSelfDelegation = object.minSelfDelegation ?? '';
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

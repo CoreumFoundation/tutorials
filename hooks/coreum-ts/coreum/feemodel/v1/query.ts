@@ -1,15 +1,14 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
-import { DecCoin } from "../../../cosmos/base/v1beta1/coin";
-import { Params } from "./params";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { DecCoin } from '../../../cosmos/base/v1beta1/coin';
+import { Params } from './params';
 
-export const protobufPackage = "coreum.feemodel.v1";
+export const protobufPackage = 'coreum.feemodel.v1';
 
-export interface QueryMinGasPriceRequest {
-}
+export interface QueryMinGasPriceRequest {}
 
-export interface QueryMinGasPriceResponse { 
+export interface QueryMinGasPriceResponse {
   minGasPrice?: DecCoin | undefined;
 }
 
@@ -23,8 +22,7 @@ export interface QueryRecommendedGasPriceResponse {
   high?: DecCoin | undefined;
 }
 
-export interface QueryParamsRequest {
-}
+export interface QueryParamsRequest {}
 
 export interface QueryParamsResponse {
   params?: Params | undefined;
@@ -35,12 +33,19 @@ function createBaseQueryMinGasPriceRequest(): QueryMinGasPriceRequest {
 }
 
 export const QueryMinGasPriceRequest = {
-  encode(_: QueryMinGasPriceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: QueryMinGasPriceRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMinGasPriceRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): QueryMinGasPriceRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryMinGasPriceRequest();
     while (reader.pos < end) {
@@ -64,10 +69,14 @@ export const QueryMinGasPriceRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<QueryMinGasPriceRequest>, I>>(base?: I): QueryMinGasPriceRequest {
+  create<I extends Exact<DeepPartial<QueryMinGasPriceRequest>, I>>(
+    base?: I,
+  ): QueryMinGasPriceRequest {
     return QueryMinGasPriceRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryMinGasPriceRequest>, I>>(_: I): QueryMinGasPriceRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryMinGasPriceRequest>, I>>(
+    _: I,
+  ): QueryMinGasPriceRequest {
     const message = createBaseQueryMinGasPriceRequest();
     return message;
   },
@@ -78,15 +87,22 @@ function createBaseQueryMinGasPriceResponse(): QueryMinGasPriceResponse {
 }
 
 export const QueryMinGasPriceResponse = {
-  encode(message: QueryMinGasPriceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryMinGasPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.minGasPrice !== undefined) {
       DecCoin.encode(message.minGasPrice, writer.uint32(10).fork()).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryMinGasPriceResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): QueryMinGasPriceResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryMinGasPriceResponse();
     while (reader.pos < end) {
@@ -109,7 +125,11 @@ export const QueryMinGasPriceResponse = {
   },
 
   fromJSON(object: any): QueryMinGasPriceResponse {
-    return { minGasPrice: isSet(object.minGasPrice) ? DecCoin.fromJSON(object.minGasPrice) : undefined };
+    return {
+      minGasPrice: isSet(object.minGasPrice)
+        ? DecCoin.fromJSON(object.minGasPrice)
+        : undefined,
+    };
   },
 
   toJSON(message: QueryMinGasPriceResponse): unknown {
@@ -120,14 +140,19 @@ export const QueryMinGasPriceResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<QueryMinGasPriceResponse>, I>>(base?: I): QueryMinGasPriceResponse {
+  create<I extends Exact<DeepPartial<QueryMinGasPriceResponse>, I>>(
+    base?: I,
+  ): QueryMinGasPriceResponse {
     return QueryMinGasPriceResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryMinGasPriceResponse>, I>>(object: I): QueryMinGasPriceResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryMinGasPriceResponse>, I>>(
+    object: I,
+  ): QueryMinGasPriceResponse {
     const message = createBaseQueryMinGasPriceResponse();
-    message.minGasPrice = (object.minGasPrice !== undefined && object.minGasPrice !== null)
-      ? DecCoin.fromPartial(object.minGasPrice)
-      : undefined;
+    message.minGasPrice =
+      object.minGasPrice !== undefined && object.minGasPrice !== null
+        ? DecCoin.fromPartial(object.minGasPrice)
+        : undefined;
     return message;
   },
 };
@@ -137,15 +162,22 @@ function createBaseQueryRecommendedGasPriceRequest(): QueryRecommendedGasPriceRe
 }
 
 export const QueryRecommendedGasPriceRequest = {
-  encode(message: QueryRecommendedGasPriceRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryRecommendedGasPriceRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.afterBlocks !== 0) {
       writer.uint32(8).uint32(message.afterBlocks);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecommendedGasPriceRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): QueryRecommendedGasPriceRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecommendedGasPriceRequest();
     while (reader.pos < end) {
@@ -168,7 +200,9 @@ export const QueryRecommendedGasPriceRequest = {
   },
 
   fromJSON(object: any): QueryRecommendedGasPriceRequest {
-    return { afterBlocks: isSet(object.afterBlocks) ? Number(object.afterBlocks) : 0 };
+    return {
+      afterBlocks: isSet(object.afterBlocks) ? Number(object.afterBlocks) : 0,
+    };
   },
 
   toJSON(message: QueryRecommendedGasPriceRequest): unknown {
@@ -179,7 +213,9 @@ export const QueryRecommendedGasPriceRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<QueryRecommendedGasPriceRequest>, I>>(base?: I): QueryRecommendedGasPriceRequest {
+  create<I extends Exact<DeepPartial<QueryRecommendedGasPriceRequest>, I>>(
+    base?: I,
+  ): QueryRecommendedGasPriceRequest {
     return QueryRecommendedGasPriceRequest.fromPartial(base ?? ({} as any));
   },
   fromPartial<I extends Exact<DeepPartial<QueryRecommendedGasPriceRequest>, I>>(
@@ -196,7 +232,10 @@ function createBaseQueryRecommendedGasPriceResponse(): QueryRecommendedGasPriceR
 }
 
 export const QueryRecommendedGasPriceResponse = {
-  encode(message: QueryRecommendedGasPriceResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryRecommendedGasPriceResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.low !== undefined) {
       DecCoin.encode(message.low, writer.uint32(10).fork()).ldelim();
     }
@@ -209,8 +248,12 @@ export const QueryRecommendedGasPriceResponse = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): QueryRecommendedGasPriceResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): QueryRecommendedGasPriceResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryRecommendedGasPriceResponse();
     while (reader.pos < end) {
@@ -273,13 +316,22 @@ export const QueryRecommendedGasPriceResponse = {
   ): QueryRecommendedGasPriceResponse {
     return QueryRecommendedGasPriceResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryRecommendedGasPriceResponse>, I>>(
-    object: I,
-  ): QueryRecommendedGasPriceResponse {
+  fromPartial<
+    I extends Exact<DeepPartial<QueryRecommendedGasPriceResponse>, I>,
+  >(object: I): QueryRecommendedGasPriceResponse {
     const message = createBaseQueryRecommendedGasPriceResponse();
-    message.low = (object.low !== undefined && object.low !== null) ? DecCoin.fromPartial(object.low) : undefined;
-    message.med = (object.med !== undefined && object.med !== null) ? DecCoin.fromPartial(object.med) : undefined;
-    message.high = (object.high !== undefined && object.high !== null) ? DecCoin.fromPartial(object.high) : undefined;
+    message.low =
+      object.low !== undefined && object.low !== null
+        ? DecCoin.fromPartial(object.low)
+        : undefined;
+    message.med =
+      object.med !== undefined && object.med !== null
+        ? DecCoin.fromPartial(object.med)
+        : undefined;
+    message.high =
+      object.high !== undefined && object.high !== null
+        ? DecCoin.fromPartial(object.high)
+        : undefined;
     return message;
   },
 };
@@ -289,12 +341,16 @@ function createBaseQueryParamsRequest(): QueryParamsRequest {
 }
 
 export const QueryParamsRequest = {
-  encode(_: QueryParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: QueryParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryParamsRequest();
     while (reader.pos < end) {
@@ -318,10 +374,14 @@ export const QueryParamsRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(base?: I): QueryParamsRequest {
+  create<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(
+    base?: I,
+  ): QueryParamsRequest {
     return QueryParamsRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(_: I): QueryParamsRequest {
+  fromPartial<I extends Exact<DeepPartial<QueryParamsRequest>, I>>(
+    _: I,
+  ): QueryParamsRequest {
     const message = createBaseQueryParamsRequest();
     return message;
   },
@@ -332,7 +392,10 @@ function createBaseQueryParamsResponse(): QueryParamsResponse {
 }
 
 export const QueryParamsResponse = {
-  encode(message: QueryParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: QueryParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.params !== undefined) {
       Params.encode(message.params, writer.uint32(10).fork()).ldelim();
     }
@@ -340,7 +403,8 @@ export const QueryParamsResponse = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): QueryParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseQueryParamsResponse();
     while (reader.pos < end) {
@@ -363,7 +427,9 @@ export const QueryParamsResponse = {
   },
 
   fromJSON(object: any): QueryParamsResponse {
-    return { params: isSet(object.params) ? Params.fromJSON(object.params) : undefined };
+    return {
+      params: isSet(object.params) ? Params.fromJSON(object.params) : undefined,
+    };
   },
 
   toJSON(message: QueryParamsResponse): unknown {
@@ -374,14 +440,19 @@ export const QueryParamsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(base?: I): QueryParamsResponse {
+  create<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(
+    base?: I,
+  ): QueryParamsResponse {
     return QueryParamsResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(object: I): QueryParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<QueryParamsResponse>, I>>(
+    object: I,
+  ): QueryParamsResponse {
     const message = createBaseQueryParamsResponse();
-    message.params = (object.params !== undefined && object.params !== null)
-      ? Params.fromPartial(object.params)
-      : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
@@ -389,14 +460,18 @@ export const QueryParamsResponse = {
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** MinGasPrice queries the current minimum gas price required by the network. */
-  MinGasPrice(request: QueryMinGasPriceRequest): Promise<QueryMinGasPriceResponse>;
+  MinGasPrice(
+    request: QueryMinGasPriceRequest,
+  ): Promise<QueryMinGasPriceResponse>;
   /** RecommendedGasPrice queries the recommended gas price for the next n blocks. */
-  RecommendedGasPrice(request: QueryRecommendedGasPriceRequest): Promise<QueryRecommendedGasPriceResponse>;
+  RecommendedGasPrice(
+    request: QueryRecommendedGasPriceRequest,
+  ): Promise<QueryRecommendedGasPriceResponse>;
   /** Params queries the parameters of x/feemodel module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
 }
 
-export const QueryServiceName = "coreum.feemodel.v1.Query";
+export const QueryServiceName = 'coreum.feemodel.v1.Query';
 export class QueryClientImpl implements Query {
   private readonly rpc: Rpc;
   private readonly service: string;
@@ -407,40 +482,70 @@ export class QueryClientImpl implements Query {
     this.RecommendedGasPrice = this.RecommendedGasPrice.bind(this);
     this.Params = this.Params.bind(this);
   }
-  MinGasPrice(request: QueryMinGasPriceRequest): Promise<QueryMinGasPriceResponse> {
+  MinGasPrice(
+    request: QueryMinGasPriceRequest,
+  ): Promise<QueryMinGasPriceResponse> {
     const data = QueryMinGasPriceRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "MinGasPrice", data);
-    return promise.then((data) => QueryMinGasPriceResponse.decode(_m0.Reader.create(data)));
+    const promise = this.rpc.request(this.service, 'MinGasPrice', data);
+    return promise.then((data) =>
+      QueryMinGasPriceResponse.decode(_m0.Reader.create(data)),
+    );
   }
 
-  RecommendedGasPrice(request: QueryRecommendedGasPriceRequest): Promise<QueryRecommendedGasPriceResponse> {
+  RecommendedGasPrice(
+    request: QueryRecommendedGasPriceRequest,
+  ): Promise<QueryRecommendedGasPriceResponse> {
     const data = QueryRecommendedGasPriceRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "RecommendedGasPrice", data);
-    return promise.then((data) => QueryRecommendedGasPriceResponse.decode(_m0.Reader.create(data)));
+    const promise = this.rpc.request(this.service, 'RecommendedGasPrice', data);
+    return promise.then((data) =>
+      QueryRecommendedGasPriceResponse.decode(_m0.Reader.create(data)),
+    );
   }
 
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse> {
     const data = QueryParamsRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "Params", data);
-    return promise.then((data) => QueryParamsResponse.decode(_m0.Reader.create(data)));
+    const promise = this.rpc.request(this.service, 'Params', data);
+    return promise.then((data) =>
+      QueryParamsResponse.decode(_m0.Reader.create(data)),
+    );
   }
 }
 
 interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array,
+  ): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

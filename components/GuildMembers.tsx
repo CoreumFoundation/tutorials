@@ -29,53 +29,29 @@ const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
 const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
 
 interface IProps {
-  members: Member[]; 
+  members: Member[];
 }
 
 //@ts-ignore
 const GuildMembers: NextPage = (props: IProps) => {
-  const { walletAddress, signingClient } = useSigningClient();
-  const ctx = useContext(GuildContext)  
-  const members = ctx?.guildMembers
-   
+  const { walletAddress } = useSigningClient();
+  const ctx = useContext(GuildContext);
+  const members = ctx?.guildMembers;
+
   return (
     <>
       <Typography variant="h4" gutterBottom>
         Members
       </Typography>
-      {members &&
-      <>
-      {members?.length > 0 && (
-        <Paper>
-        <Typography variant="h6" gutterBottom>
-        Members:
-        </Typography>
-        <Box>
-            {members.map((m: Member) => {
-              return (
-                <Typography
-                variant="body1"
-                style={
-                  m.addr === walletAddress
-                  ? { fontWeight: 700 }
-                  : { fontWeight: 400 }
-                }
-                key={m.addr}
-                >
-                  {m.name} ({m.weight})
-                </Typography>
-              );
-            })}
-          </Box>
-        </Paper>
+      {members && (
+        <>
+          {members?.length > 0 && (
+            <Paper>
+              <MembersTable members={members} />
+            </Paper>
+          )}
+        </>
       )}
-      {members?.length > 0 && (
-        <Paper>
-        <MembersTable members={members} />
-        </Paper>
-        )}
-      </>
-      }
     </>
   );
 };

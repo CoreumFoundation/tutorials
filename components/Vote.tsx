@@ -1,129 +1,50 @@
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
 import type { NextPage } from 'next';
-import { Coin } from '@cosmjs/amino';
-import WalletLoader from 'components/WalletLoader';
-import { useSigningClient } from 'contexts/client';
-import {
-  convertDenomToMicroDenom,
-  convertFromMicroDenom,
-  convertMicroDenomToDenom,
-} from 'util/conversion';
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  InputAdornment,
-  Paper,
-  TextField,
-  Typography,
-} from '@mui/material';
-//@ts-ignore
-import { Guild, Member } from 'util/types';
-import MembersTable from 'components/MembersTable';
-import PageWithSidebar from 'components/PageWithSidebar';
-import { VoteProposal } from './VoteProposal';
 
-const PUBLIC_CHAIN_NAME = process.env.NEXT_PUBLIC_CHAIN_NAME;
-const PUBLIC_STAKING_DENOM = process.env.NEXT_PUBLIC_STAKING_DENOM || '';
+import { Box, Typography } from '@mui/material';
+
+import { VoteProposal } from './VoteProposal';
+import { useContext } from 'react';
+import { GuildContext } from 'contexts/guildContext';
+//@ts-ignore
+import { Proposal } from 'util/types';
 
 const Vote: NextPage = () => {
-  const { walletAddress, signingClient } = useSigningClient();
-  const router = useRouter();
-  const [guildAddress, setGuildAddress] = useState<string | null>(null);
-  const [guildContract, setGuildContract] = useState<Guild | null>(null);
-  const [guildAdmin, setGuildAdmin] = useState<string>('');
-  const [guildMultisig, setGuildMultisig] = useState<string | null>(null);
+  const ctx = useContext(GuildContext);
+  let proposals = ctx?.guildProposals;
+  let members = ctx?.guildMembers;
 
-  const [balance, setBalance] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [members, setMembers] = useState<Member[]>([]);
-  const [success, setSuccess] = useState('');
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    if (!guildAddress) {
-      let address = router.query.address;
-      if (typeof address == 'string') {
-        setGuildAddress(address);
-      }
-    }
-  }, [router]);
-
-  useEffect(() => {
-    if (!signingClient || walletAddress.length === 0 || !guildAddress) {
-      return;
-    }
-    setError('');
-    setSuccess('');
-
-    signingClient
-      .getContract(guildAddress)
-      .then((response: Guild) => {
-        setGuildContract(response);
-        /* const { amount, denom }: { amount: number; denom: string } = response;
-                setBalance(
-                `${convertMicroDenomToDenom(amount)} ${convertFromMicroDenom(denom)}`,
-                ); */
-      })
-      .catch((error) => {
-        setError(`Error! ${error.message}`);
-      });
-  }, [signingClient, walletAddress, guildAddress]);
-
-  async function getMembers(address: string) {
-    try {
-      let membersMsg = {
-        list_members: {
-          start_after: null,
-          limit: null,
-        },
-      };
-      let membersList = await signingClient?.queryContractSmart(
-        address,
-        membersMsg,
-      );
-      if (membersList?.members) {
-        setMembers(membersList.members);
-      } else {
-        setError('No members could be found');
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
+  function getUsername(address: string) {
+    if (!members) return;
+    let m = members.find((x) => x.addr == address);
+    return m.name;
   }
-  async function getAdmin(address: string) {
-    try {
-      let adminMsg = {
-        admin: {},
-      };
-      let admin = await signingClient?.queryContractSmart(address, adminMsg);
-      if (admin?.admin) {
-        setGuildAdmin(admin.admin);
-      }
-    } catch (err: any) {
-      setError(err.toString());
-    }
-  }
-
-  useEffect(() => {
-    if (guildContract && guildAddress) {
-      getMembers(guildAddress);
-      getAdmin(guildAddress);
-    }
-  }, [guildContract]);
 
   return (
-    <div>
+    <Box>
       <Typography variant="h4" gutterBottom>
         Vote
       </Typography>
       <Box>
-        <VoteProposal />
+        {proposals.length > 0 ? (
+          <>
+            {proposals.map((p: Proposal) => {
+              return (
+                <VoteProposal
+                  key={p.id}
+                  //@ts-ignore
+                  prop={p}
+                  creatorName={getUsername(p.proposer)}
+                />
+              );
+            })}
+          </>
+        ) : (
+          <Typography variant="h5" gutterBottom>
+            No proposals in this guild.
+          </Typography>
+        )}
       </Box>
-    </div>
+    </Box>
   );
 };
 

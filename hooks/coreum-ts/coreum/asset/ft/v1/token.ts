@@ -1,9 +1,9 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
-import { Timestamp } from "../../../../google/protobuf/timestamp";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
+import { Timestamp } from '../../../../google/protobuf/timestamp';
 
-export const protobufPackage = "coreum.asset.ft.v1";
+export const protobufPackage = 'coreum.asset.ft.v1';
 
 /** Feature defines possible features of fungible token. */
 export enum Feature {
@@ -18,22 +18,22 @@ export enum Feature {
 export function featureFromJSON(object: any): Feature {
   switch (object) {
     case 0:
-    case "minting":
+    case 'minting':
       return Feature.minting;
     case 1:
-    case "burning":
+    case 'burning':
       return Feature.burning;
     case 2:
-    case "freezing":
+    case 'freezing':
       return Feature.freezing;
     case 3:
-    case "whitelisting":
+    case 'whitelisting':
       return Feature.whitelisting;
     case 4:
-    case "ibc":
+    case 'ibc':
       return Feature.ibc;
     case -1:
-    case "UNRECOGNIZED":
+    case 'UNRECOGNIZED':
     default:
       return Feature.UNRECOGNIZED;
   }
@@ -42,18 +42,18 @@ export function featureFromJSON(object: any): Feature {
 export function featureToJSON(object: Feature): string {
   switch (object) {
     case Feature.minting:
-      return "minting";
+      return 'minting';
     case Feature.burning:
-      return "burning";
+      return 'burning';
     case Feature.freezing:
-      return "freezing";
+      return 'freezing';
     case Feature.whitelisting:
-      return "whitelisting";
+      return 'whitelisting';
     case Feature.ibc:
-      return "ibc";
+      return 'ibc';
     case Feature.UNRECOGNIZED:
     default:
-      return "UNRECOGNIZED";
+      return 'UNRECOGNIZED';
   }
 }
 
@@ -116,15 +116,25 @@ export interface TokenUpgradeStatuses {
 }
 
 function createBaseDefinition(): Definition {
-  return { denom: "", issuer: "", features: [], burnRate: "", sendCommissionRate: "", version: 0 };
+  return {
+    denom: '',
+    issuer: '',
+    features: [],
+    burnRate: '',
+    sendCommissionRate: '',
+    version: 0,
+  };
 }
 
 export const Definition = {
-  encode(message: Definition, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.denom !== "") {
+  encode(
+    message: Definition,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.denom !== '') {
       writer.uint32(10).string(message.denom);
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       writer.uint32(18).string(message.issuer);
     }
     writer.uint32(26).fork();
@@ -132,10 +142,10 @@ export const Definition = {
       writer.int32(v);
     }
     writer.ldelim();
-    if (message.burnRate !== "") {
+    if (message.burnRate !== '') {
       writer.uint32(34).string(message.burnRate);
     }
-    if (message.sendCommissionRate !== "") {
+    if (message.sendCommissionRate !== '') {
       writer.uint32(42).string(message.sendCommissionRate);
     }
     if (message.version !== 0) {
@@ -145,7 +155,8 @@ export const Definition = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Definition {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDefinition();
     while (reader.pos < end) {
@@ -214,30 +225,34 @@ export const Definition = {
 
   fromJSON(object: any): Definition {
     return {
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      issuer: isSet(object.issuer) ? String(object.issuer) : "",
-      features: Array.isArray(object?.features) ? object.features.map((e: any) => featureFromJSON(e)) : [],
-      burnRate: isSet(object.burnRate) ? String(object.burnRate) : "",
-      sendCommissionRate: isSet(object.sendCommissionRate) ? String(object.sendCommissionRate) : "",
+      denom: isSet(object.denom) ? String(object.denom) : '',
+      issuer: isSet(object.issuer) ? String(object.issuer) : '',
+      features: Array.isArray(object?.features)
+        ? object.features.map((e: any) => featureFromJSON(e))
+        : [],
+      burnRate: isSet(object.burnRate) ? String(object.burnRate) : '',
+      sendCommissionRate: isSet(object.sendCommissionRate)
+        ? String(object.sendCommissionRate)
+        : '',
       version: isSet(object.version) ? Number(object.version) : 0,
     };
   },
 
   toJSON(message: Definition): unknown {
     const obj: any = {};
-    if (message.denom !== "") {
+    if (message.denom !== '') {
       obj.denom = message.denom;
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       obj.issuer = message.issuer;
     }
     if (message.features?.length) {
       obj.features = message.features.map((e) => featureToJSON(e));
     }
-    if (message.burnRate !== "") {
+    if (message.burnRate !== '') {
       obj.burnRate = message.burnRate;
     }
-    if (message.sendCommissionRate !== "") {
+    if (message.sendCommissionRate !== '') {
       obj.sendCommissionRate = message.sendCommissionRate;
     }
     if (message.version !== 0) {
@@ -249,13 +264,15 @@ export const Definition = {
   create<I extends Exact<DeepPartial<Definition>, I>>(base?: I): Definition {
     return Definition.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<Definition>, I>>(object: I): Definition {
+  fromPartial<I extends Exact<DeepPartial<Definition>, I>>(
+    object: I,
+  ): Definition {
     const message = createBaseDefinition();
-    message.denom = object.denom ?? "";
-    message.issuer = object.issuer ?? "";
+    message.denom = object.denom ?? '';
+    message.issuer = object.issuer ?? '';
     message.features = object.features?.map((e) => e) || [];
-    message.burnRate = object.burnRate ?? "";
-    message.sendCommissionRate = object.sendCommissionRate ?? "";
+    message.burnRate = object.burnRate ?? '';
+    message.sendCommissionRate = object.sendCommissionRate ?? '';
     message.version = object.version ?? 0;
     return message;
   },
@@ -263,38 +280,38 @@ export const Definition = {
 
 function createBaseToken(): Token {
   return {
-    denom: "",
-    issuer: "",
-    symbol: "",
-    subunit: "",
+    denom: '',
+    issuer: '',
+    symbol: '',
+    subunit: '',
     precision: 0,
-    description: "",
+    description: '',
     globallyFrozen: false,
     features: [],
-    burnRate: "",
-    sendCommissionRate: "",
+    burnRate: '',
+    sendCommissionRate: '',
     version: 0,
   };
 }
 
 export const Token = {
   encode(message: Token, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.denom !== "") {
+    if (message.denom !== '') {
       writer.uint32(10).string(message.denom);
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       writer.uint32(18).string(message.issuer);
     }
-    if (message.symbol !== "") {
+    if (message.symbol !== '') {
       writer.uint32(26).string(message.symbol);
     }
-    if (message.subunit !== "") {
+    if (message.subunit !== '') {
       writer.uint32(34).string(message.subunit);
     }
     if (message.precision !== 0) {
       writer.uint32(40).uint32(message.precision);
     }
-    if (message.description !== "") {
+    if (message.description !== '') {
       writer.uint32(50).string(message.description);
     }
     if (message.globallyFrozen === true) {
@@ -305,10 +322,10 @@ export const Token = {
       writer.int32(v);
     }
     writer.ldelim();
-    if (message.burnRate !== "") {
+    if (message.burnRate !== '') {
       writer.uint32(74).string(message.burnRate);
     }
-    if (message.sendCommissionRate !== "") {
+    if (message.sendCommissionRate !== '') {
       writer.uint32(82).string(message.sendCommissionRate);
     }
     if (message.version !== 0) {
@@ -318,7 +335,8 @@ export const Token = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Token {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseToken();
     while (reader.pos < end) {
@@ -422,38 +440,44 @@ export const Token = {
 
   fromJSON(object: any): Token {
     return {
-      denom: isSet(object.denom) ? String(object.denom) : "",
-      issuer: isSet(object.issuer) ? String(object.issuer) : "",
-      symbol: isSet(object.symbol) ? String(object.symbol) : "",
-      subunit: isSet(object.subunit) ? String(object.subunit) : "",
+      denom: isSet(object.denom) ? String(object.denom) : '',
+      issuer: isSet(object.issuer) ? String(object.issuer) : '',
+      symbol: isSet(object.symbol) ? String(object.symbol) : '',
+      subunit: isSet(object.subunit) ? String(object.subunit) : '',
       precision: isSet(object.precision) ? Number(object.precision) : 0,
-      description: isSet(object.description) ? String(object.description) : "",
-      globallyFrozen: isSet(object.globallyFrozen) ? Boolean(object.globallyFrozen) : false,
-      features: Array.isArray(object?.features) ? object.features.map((e: any) => featureFromJSON(e)) : [],
-      burnRate: isSet(object.burnRate) ? String(object.burnRate) : "",
-      sendCommissionRate: isSet(object.sendCommissionRate) ? String(object.sendCommissionRate) : "",
+      description: isSet(object.description) ? String(object.description) : '',
+      globallyFrozen: isSet(object.globallyFrozen)
+        ? Boolean(object.globallyFrozen)
+        : false,
+      features: Array.isArray(object?.features)
+        ? object.features.map((e: any) => featureFromJSON(e))
+        : [],
+      burnRate: isSet(object.burnRate) ? String(object.burnRate) : '',
+      sendCommissionRate: isSet(object.sendCommissionRate)
+        ? String(object.sendCommissionRate)
+        : '',
       version: isSet(object.version) ? Number(object.version) : 0,
     };
   },
 
   toJSON(message: Token): unknown {
     const obj: any = {};
-    if (message.denom !== "") {
+    if (message.denom !== '') {
       obj.denom = message.denom;
     }
-    if (message.issuer !== "") {
+    if (message.issuer !== '') {
       obj.issuer = message.issuer;
     }
-    if (message.symbol !== "") {
+    if (message.symbol !== '') {
       obj.symbol = message.symbol;
     }
-    if (message.subunit !== "") {
+    if (message.subunit !== '') {
       obj.subunit = message.subunit;
     }
     if (message.precision !== 0) {
       obj.precision = Math.round(message.precision);
     }
-    if (message.description !== "") {
+    if (message.description !== '') {
       obj.description = message.description;
     }
     if (message.globallyFrozen === true) {
@@ -462,10 +486,10 @@ export const Token = {
     if (message.features?.length) {
       obj.features = message.features.map((e) => featureToJSON(e));
     }
-    if (message.burnRate !== "") {
+    if (message.burnRate !== '') {
       obj.burnRate = message.burnRate;
     }
-    if (message.sendCommissionRate !== "") {
+    if (message.sendCommissionRate !== '') {
       obj.sendCommissionRate = message.sendCommissionRate;
     }
     if (message.version !== 0) {
@@ -479,35 +503,42 @@ export const Token = {
   },
   fromPartial<I extends Exact<DeepPartial<Token>, I>>(object: I): Token {
     const message = createBaseToken();
-    message.denom = object.denom ?? "";
-    message.issuer = object.issuer ?? "";
-    message.symbol = object.symbol ?? "";
-    message.subunit = object.subunit ?? "";
+    message.denom = object.denom ?? '';
+    message.issuer = object.issuer ?? '';
+    message.symbol = object.symbol ?? '';
+    message.subunit = object.subunit ?? '';
     message.precision = object.precision ?? 0;
-    message.description = object.description ?? "";
+    message.description = object.description ?? '';
     message.globallyFrozen = object.globallyFrozen ?? false;
     message.features = object.features?.map((e) => e) || [];
-    message.burnRate = object.burnRate ?? "";
-    message.sendCommissionRate = object.sendCommissionRate ?? "";
+    message.burnRate = object.burnRate ?? '';
+    message.sendCommissionRate = object.sendCommissionRate ?? '';
     message.version = object.version ?? 0;
     return message;
   },
 };
 
 function createBaseDelayedTokenUpgradeV1(): DelayedTokenUpgradeV1 {
-  return { denom: "" };
+  return { denom: '' };
 }
 
 export const DelayedTokenUpgradeV1 = {
-  encode(message: DelayedTokenUpgradeV1, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.denom !== "") {
+  encode(
+    message: DelayedTokenUpgradeV1,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.denom !== '') {
       writer.uint32(10).string(message.denom);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): DelayedTokenUpgradeV1 {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): DelayedTokenUpgradeV1 {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseDelayedTokenUpgradeV1();
     while (reader.pos < end) {
@@ -530,23 +561,27 @@ export const DelayedTokenUpgradeV1 = {
   },
 
   fromJSON(object: any): DelayedTokenUpgradeV1 {
-    return { denom: isSet(object.denom) ? String(object.denom) : "" };
+    return { denom: isSet(object.denom) ? String(object.denom) : '' };
   },
 
   toJSON(message: DelayedTokenUpgradeV1): unknown {
     const obj: any = {};
-    if (message.denom !== "") {
+    if (message.denom !== '') {
       obj.denom = message.denom;
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<DelayedTokenUpgradeV1>, I>>(base?: I): DelayedTokenUpgradeV1 {
+  create<I extends Exact<DeepPartial<DelayedTokenUpgradeV1>, I>>(
+    base?: I,
+  ): DelayedTokenUpgradeV1 {
     return DelayedTokenUpgradeV1.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<DelayedTokenUpgradeV1>, I>>(object: I): DelayedTokenUpgradeV1 {
+  fromPartial<I extends Exact<DeepPartial<DelayedTokenUpgradeV1>, I>>(
+    object: I,
+  ): DelayedTokenUpgradeV1 {
     const message = createBaseDelayedTokenUpgradeV1();
-    message.denom = object.denom ?? "";
+    message.denom = object.denom ?? '';
     return message;
   },
 };
@@ -556,21 +591,34 @@ function createBaseTokenUpgradeV1Status(): TokenUpgradeV1Status {
 }
 
 export const TokenUpgradeV1Status = {
-  encode(message: TokenUpgradeV1Status, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: TokenUpgradeV1Status,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.ibcEnabled === true) {
       writer.uint32(8).bool(message.ibcEnabled);
     }
     if (message.startTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.startTime), writer.uint32(18).fork()).ldelim();
+      Timestamp.encode(
+        toTimestamp(message.startTime),
+        writer.uint32(18).fork(),
+      ).ldelim();
     }
     if (message.endTime !== undefined) {
-      Timestamp.encode(toTimestamp(message.endTime), writer.uint32(26).fork()).ldelim();
+      Timestamp.encode(
+        toTimestamp(message.endTime),
+        writer.uint32(26).fork(),
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): TokenUpgradeV1Status {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): TokenUpgradeV1Status {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTokenUpgradeV1Status();
     while (reader.pos < end) {
@@ -588,14 +636,18 @@ export const TokenUpgradeV1Status = {
             break;
           }
 
-          message.startTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.startTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32()),
+          );
           continue;
         case 3:
           if (tag !== 26) {
             break;
           }
 
-          message.endTime = fromTimestamp(Timestamp.decode(reader, reader.uint32()));
+          message.endTime = fromTimestamp(
+            Timestamp.decode(reader, reader.uint32()),
+          );
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -609,8 +661,12 @@ export const TokenUpgradeV1Status = {
   fromJSON(object: any): TokenUpgradeV1Status {
     return {
       ibcEnabled: isSet(object.ibcEnabled) ? Boolean(object.ibcEnabled) : false,
-      startTime: isSet(object.startTime) ? fromJsonTimestamp(object.startTime) : undefined,
-      endTime: isSet(object.endTime) ? fromJsonTimestamp(object.endTime) : undefined,
+      startTime: isSet(object.startTime)
+        ? fromJsonTimestamp(object.startTime)
+        : undefined,
+      endTime: isSet(object.endTime)
+        ? fromJsonTimestamp(object.endTime)
+        : undefined,
     };
   },
 
@@ -628,10 +684,14 @@ export const TokenUpgradeV1Status = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TokenUpgradeV1Status>, I>>(base?: I): TokenUpgradeV1Status {
+  create<I extends Exact<DeepPartial<TokenUpgradeV1Status>, I>>(
+    base?: I,
+  ): TokenUpgradeV1Status {
     return TokenUpgradeV1Status.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TokenUpgradeV1Status>, I>>(object: I): TokenUpgradeV1Status {
+  fromPartial<I extends Exact<DeepPartial<TokenUpgradeV1Status>, I>>(
+    object: I,
+  ): TokenUpgradeV1Status {
     const message = createBaseTokenUpgradeV1Status();
     message.ibcEnabled = object.ibcEnabled ?? false;
     message.startTime = object.startTime ?? undefined;
@@ -645,15 +705,25 @@ function createBaseTokenUpgradeStatuses(): TokenUpgradeStatuses {
 }
 
 export const TokenUpgradeStatuses = {
-  encode(message: TokenUpgradeStatuses, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: TokenUpgradeStatuses,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.v1 !== undefined) {
-      TokenUpgradeV1Status.encode(message.v1, writer.uint32(10).fork()).ldelim();
+      TokenUpgradeV1Status.encode(
+        message.v1,
+        writer.uint32(10).fork(),
+      ).ldelim();
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): TokenUpgradeStatuses {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number,
+  ): TokenUpgradeStatuses {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseTokenUpgradeStatuses();
     while (reader.pos < end) {
@@ -676,7 +746,11 @@ export const TokenUpgradeStatuses = {
   },
 
   fromJSON(object: any): TokenUpgradeStatuses {
-    return { v1: isSet(object.v1) ? TokenUpgradeV1Status.fromJSON(object.v1) : undefined };
+    return {
+      v1: isSet(object.v1)
+        ? TokenUpgradeV1Status.fromJSON(object.v1)
+        : undefined,
+    };
   },
 
   toJSON(message: TokenUpgradeStatuses): unknown {
@@ -687,29 +761,50 @@ export const TokenUpgradeStatuses = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<TokenUpgradeStatuses>, I>>(base?: I): TokenUpgradeStatuses {
+  create<I extends Exact<DeepPartial<TokenUpgradeStatuses>, I>>(
+    base?: I,
+  ): TokenUpgradeStatuses {
     return TokenUpgradeStatuses.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<TokenUpgradeStatuses>, I>>(object: I): TokenUpgradeStatuses {
+  fromPartial<I extends Exact<DeepPartial<TokenUpgradeStatuses>, I>>(
+    object: I,
+  ): TokenUpgradeStatuses {
     const message = createBaseTokenUpgradeStatuses();
-    message.v1 = (object.v1 !== undefined && object.v1 !== null)
-      ? TokenUpgradeV1Status.fromPartial(object.v1)
-      : undefined;
+    message.v1 =
+      object.v1 !== undefined && object.v1 !== null
+        ? TokenUpgradeV1Status.fromPartial(object.v1)
+        : undefined;
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 function toTimestamp(date: Date): Timestamp {
   const seconds = numberToLong(date.getTime() / 1_000);
@@ -726,7 +821,7 @@ function fromTimestamp(t: Timestamp): Date {
 function fromJsonTimestamp(o: any): Date {
   if (o instanceof Date) {
     return o;
-  } else if (typeof o === "string") {
+  } else if (typeof o === 'string') {
     return new Date(o);
   } else {
     return fromTimestamp(Timestamp.fromJSON(o));

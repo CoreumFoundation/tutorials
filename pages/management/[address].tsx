@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Box, List, ListItemButton, ListSubheader } from '@mui/material';
 import styled from '@emotion/styled';
 import { SIZES } from 'pages/theme';
@@ -12,7 +12,8 @@ import Vote from 'components/Vote';
 import { GuildProvider } from 'contexts/guildContext';
 import Tokens from 'components/Tokens';
 //@ts-ignore
-import { Guild, Member } from 'util/types';
+import type { Guild, Member } from 'util/types';
+import { useSigningClient } from 'contexts/client';
 
 const MANAGEMENT_CONTENT = {
   GUILD_MEMBERS: 'guild-members',
@@ -44,7 +45,6 @@ type SidebarProps = {
   setSelectedMenuOption: (option: ManagementContent) => void;
   selectedMenuOption: ManagementContent;
 };
-
 
 const Sidebar = ({
   setSelectedMenuOption,
@@ -101,7 +101,7 @@ const Sidebar = ({
           selected={selectedMenuOption === MANAGEMENT_CONTENT.PURPOSE}
           onClick={() => setSelectedMenuOption(MANAGEMENT_CONTENT.PURPOSE)}
         >
-          Purpose
+          Propose
         </StyledListItemButton>
         <SidebarSubHeader>
           Economy <ChevronRightIcon />
@@ -132,11 +132,16 @@ interface IProps {
 const Management = (props: IProps) => {
   const [selectedMenuOption, setSelectedMenuOption] =
     useState<ManagementContent>(MANAGEMENT_CONTENT.USER_PROFILE);
+  const { connectWallet, loading: isClientLoading } = useSigningClient();
+
+  useEffect(() => {
+    connectWallet();
+  }, []);
 
   const renderContent = () => {
     switch (selectedMenuOption) {
       case MANAGEMENT_CONTENT.USER_PROFILE:
-        return (<UserProfile />);
+        return <UserProfile />;
       case MANAGEMENT_CONTENT.GUILD_PROFILE:
         return <GuildProfile />;
       case MANAGEMENT_CONTENT.GUILD_MEMBERS:
@@ -155,21 +160,21 @@ const Management = (props: IProps) => {
   };
 
   return (
-  <GuildProvider>
-    <Box
-      style={{
-        textAlign: 'left',
-        display: 'flex',
-        width: '100vw',
-        height: '100vh',
-      }}
+    <GuildProvider>
+      <Box
+        style={{
+          textAlign: 'left',
+          display: 'flex',
+          width: '100vw',
+          height: '100vh',
+        }}
       >
-      <Sidebar
-        setSelectedMenuOption={setSelectedMenuOption}
-        selectedMenuOption={selectedMenuOption}
+        <Sidebar
+          setSelectedMenuOption={setSelectedMenuOption}
+          selectedMenuOption={selectedMenuOption}
         />
-      <Content>{renderContent()}</Content>
-    </Box>
+        <Content>{isClientLoading ? <>loading...</> : renderContent()}</Content>
+      </Box>
     </GuildProvider>
   );
 };

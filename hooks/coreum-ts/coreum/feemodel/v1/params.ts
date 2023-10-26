@@ -1,8 +1,8 @@
 /* eslint-disable */
-import Long from "long";
-import _m0 from "protobufjs/minimal";
+import Long from 'long';
+import _m0 from 'protobufjs/minimal';
 
-export const protobufPackage = "coreum.feemodel.v1";
+export const protobufPackage = 'coreum.feemodel.v1';
 
 /**
  * ModelParams define fee model params.
@@ -46,10 +46,10 @@ export interface Params {
 
 function createBaseModelParams(): ModelParams {
   return {
-    initialGasPrice: "",
-    maxGasPriceMultiplier: "",
-    maxDiscount: "",
-    escalationStartFraction: "",
+    initialGasPrice: '',
+    maxGasPriceMultiplier: '',
+    maxDiscount: '',
+    escalationStartFraction: '',
     maxBlockGas: Long.ZERO,
     shortEmaBlockLength: 0,
     longEmaBlockLength: 0,
@@ -57,17 +57,20 @@ function createBaseModelParams(): ModelParams {
 }
 
 export const ModelParams = {
-  encode(message: ModelParams, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
-    if (message.initialGasPrice !== "") {
+  encode(
+    message: ModelParams,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
+    if (message.initialGasPrice !== '') {
       writer.uint32(10).string(message.initialGasPrice);
     }
-    if (message.maxGasPriceMultiplier !== "") {
+    if (message.maxGasPriceMultiplier !== '') {
       writer.uint32(18).string(message.maxGasPriceMultiplier);
     }
-    if (message.maxDiscount !== "") {
+    if (message.maxDiscount !== '') {
       writer.uint32(26).string(message.maxDiscount);
     }
-    if (message.escalationStartFraction !== "") {
+    if (message.escalationStartFraction !== '') {
       writer.uint32(34).string(message.escalationStartFraction);
     }
     if (!message.maxBlockGas.isZero()) {
@@ -83,7 +86,8 @@ export const ModelParams = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): ModelParams {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseModelParams();
     while (reader.pos < end) {
@@ -149,28 +153,40 @@ export const ModelParams = {
 
   fromJSON(object: any): ModelParams {
     return {
-      initialGasPrice: isSet(object.initialGasPrice) ? String(object.initialGasPrice) : "",
-      maxGasPriceMultiplier: isSet(object.maxGasPriceMultiplier) ? String(object.maxGasPriceMultiplier) : "",
-      maxDiscount: isSet(object.maxDiscount) ? String(object.maxDiscount) : "",
-      escalationStartFraction: isSet(object.escalationStartFraction) ? String(object.escalationStartFraction) : "",
-      maxBlockGas: isSet(object.maxBlockGas) ? Long.fromValue(object.maxBlockGas) : Long.ZERO,
-      shortEmaBlockLength: isSet(object.shortEmaBlockLength) ? Number(object.shortEmaBlockLength) : 0,
-      longEmaBlockLength: isSet(object.longEmaBlockLength) ? Number(object.longEmaBlockLength) : 0,
+      initialGasPrice: isSet(object.initialGasPrice)
+        ? String(object.initialGasPrice)
+        : '',
+      maxGasPriceMultiplier: isSet(object.maxGasPriceMultiplier)
+        ? String(object.maxGasPriceMultiplier)
+        : '',
+      maxDiscount: isSet(object.maxDiscount) ? String(object.maxDiscount) : '',
+      escalationStartFraction: isSet(object.escalationStartFraction)
+        ? String(object.escalationStartFraction)
+        : '',
+      maxBlockGas: isSet(object.maxBlockGas)
+        ? Long.fromValue(object.maxBlockGas)
+        : Long.ZERO,
+      shortEmaBlockLength: isSet(object.shortEmaBlockLength)
+        ? Number(object.shortEmaBlockLength)
+        : 0,
+      longEmaBlockLength: isSet(object.longEmaBlockLength)
+        ? Number(object.longEmaBlockLength)
+        : 0,
     };
   },
 
   toJSON(message: ModelParams): unknown {
     const obj: any = {};
-    if (message.initialGasPrice !== "") {
+    if (message.initialGasPrice !== '') {
       obj.initialGasPrice = message.initialGasPrice;
     }
-    if (message.maxGasPriceMultiplier !== "") {
+    if (message.maxGasPriceMultiplier !== '') {
       obj.maxGasPriceMultiplier = message.maxGasPriceMultiplier;
     }
-    if (message.maxDiscount !== "") {
+    if (message.maxDiscount !== '') {
       obj.maxDiscount = message.maxDiscount;
     }
-    if (message.escalationStartFraction !== "") {
+    if (message.escalationStartFraction !== '') {
       obj.escalationStartFraction = message.escalationStartFraction;
     }
     if (!message.maxBlockGas.isZero()) {
@@ -188,15 +204,18 @@ export const ModelParams = {
   create<I extends Exact<DeepPartial<ModelParams>, I>>(base?: I): ModelParams {
     return ModelParams.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<ModelParams>, I>>(object: I): ModelParams {
+  fromPartial<I extends Exact<DeepPartial<ModelParams>, I>>(
+    object: I,
+  ): ModelParams {
     const message = createBaseModelParams();
-    message.initialGasPrice = object.initialGasPrice ?? "";
-    message.maxGasPriceMultiplier = object.maxGasPriceMultiplier ?? "";
-    message.maxDiscount = object.maxDiscount ?? "";
-    message.escalationStartFraction = object.escalationStartFraction ?? "";
-    message.maxBlockGas = (object.maxBlockGas !== undefined && object.maxBlockGas !== null)
-      ? Long.fromValue(object.maxBlockGas)
-      : Long.ZERO;
+    message.initialGasPrice = object.initialGasPrice ?? '';
+    message.maxGasPriceMultiplier = object.maxGasPriceMultiplier ?? '';
+    message.maxDiscount = object.maxDiscount ?? '';
+    message.escalationStartFraction = object.escalationStartFraction ?? '';
+    message.maxBlockGas =
+      object.maxBlockGas !== undefined && object.maxBlockGas !== null
+        ? Long.fromValue(object.maxBlockGas)
+        : Long.ZERO;
     message.shortEmaBlockLength = object.shortEmaBlockLength ?? 0;
     message.longEmaBlockLength = object.longEmaBlockLength ?? 0;
     return message;
@@ -208,7 +227,10 @@ function createBaseParams(): Params {
 }
 
 export const Params = {
-  encode(message: Params, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: Params,
+    writer: _m0.Writer = _m0.Writer.create(),
+  ): _m0.Writer {
     if (message.model !== undefined) {
       ModelParams.encode(message.model, writer.uint32(10).fork()).ldelim();
     }
@@ -216,7 +238,8 @@ export const Params = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): Params {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseParams();
     while (reader.pos < end) {
@@ -239,7 +262,11 @@ export const Params = {
   },
 
   fromJSON(object: any): Params {
-    return { model: isSet(object.model) ? ModelParams.fromJSON(object.model) : undefined };
+    return {
+      model: isSet(object.model)
+        ? ModelParams.fromJSON(object.model)
+        : undefined,
+    };
   },
 
   toJSON(message: Params): unknown {
@@ -255,24 +282,41 @@ export const Params = {
   },
   fromPartial<I extends Exact<DeepPartial<Params>, I>>(object: I): Params {
     const message = createBaseParams();
-    message.model = (object.model !== undefined && object.model !== null)
-      ? ModelParams.fromPartial(object.model)
-      : undefined;
+    message.model =
+      object.model !== undefined && object.model !== null
+        ? ModelParams.fromPartial(object.model)
+        : undefined;
     return message;
   },
 };
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends Array<infer U> ? Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends Array<infer U>
+  ? Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

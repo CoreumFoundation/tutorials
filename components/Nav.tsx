@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import Router from 'next/router';
+import { useRouter } from 'next/router';
 
 import Menu from '@mui/icons-material/Menu';
 import styled from '@emotion/styled';
@@ -13,8 +13,7 @@ import AppBar from '@mui/material/AppBar';
 import { shortAddress } from 'util/conversion';
 import { SIZES } from 'pages/theme';
 import { StyledLink } from './StyledLink';
-import { useContext, useState, useEffect } from 'react';
-import { ACTION_SERVER_PATCH } from 'next/dist/client/components/router-reducer/router-reducer-types';
+import { useContext, useEffect } from 'react';
 
 const LogoContainer = styled(Box)`
   display: flex;
@@ -22,58 +21,70 @@ const LogoContainer = styled(Box)`
   flex-grow: 1;
 `;
 
-const LogoLink = styled(StyledLink)``;
-
 const ButtonContainer = styled(Box)``;
+const AddressContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3.125rem;
+  background: #504f4f;
+  padding: 0.5rem 1.5rem;
+`;
 
 function Nav() {
+  const router = useRouter();
   const authContext = useContext(AuthContext);
-  console.log('authContext', authContext);
+  //  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
+
+  // useEffect(() => {
+  //   connectWallet();
+  // }, []);
+
   const handleConnect = () => {
     if (walletAddress.length === 0) {
       connectWallet();
-      Router.push('/guild-space');
+      router.push('/guild-space');
     } else {
       disconnect();
-      Router.push('/');
+      router.push('/');
       authContext.clearLoggedAddress();
     }
   };
 
-  authContext?.loggedAddress
+  authContext?.loggedAddress;
 
   const PUBLIC_SITE_ICON_URL = process.env.NEXT_PUBLIC_SITE_ICON_URL || '';
 
-
-  // useEffect(() => {
-  //   if (authContext?.loggedAddress.length !== 0) {
-  //     connectWallet();
-  //   }
-  // }, [authContext]);
-
   const renderNavOptions = () => {
     return (
-      <Box>
-        <Button variant="outlined" onClick={handleConnect}>
+      <Box display="flex" flexDirection="row" mr={3}>
+        <AddressContainer>
           Log out: {shortAddress(walletAddress)}
-        </Button>
-        <IconButton size="large">
+        </AddressContainer>
+        {/* <IconButton size="large">
           <Menu />
-        </IconButton>
+        </IconButton> */}
       </Box>
     );
   };
 
   return (
-    <AppBar position="static" elevation={1}>
+    <AppBar
+      position="static"
+      elevation={1}
+      sx={{ backgroundColor: 'transparent' }}
+    >
       <Toolbar
         style={{
           margin: `${SIZES['lineHeight'] / 2}rem ${SIZES['lineHeight']}rem`,
         }}
       >
         <LogoContainer>
-          <StyledLink href={authContext?.loggedAddress?.length > 0 ? "/guild-space" : "/"} passHref>
+          <StyledLink
+            href={authContext?.loggedAddress?.length > 0 ? '/guild-space' : '/'}
+            passHref
+          >
             {PUBLIC_SITE_ICON_URL.length > 0 ? (
               <Image
                 src={PUBLIC_SITE_ICON_URL}
@@ -83,11 +94,10 @@ function Nav() {
               />
             ) : (
               <Typography variant="h4" component="span">
-                [GUILDAPP]
+                [GUILDHUB]
               </Typography>
             )}
           </StyledLink>
-
         </LogoContainer>
         <ButtonContainer>
           {walletAddress ? (

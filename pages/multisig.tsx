@@ -6,10 +6,17 @@ import {
   convertFromMicroDenom,
   convertMicroDenomToDenom,
 } from 'util/conversion';
-import { checkAddress } from 'utils/displayHelpers';
-
+//import { checkAddress } from 'utils/displayHelpers';
+import { guildCreatorCodeId } from 'util/constants';
 import { useRouter } from 'next/router';
-import { Alert, Button, Container, TextField, Typography } from '@mui/material';
+import {
+  Alert,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  Box,
+} from '@mui/material';
 import { Cw3FlexMultisigNamedClient } from 'hooks/guildapp-ts/Cw3FlexMultisigNamed.client';
 import { Cw4GroupNamedClient } from 'hooks/guildapp-ts/Cw4GroupNamed.client';
 import CreateVault from 'components/CreateVault';
@@ -26,8 +33,8 @@ type Member = {
 const Multisig: NextPage = () => {
   const { walletAddress, signingClient } = useSigningClient();
   const [balance, setBalance] = useState('');
-  const [contractCreated, setContractCreated] = useState<string | null>(null)
-  const [multisigCreated, setMultisigCreated] = useState<string | null>(null)
+  const [contractCreated, setContractCreated] = useState<string | null>(null);
+  const [multisigCreated, setMultisigCreated] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [guildName, setGuildName] = useState<string>('');
 
@@ -40,7 +47,6 @@ const Multisig: NextPage = () => {
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
-
 
   useEffect(() => {
     if (!signingClient || walletAddress.length === 0) {
@@ -63,43 +69,43 @@ const Multisig: NextPage = () => {
   }, [signingClient, walletAddress]);
 
   const handleCreate = async () => {
-
     setError('');
     setSuccess('');
     setLoading(true);
-    console.log(JSON.stringify(leader), JSON.stringify(guildName));
+//    console.log(JSON.stringify(leader), JSON.stringify(guildName));
     let instantiateMsg = {
       admin: leader.address,
-      members: [{addr: leader.address, name: leader.name.toLocaleLowerCase(), weight: 1}]
+      members: [
+        {
+          addr: leader.address,
+          name: leader.name.toLocaleLowerCase(),
+          weight: 1,
+        },
+      ],
     };
 
     let res = await signingClient?.instantiate(
       walletAddress,
-      522,
+      guildCreatorCodeId,
       instantiateMsg,
       guildName.toLocaleLowerCase(),
-      "auto"
+      'auto',
     );
 
     // Check if 'res' contains 'contractAddress' property
     if (res && res.contractAddress) {
       let contractAddress = res.contractAddress;
-      if (contractAddress) setContractCreated(contractAddress)
-      
+      if (contractAddress) setContractCreated(contractAddress);
     } else {
-      console.log("contractAddress not found in the response.");
+      console.log('contractAddress not found in the response.');
     }
 
     setLoading(false);
-//    router.back();
+    router.push(`management/${contractCreated}`);
   };
 
   return (
     <WalletLoader loading={loading}>
-      <Typography variant="h4" gutterBottom component="h1">
-        Create your Guild
-      </Typography>
-
       <Container
         sx={{
           backgroundColor: 'background.default',
@@ -109,43 +115,46 @@ const Multisig: NextPage = () => {
           alignItems: 'start',
         }}
       >
-        <Typography variant="h5" component="h2">
+        <Typography variant="h4" gutterBottom component="h1" sx={{ mb: 8 }}>
+          Create your Guild
+        </Typography>
+        <Typography variant="h5" component="h2" gutterBottom>
           Guild Leader
         </Typography>
-        <Typography variant="body1" gutterBottom component="p">
+        <Typography variant="subtitle2" gutterBottom component="p">
           Once you create the guild, you will become the guild leader.
         </Typography>
-
-        <TextField
-          label="Leader Address"
-          onChange={(event) =>
-            setLeader((prev) => ({ ...prev, address: event.target.value }))
-          }
-          sx={{ mb: 2 }}
-          value={leader.address}
-          variant="outlined"
-        />
-        <TextField
-          label="Leader Name"
-          onChange={(event) =>
-            setLeader((prev) => ({ ...prev, name: event.target.value }))
-          }
-          sx={{ mb: 2 }}
-          value={leader.name}
-          variant="outlined"
-        />
-
-        <Typography variant="h5" component="h2">
+        <Box sx={{ mb: 8, mt: 3, display: 'flex', gap: '1rem' }}>
+          <TextField
+            label="Leader Address"
+            onChange={(event) =>
+              setLeader((prev) => ({ ...prev, address: event.target.value }))
+            }
+            sx={{ mb: 2 }}
+            value={leader.address}
+            variant="outlined"
+          />
+          <TextField
+            label="Leader Name"
+            onChange={(event) =>
+              setLeader((prev) => ({ ...prev, name: event.target.value }))
+            }
+            sx={{ mb: 2 }}
+            value={leader.name}
+            variant="outlined"
+          />
+        </Box>
+        <Typography variant="h5" component="h2" gutterBottom>
           Guild name
         </Typography>
-        <Typography variant="body1" gutterBottom component="p">
+        <Typography variant="subtitle2" gutterBottom component="p">
           Do you have already a guild name? If not, it is your time to be
           creative.
         </Typography>
         <TextField
           label="Guild Name"
           onChange={(e) => setGuildName(e.target.value)}
-          sx={{ mb: 2 }}
+          sx={{ mb: 2, mt: 3, display: 'flex', gap: '1rem' }}
           value={guildName}
           variant="outlined"
         />
@@ -165,12 +174,9 @@ const Multisig: NextPage = () => {
           Create guild
         </Button>
       </Container>
-      {contractCreated &&
-        <CreateVault
-          guildAddress={contractCreated}
-          guildName={guildName}
-          />
-      }
+      {/* contractCreated && (
+        <CreateVault guildAddress={contractCreated} guildName={guildName} />
+      ) */}
       <Container sx={{ my: 2 }}>
         {success.length > 0 && (
           <Alert severity="success" sx={{ mb: 2 }}>

@@ -1,6 +1,7 @@
-import {useEffect, useState, useCallback, useLayoutEffect} from 'react'
-import { Unity, useUnityContext } from "react-unity-webgl";
+import { useEffect, useState, useCallback, useLayoutEffect } from 'react';
+import { Unity, useUnityContext } from 'react-unity-webgl';
 import { useRouter } from 'next/router';
+
 
 // wallet name
 import { Guild, Member } from 'util/types';
@@ -25,17 +26,18 @@ const Metaverse = () => {
     }
   }, [router]);
 
-
   // Comunication to Unity
   const [isReady,setIsReady] = useState(false);
   const [isChangePage,setIsChangePage] = useState(false);
 
-  const { unityProvider, addEventListener, removeEventListener, sendMessage } = useUnityContext({
-    loaderUrl: "../unity/Build/clientBuild.loader.js",
-    dataUrl: "../unity/Build/clientBuild.data",
-    frameworkUrl: "../unity/Build/clientBuild.framework.js",
-    codeUrl: "../unity/Build/clientBuild.wasm",
-  });
+
+  const { unityProvider, addEventListener, removeEventListener, sendMessage } =
+    useUnityContext({
+      loaderUrl: '../unity/Build/clientBuild.loader.js',
+      dataUrl: '../unity/Build/clientBuild.data',
+      frameworkUrl: '../unity/Build/clientBuild.framework.js',
+      codeUrl: '../unity/Build/clientBuild.wasm',
+    });
 
 
   // ---- Unity is Ready to comunicate ----
@@ -45,9 +47,9 @@ const Metaverse = () => {
   }, []);
 
   useEffect(() => {
-    addEventListener("Ready", handleReady);
+    addEventListener('Ready', handleReady);
     return () => {
-      removeEventListener("Ready", handleReady);
+      removeEventListener('Ready', handleReady);
     };
   }, [addEventListener, removeEventListener, handleReady]);
 
@@ -70,8 +72,8 @@ const Metaverse = () => {
     }
   }, [isReady]);
 
-  function sendGuildName(name){
-    sendMessage("CanvasHUD", "setName", name);
+  function sendGuildName(name) {
+    sendMessage('CanvasHUD', 'setName', name);
   }
 
   function sendNFTnum(num){

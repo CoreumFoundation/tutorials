@@ -1,19 +1,26 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useRef,
+} from 'react';
 //@ts-ignore
-import { Guild, Member } from 'util/types'
+import { Guild, Member } from 'util/types';
 import { useSigningClient } from './client';
 import { useRouter } from 'next/router';
 
 interface GuildContextProps {
-    guildAddress: string | null;
-    guildContract: Guild | null;
-    guildVaults: string[];
-    guildAdmin: string;
-    guildMembers: Member[];
+  guildAddress: string | null;
+  guildContract: Guild | null;
+  guildVaults: string[];
+  guildAdmin: string;
+  guildMembers: Member[];
+  guildProposals: any; //Proposal[];
 }
 
 export const GuildContext = createContext<GuildContextProps | undefined>(
-  undefined
+  undefined,
   /*  {
     guildAddress: null,
     guildContract: null,
@@ -28,22 +35,23 @@ interface GuildProviderProps {
 }
 
 export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
-  const router = useRouter()
-  const [guildAddress, setGuildAddress] = useState<string>('')
-  const { walletAddress, signingClient } = useSigningClient()
-  const [guildContract, setGuildContract] = useState<Guild | null>(null)
-  const [guildVaults, setGuildVaults] = useState<string[]>([])
-  const [guildMembers, setGuildMembers] = useState<Member[]>([])
-  const [guildAdmin, setGuildAdmin] = useState<string>("")
+  const router = useRouter();
+  const [guildAddress, setGuildAddress] = useState<string>('');
+  const { walletAddress, signingClient } = useSigningClient();
+  const [guildContract, setGuildContract] = useState<Guild | null>(null);
+  const [guildVaults, setGuildVaults] = useState<string[]>([]);
+  const [guildMembers, setGuildMembers] = useState<Member[]>([]);
+  const [guildAdmin, setGuildAdmin] = useState<string>('');
+  const [guildProposals, setGuildProposals] = useState<any[]>([]);
+  const fetched = useRef<boolean>(false);
 
   useEffect(() => {
-    let guildAddress = router.query.address
-    if (typeof guildAddress == "string") {
-      setGuildAddress(guildAddress)
+    let guildAddress = router.query.address;
+    if (typeof guildAddress == 'string') {
+      setGuildAddress(guildAddress);
     }
-  }, [router])
+  }, [router]);
 
-  
   useEffect(() => {
     if (!signingClient || !walletAddress || !guildAddress) {
       return;
@@ -52,7 +60,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
     signingClient
       .getContract(guildAddress)
       .then((response: Guild) => {
-        console.log(`contract ${response}`)
+        //console.log(`contract ${response}`);
         setGuildContract(response);
       })
       .catch((error) => {
@@ -60,20 +68,20 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
       });
   }, [signingClient, walletAddress, guildAddress]);
 
-  async function getMultisigs(address:string) {
+  async function getMultisigs(address: string) {
     try {
-        let hooksMsg = {
-            hooks: {}
-        }
-        let hooks = await signingClient?.queryContractSmart(
-            address, hooksMsg
-        )
-        if (hooks?.hooks) { setGuildVaults(hooks.hooks) }
+      let hooksMsg = {
+        hooks: {},
+      };
+      let hooks = await signingClient?.queryContractSmart(address, hooksMsg);
+      if (hooks?.hooks) {
+        setGuildVaults(hooks.hooks);
+      }
     } catch (err: any) {
-        console.error(err.toString())
-    }            
+      console.error(err.toString());
+    }
   }
-  
+
   async function getMembers(address: string) {
     try {
       let membersMsg = {
@@ -86,7 +94,7 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
         address,
         membersMsg,
       );
-//      console.log(`members list ${membersList}`)
+      //      console.log(`members list ${membersList}`)
       if (membersList?.members) {
         setGuildMembers(membersList.members);
       } else {
@@ -109,18 +117,62 @@ export const GuildProvider: React.FC<GuildProviderProps> = ({ children }) => {
       console.error(err.toString());
     }
   }
+  async function getProposals(guildVaults: string[]) {
+    try {
+      let proposalsMsg = {
+        reverse_proposals: {
+          start_before: null,
+          limit: null,
+        },
+      };
+      for (let i = 0; i < guildVaults.length; i++) {
+        //        console.log(`searching proposals for vault: ${guildVaults[i]}`)
+        let proposals = await signingClient?.queryContractSmart(
+          guildVaults[i],
+          proposalsMsg,
+        );
+        if (proposals?.proposals) {
+          let proposals_o = proposals.proposals.map((p: any) => ({
+            ...p,
+            vault: guildVaults[i],
+          }));
+          setGuildProposals((guildProposals) => [
+            ...guildProposals,
+            ...proposals_o,
+          ]);
+        }
+      }
+      //console.log(`proposals ${acu}`)
+    } catch (err: any) {
+      console.error(err.toString());
+    }
+  }
   useEffect(() => {
     if (guildAddress) {
-      getMultisigs(guildAddress)
-      getMembers(guildAddress)
-      getAdmin(guildAddress)      
+      getMultisigs(guildAddress);
+      getMembers(guildAddress);
+      getAdmin(guildAddress);
     }
-  }, [guildContract])
+  }, [guildContract]);
 
-
+  useEffect(() => {
+    if (guildVaults.length > 0 && !fetched.current) {
+      getProposals(guildVaults);
+      fetched.current = true;
+    }
+  }, [guildVaults]);
 
   return (
-    <GuildContext.Provider value={{ guildAddress, guildVaults, guildContract, guildAdmin, guildMembers }}>
+    <GuildContext.Provider
+      value={{
+        guildAddress,
+        guildVaults,
+        guildContract,
+        guildAdmin,
+        guildMembers,
+        guildProposals,
+      }}
+    >
       {children}
     </GuildContext.Provider>
   );

@@ -1,38 +1,24 @@
 import { useEffect, useState, useRef } from 'react';
-import { useRouter } from 'next/router';
+
 import type { NextPage } from 'next';
-
-import styled from '@emotion/styled';
-
-import { Typography, Box, Grid, Container, Button } from '@mui/material';
 
 //@ts-ignore
 import type { Guild } from 'util/types';
 
 import { useSigningClient } from 'contexts/client';
 
-import WalletLoader from 'components/WalletLoader';
-import GuildCard from 'components/GuildCard';
-
-const StyledTitle = styled(Typography)`
-  color: ${(props) => props.theme.palette.primary.main};
-`;
+import Main from 'components/Main';
 
 const Home: NextPage = () => {
   const [guilds, setGuilds] = useState<Guild[]>([]);
 
   const fetched = useRef<boolean>(false);
 
-  const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
-
-  const [loading,setLoading] = useState(false);
-
-
-  const { walletAddress, signingClient } = useSigningClient();
+  const { signingClient } = useSigningClient();
 
   async function getContracts() {
-
     setLoading(true);
     //@ts-ignore
     let data = await signingClient.getContracts(522);
@@ -46,7 +32,6 @@ const Home: NextPage = () => {
       //@ts-ignore
       let guild_data = await signingClient.getContract(guild_address);
 
-      // 获取 membersList
       let membersMsg = {
         list_members: {
           start_after: null,
@@ -54,11 +39,10 @@ const Home: NextPage = () => {
         },
       };
       let membersList = await signingClient?.queryContractSmart(
-        guild_address,  // 注意这里使用 guild_address
+        guild_address,
         membersMsg,
       );
 
-      // 如果 membersList?.members 存在，将其添加到 guild_data
       if (membersList?.members) {
         guild_data.member = membersList.members;
         guild_data.member_count = membersList.members.length;
@@ -79,10 +63,7 @@ const Home: NextPage = () => {
     }
   }, [signingClient, fetched]);
 
-  return (
-    <WalletLoader loading={loading}>
-    </WalletLoader>
-  );
+  return <Main />;
 };
 
 export default Home;
