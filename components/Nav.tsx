@@ -59,9 +59,7 @@ function Nav() {
   const renderNavOptions = () => {
     return (
       <Box display="flex" flexDirection="row" mr={3}>
-        <AddressContainer>
-          Log out: {shortAddress(walletAddress)}
-        </AddressContainer>
+        <AddressContainer>{shortAddress(walletAddress)}</AddressContainer>
         {/* <IconButton size="large">
           <Menu />
         </IconButton> */}

@@ -113,31 +113,6 @@ function TokenForm() {
     })
   }
 
-  const queryFTs = () => {
-    coreumQueryClient?.FTClient().Tokens({
-      issuer: authContext.loggedAddress[0],
-    }).then(async (res: QueryTokensResponse) => {
-      const fts = await Promise.all(
-        res.tokens.map(async (ft) => {
-          return {
-            denom: ft.denom,
-            description: ft.description,
-            issuer: ft.issuer,
-            precision: ft.precision,
-            subunit: ft.subunit,
-            symbol: ft.symbol
-          }
-        })
-      )
-      console.log(fts)
-      return fts;
-    })
-      .catch((error) => {
-        console.log("Query FT's Error" + error)
-      })
-  }
-  queryFTs();
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -202,6 +177,37 @@ const MyTokensTab = ({
   onButtonCreateTokenClick: () => void;
 }) => {
   let hasTokens = false; // Todo use to display the existing tokens
+  const { walletAddress, signingClient, coreumQueryClient } = useSigningClient();
+  const authContext = useContext(AuthContext);
+  const [ftList, setFtList] = useState([])
+
+  const queryFTs = () => {
+    coreumQueryClient?.FTClient().Tokens({
+      issuer: authContext.loggedAddress[0],
+    }).then(async (res: QueryTokensResponse) => {
+      const fts = await Promise.all(
+        res.tokens.map(async (ft) => {
+          console.log(ft)
+          return {
+            denom: ft.denom,
+            description: ft.description,
+            issuer: ft.issuer,
+            precision: ft.precision,
+            subunit: ft.subunit,
+            symbol: ft.symbol
+          }
+        })
+      )
+      console.log(fts)
+      setFtList(fts)
+      hasTokens =true;
+      return fts;
+    })
+      .catch((error) => {
+        console.log("Query FT's Error" + error)
+      })
+  }
+  queryFTs();
 
   const renderNoTokensView = () => {
     return (
@@ -215,8 +221,12 @@ const MyTokensTab = ({
         }}
         mt={6}
       >
+        <code>
+            {ftList && JSON.stringify(ftList)}
+              </code>
         <Typography variant="body1">
           You don't have tokens created yet.
+
         </Typography>
         <Box>
           <Button variant="contained" onClick={onButtonCreateTokenClick}>
@@ -238,11 +248,12 @@ const MyTokensTab = ({
             gap: '2rem',
           }}
         >
-          {tokens.map((token) => (
-            <Card key={token}>
+          {ftList.map((ft) => (
+            <Card key={ft}>
               <CardContent>
                 <Typography variant="h6">Token</Typography>
-                <Typography variant="body1">{token}</Typography>
+                <Typography variant="body1">Symbol: {ft.symbol}</Typography>
+                <Typography variant="body1">Description: {ft.description}</Typography>
               </CardContent>
             </Card>
           ))}
@@ -256,7 +267,7 @@ const MyTokensTab = ({
     );
   };
 
-  return hasTokens ? renderTokensView() : renderNoTokensView();
+  return ftList ? renderTokensView() : renderNoTokensView();
 };
 
 const Tokens: NextPage = () => {
