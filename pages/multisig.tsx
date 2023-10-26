@@ -95,13 +95,15 @@ const Multisig: NextPage = () => {
     // Check if 'res' contains 'contractAddress' property
     if (res && res.contractAddress) {
       let contractAddress = res.contractAddress;
-      if (contractAddress) setContractCreated(contractAddress);
+      if (contractAddress) {
+        router.push(`management/${contractAddress}`);
+        //setContractCreated(contractAddress);
+      }
     } else {
       console.log('contractAddress not found in the response.');
     }
 
     setLoading(false);
-    router.push(`management/${contractCreated}`);
   };
 
   return (
