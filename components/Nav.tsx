@@ -37,9 +37,9 @@ function Nav() {
   //  console.log('authContext', authContext);
   const { walletAddress, connectWallet, disconnect } = useSigningClient();
 
-  useEffect(() => {
-    connectWallet();
-  }, []);
+  // useEffect(() => {
+  //   connectWallet();
+  // }, []);
 
   const handleConnect = () => {
     if (walletAddress.length === 0) {
@@ -58,13 +58,13 @@ function Nav() {
 
   const renderNavOptions = () => {
     return (
-      <Box display="flex" flexDirection="row">
+      <Box display="flex" flexDirection="row" mr={3}>
         <AddressContainer>
           Log out: {shortAddress(walletAddress)}
         </AddressContainer>
-        <IconButton size="large">
+        {/* <IconButton size="large">
           <Menu />
-        </IconButton>
+        </IconButton> */}
       </Box>
     );
   };
