@@ -47,7 +47,10 @@ export const VoteProposal: React.FC = (props: IProps) => {
   const [voted, setVoted] = useState<boolean>(false);
   const [isExpired, setIsExpired] = useState<boolean>(false);
 
-  //const yes_pct = () => {} get the sum of weight for Yes / total weight
+  const yes_pct = () => {
+    let yes_votes = votes.map((v: Vote) => v.vote === 'Yes')
+    return (yes_votes.length / votes.length)*100
+  }// get the sum of weight for Yes / total weight
 
   async function getVotes() {
     try {
@@ -201,9 +204,9 @@ export const VoteProposal: React.FC = (props: IProps) => {
             }}
           >
             <Typography variant="caption">Yes:</Typography>
-            <Typography variant="caption">80%</Typography>
+            <Typography variant="caption">{yes_pct()}%</Typography>
           </Box>
-          <LinearProgress variant="determinate" value={80} />
+          <LinearProgress variant="determinate" value={yes_pct()} />
           <Box
             sx={{
               display: 'flex',
@@ -212,13 +215,13 @@ export const VoteProposal: React.FC = (props: IProps) => {
             }}
           >
             <Typography variant="caption">No:</Typography>
-            <Typography variant="caption">20%</Typography>
+            <Typography variant="caption">{100 - yes_pct()}%</Typography>
           </Box>
-          <LinearProgress variant="determinate" value={20} />
+          <LinearProgress variant="determinate" value={100 - yes_pct()} />
           <Box mt={2} mb={2} display="flex" flexDirection="column">
-            <Typography variant="h6">54 votes cast</Typography>
+            <Typography variant="h6">{votes.length} votes cast</Typography>
             <Typography variant="caption">
-              *To be valid need 100 casted votes in total.
+              *This proposal has no transactions.
             </Typography>
           </Box>
           {isExpired ? (
