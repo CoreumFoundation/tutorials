@@ -154,6 +154,24 @@ const Main = () => {
           </Box>
         </Box>
       </Box>
+
+      <Box
+        sx={{
+          marginTop: '150px',
+          width: '100vw',
+          paddingLeft: `${SIZES['lineHeight'] * 2}rem`,
+          paddingRight: `${SIZES['lineHeight'] * 2}rem`,
+        }}
+      >
+        <Typography variant="h3" align="left" gutterBottom>
+          JOIN THE GUILD NATION
+        </Typography>
+        <Typography variant="body1" align="left" maxWidth={900}>
+          Guild Hub enables all types of gamers and metaverse players to plug
+          into a collaborative ecosystem where everyone can join a guild or
+          create and manage their own.
+        </Typography>
+      </Box>
     </>
   );
 };
