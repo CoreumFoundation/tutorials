@@ -78,10 +78,9 @@ func main() {
 		panic(err)
 	}
 
-	senderAddress, _ := senderInfo.GetAddress()
 	// Broadcast transaction issuing new fungible token
+	senderAddress, _ := senderInfo.GetAddress()
 	const subunit = "uabc"
-	ctx := context.Background()
 
 	msgIssue := &assetfttypes.MsgIssue{
 		Issuer:        senderAddress.String(),
@@ -92,9 +91,8 @@ func main() {
 		Description:   "ABC coin",
 		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing},
 	}
-	if err != nil {
-		panic(err)
-	}
+
+	ctx := context.Background()
 	_, err = client.BroadcastTx(
 		ctx,
 		clientCtx.WithFromAddress(senderAddress),

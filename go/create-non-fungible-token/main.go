@@ -77,9 +77,8 @@ func main() {
 		panic(err)
 	}
 
-	senderAddress, _ := senderInfo.GetAddress()
-	ctx := context.Background()
 	// Broadcast transaction issuing new nft class
+	senderAddress, _ := senderInfo.GetAddress()
 	const classSymbol = "NFTClass"
 	msgIssueClass := &assetnfttypes.MsgIssueClass{
 		Issuer:      senderAddress.String(),
@@ -89,6 +88,7 @@ func main() {
 		Features:    []assetnfttypes.ClassFeature{assetnfttypes.ClassFeature_freezing},
 	}
 
+	ctx := context.Background()
 	_, err = client.BroadcastTx(
 		ctx,
 		clientCtx.WithFromAddress(senderAddress),
