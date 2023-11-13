@@ -3,14 +3,22 @@ module github.com/CoreumFoundation/tutorials/go/create-non-fungible-token
 go 1.20
 
 replace (
-	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/tendermint/tendermint => github.com/cometbft/cometbft v0.34.27
-	google.golang.org/grpc => google.golang.org/grpc v1.33.2
+	// cosmos keyring
+	github.com/99designs/keyring => github.com/cosmos/keyring v1.2.0
+	// dgrijalva/jwt-go is deprecated and doesn't receive security updates.
+	// TODO(v4): remove it: https://github.com/cosmos/cosmos-sdk/issues/13134
+	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.4.2
+	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.
+	// TODO(v4) Remove it: https://github.com/cosmos/cosmos-sdk/issues/10409
+	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.9.0
+	// https://github.com/cosmos/cosmos-sdk/issues/14949
+	// pin the version of goleveldb to v1.0.1-0.20210819022825-2ae1ddf74ef7 required by SDK v47 upgrade guide.
+	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
 )
 
 require (
-	github.com/CoreumFoundation/coreum/v2 v2.0.0
-	github.com/cosmos/cosmos-sdk v0.45.16
+	github.com/CoreumFoundation/coreum/v3 v3.0.0-20231107070602-2ae43ed1f7cd
+	github.com/cosmos/cosmos-sdk v0.47.5
 	google.golang.org/grpc v1.55.0
 )
 

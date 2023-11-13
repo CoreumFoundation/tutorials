@@ -15,9 +15,9 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v2/pkg/client"
-	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
-	assetfttypes "github.com/CoreumFoundation/coreum/v2/x/asset/ft/types"
+	"github.com/CoreumFoundation/coreum/v3/pkg/client"
+	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
+	assetfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/ft/types"
 )
 
 const (
