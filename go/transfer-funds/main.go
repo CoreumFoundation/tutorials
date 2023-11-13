@@ -15,8 +15,10 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v2/pkg/client"
-	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
+	"github.com/CoreumFoundation/coreum/v3/pkg/client"
+	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
+	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
+	coreumkeyring "github.com/CoreumFoundation/coreum/v3/pkg/keyring"
 )
 
 const (
@@ -50,11 +52,13 @@ func main() {
 		panic(err)
 	}
 
+	encodingConfig := coreumconfig.NewEncodingConfig(modules)
+
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
-		WithKeyring(keyring.NewInMemory()).
-		WithBroadcastMode(flags.BroadcastBlock)
+		WithKeyring(coreumkeyring.NewConcurrentSafeKeyring(keyring.NewInMemory(encodingConfig.Codec))).
+		WithBroadcastMode(flags.BroadcastSync)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -74,17 +78,19 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Println(senderInfo.GetAddress().String())
+	senderAddress, _ := senderInfo.GetAddress()
+
+	fmt.Println(senderAddress.String())
 
 	// Validate address
-	_, err = sdk.AccAddressFromBech32(senderInfo.GetAddress().String())
+	_, err = sdk.AccAddressFromBech32(senderAddress.String())
 	if err != nil {
 		panic(err)
 	}
 
 	// Broadcast transaction transferring funds
 	msg := &banktypes.MsgSend{
-		FromAddress: senderInfo.GetAddress().String(),
+		FromAddress: senderAddress.String(),
 		ToAddress:   recipientAddress,
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin(denom, 9_000_000)),
 	}
@@ -92,7 +98,7 @@ func main() {
 	ctx := context.Background()
 	result, err := client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msg,
 	)

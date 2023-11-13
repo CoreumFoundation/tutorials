@@ -78,28 +78,23 @@ func main() {
 		panic(err)
 	}
 
+	senderAddress, _ := senderInfo.GetAddress()
 	// Broadcast transaction issuing new fungible token
-	const subunit = "uabc"
-	msgIssue := &assetfttypes.MsgIssue{
-		Issuer:             senderInfo.String(),
-		Symbol:             "ABC",
-		Subunit:            subunit,
-		Precision:          6,
-		InitialAmount:      sdkmath.NewInt(100_000_000),
-		Description:        "ABC coin",
-		BurnRate:           sdk.NewDec(0),
-		SendCommissionRate: sdk.NewDec(0),
-		URI:                "https://my-class-meta.invalid/1",
-		URIHash:            "content-hash",
-		Features:           []assetfttypes.Feature{assetfttypes.Feature_freezing},
-	}
+	const subunit = "uzzzzzz"
+	ctx := context.Background()
 
-	senderAddress, err := senderInfo.GetAddress()
+	msgIssue := &assetfttypes.MsgIssue{
+		Issuer:        senderAddress.String(),
+		Symbol:        "ABC",
+		Subunit:       subunit,
+		Precision:     6,
+		InitialAmount: sdkmath.NewInt(100_000_000),
+		Description:   "ABC coin",
+		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing},
+	}
 	if err != nil {
 		panic(err)
 	}
-
-	ctx := context.Background()
 	_, err = client.BroadcastTx(
 		ctx,
 		clientCtx.WithFromAddress(senderAddress),
@@ -147,7 +142,7 @@ func main() {
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(recipientAddress),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgSend,
 	)

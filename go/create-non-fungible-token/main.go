@@ -14,10 +14,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v2/pkg/client"
-	"github.com/CoreumFoundation/coreum/v2/pkg/config/constant"
-	assetnfttypes "github.com/CoreumFoundation/coreum/v2/x/asset/nft/types"
-	"github.com/CoreumFoundation/coreum/v2/x/nft"
+	"github.com/CoreumFoundation/coreum/v3/pkg/client"
+	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
+	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
+	coreumkeyring "github.com/CoreumFoundation/coreum/v3/pkg/keyring"
+	assetnfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/nft/types"
+	"github.com/CoreumFoundation/coreum/v3/x/nft"
 )
 
 const (
@@ -49,11 +51,13 @@ func main() {
 		panic(err)
 	}
 
+	encodingConfig := coreumconfig.NewEncodingConfig(modules)
+
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
-		WithKeyring(keyring.NewInMemory()).
-		WithBroadcastMode(flags.BroadcastBlock)
+		WithKeyring(coreumkeyring.NewConcurrentSafeKeyring(keyring.NewInMemory(encodingConfig.Codec))).
+		WithBroadcastMode(flags.BroadcastSync)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -73,20 +77,21 @@ func main() {
 		panic(err)
 	}
 
+	senderAddress, _ := senderInfo.GetAddress()
+	ctx := context.Background()
 	// Broadcast transaction issuing new nft class
 	const classSymbol = "NFTClass"
 	msgIssueClass := &assetnfttypes.MsgIssueClass{
-		Issuer:      senderInfo.GetAddress().String(),
+		Issuer:      senderAddress.String(),
 		Symbol:      classSymbol,
 		Name:        "NFT Class",
 		Description: "NFT Class",
 		Features:    []assetnfttypes.ClassFeature{assetnfttypes.ClassFeature_freezing},
 	}
 
-	ctx := context.Background()
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgIssueClass,
 	)
@@ -95,17 +100,17 @@ func main() {
 	}
 
 	// Broadcast transaction minting new nft
-	classID := assetnfttypes.BuildClassID(classSymbol, senderInfo.GetAddress())
+	classID := assetnfttypes.BuildClassID(classSymbol, senderAddress)
 	const nftID = "myNFT"
 	msgMint := &assetnfttypes.MsgMint{
-		Sender:  senderInfo.GetAddress().String(),
+		Sender:  senderAddress.String(),
 		ClassID: classID,
 		ID:      nftID,
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgMint,
 	)
@@ -136,16 +141,20 @@ func main() {
 		panic(err)
 	}
 
+	recipientAddress, err := recipientInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
 	msgSend := &nft.MsgSend{
-		Sender:   senderInfo.GetAddress().String(),
-		Receiver: recipientInfo.GetAddress().String(),
+		Sender:   senderAddress.String(),
+		Receiver: recipientAddress.String(),
 		Id:       nftID,
 		ClassId:  classID,
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgSend,
 	)
@@ -165,14 +174,14 @@ func main() {
 
 	// Freeze balance portion of the recipient's balance
 	msgFreeze := &assetnfttypes.MsgFreeze{
-		Sender:  senderInfo.GetAddress().String(),
+		Sender:  senderAddress.String(),
 		ClassID: classID,
 		ID:      nftID,
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
-		clientCtx.WithFromAddress(senderInfo.GetAddress()),
+		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
 		msgFreeze,
 	)
