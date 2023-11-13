@@ -47,7 +47,7 @@ func main() {
 
 	// Configure client context and tx factory
 	// If you don't use TLS then replace `grpc.WithTransportCredentials()` with `grpc.WithInsecure()`
-	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{})))
+	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{MinVersion: tls.VersionTLS12})))
 	if err != nil {
 		panic(err)
 	}
