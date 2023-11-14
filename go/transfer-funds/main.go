@@ -78,7 +78,10 @@ func main() {
 		panic(err)
 	}
 
-	senderAddress, _ := senderInfo.GetAddress()
+	senderAddress, err := senderInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Println(senderAddress.String())
 

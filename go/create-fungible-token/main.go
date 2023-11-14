@@ -79,7 +79,10 @@ func main() {
 	}
 
 	// Broadcast transaction issuing new fungible token
-	senderAddress, _ := senderInfo.GetAddress()
+	senderAddress, err := senderInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
 	const subunit = "uabc"
 
 	msgIssue := &assetfttypes.MsgIssue{

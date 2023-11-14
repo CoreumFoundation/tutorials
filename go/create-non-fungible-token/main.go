@@ -78,7 +78,10 @@ func main() {
 	}
 
 	// Broadcast transaction issuing new nft class
-	senderAddress, _ := senderInfo.GetAddress()
+	senderAddress, err := senderInfo.GetAddress()
+	if err != nil {
+		panic(err)
+	}
 	const classSymbol = "NFTClass"
 	msgIssueClass := &assetnfttypes.MsgIssueClass{
 		Issuer:      senderAddress.String(),
