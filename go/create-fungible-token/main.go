@@ -19,7 +19,6 @@ import (
 	"github.com/CoreumFoundation/coreum/v3/pkg/client"
 	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
 	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
-	coreumkeyring "github.com/CoreumFoundation/coreum/v3/pkg/keyring"
 	assetfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/ft/types"
 )
 
@@ -57,7 +56,7 @@ func main() {
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
-		WithKeyring(coreumkeyring.NewConcurrentSafeKeyring(keyring.NewInMemory(encodingConfig.Codec))).
+		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
 		WithBroadcastMode(flags.BroadcastSync)
 
 	txFactory := client.Factory{}.
