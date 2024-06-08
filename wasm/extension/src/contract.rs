@@ -71,16 +71,60 @@ pub fn sudo(deps: DepsMut<CoreumQueries>, env: Env, msg: SudoMsg) -> CoreumResul
 }
 
 pub fn sudo_extension_transfer(
-    _deps: DepsMut<CoreumQueries>,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
-    _amount: Uint128,
+    amount: Uint128,
     _sender: String,
-    _recipient: String,
-    _commission_amount: Uint128,
+    recipient: String,
+    commission_amount: Uint128,
     _burn_amount: Uint128,
     _context: TransferContext,
 ) -> CoreumResult<ContractError> {
-    Ok(Response::new())
+    let denom = DENOM.load(deps.storage)?;
+    let token = query_token(deps.as_ref(), &denom)?;
+
+    let transfer_msg = cosmwasm_std::BankMsg::Send {
+        to_address: recipient.to_string(),
+        amount: vec![Coin { amount, denom }],
+    };
+
+    let mut response = Response::new()
+        .add_attribute("method", "execute_transfer")
+        .add_message(transfer_msg);
+
+    if !commission_amount.is_zero() {
+        // if token has an admin, send half of the commission to the admin and let the extension keep
+        // the rest of the commission
+        if let Some(admin) = &token.admin {
+            let admin_commission_amount = commission_amount.div(Uint128::new(2));
+            let admin_commission_msg = cosmwasm_std::BankMsg::Send {
+                to_address: admin.to_string(),
+                amount: vec![Coin {
+                    amount: admin_commission_amount,
+                    denom: token.denom.to_string(),
+                }],
+            };
+            response = response
+                .add_attribute(
+                    "admin_send_commission_amount",
+                    admin_commission_amount.to_string(),
+                )
+                .add_message(admin_commission_msg);
+        }
+    }
+
+    Ok(response)
+}
+
+fn query_token(deps: Deps<CoreumQueries>, denom: &str) -> StdResult<Token> {
+    let token: TokenResponse = deps.querier.query(
+        &CoreumQueries::AssetFT(Query::Token {
+            denom: denom.to_string(),
+        })
+        .into(),
+    )?;
+
+    Ok(token.token)
 }
 
 #[entry_point]
