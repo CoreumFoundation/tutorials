@@ -71,16 +71,31 @@ pub fn sudo(deps: DepsMut<CoreumQueries>, env: Env, msg: SudoMsg) -> CoreumResul
 }
 
 pub fn sudo_extension_transfer(
-    _deps: DepsMut<CoreumQueries>,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
-    _amount: Uint128,
+    amount: Uint128,
     _sender: String,
-    _recipient: String,
+    recipient: String,
     _commission_amount: Uint128,
     _burn_amount: Uint128,
-    _context: TransferContext,
+    context: TransferContext,
 ) -> CoreumResult<ContractError> {
-    Ok(Response::new())
+    let denom = DENOM.load(deps.storage)?;
+
+    if matches!(context.ibc_purpose, IBCPurpose::Out) && amount > Uint128::new(100) {
+        return Err(ContractError::IBCDisabled {});
+    }
+
+    let transfer_msg = cosmwasm_std::BankMsg::Send {
+        to_address: recipient.to_string(),
+        amount: vec![Coin { amount, denom }],
+    };
+
+    let response = Response::new()
+        .add_attribute("method", "execute_transfer")
+        .add_message(transfer_msg);
+
+    Ok(response)
 }
 
 #[entry_point]
