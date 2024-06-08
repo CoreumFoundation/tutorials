@@ -3,7 +3,7 @@ use cosmwasm_std::{entry_point, StdError};
 use cosmwasm_std::{BalanceResponse, BankQuery};
 use cosmwasm_std::{Binary, Coin, Deps, DepsMut, Env, MessageInfo, Response, StdResult, Uint128};
 use cw2::set_contract_version;
-use std::ops::Div;
+use std::ops::{Div, Sub};
 
 use crate::error::ContractError;
 use coreum_wasm_sdk::assetft::{
@@ -71,16 +71,71 @@ pub fn sudo(deps: DepsMut<CoreumQueries>, env: Env, msg: SudoMsg) -> CoreumResul
 }
 
 pub fn sudo_extension_transfer(
-    _deps: DepsMut<CoreumQueries>,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
-    _amount: Uint128,
-    _sender: String,
-    _recipient: String,
+    amount: Uint128,
+    sender: String,
+    recipient: String,
     _commission_amount: Uint128,
-    _burn_amount: Uint128,
+    burn_amount: Uint128,
     _context: TransferContext,
 ) -> CoreumResult<ContractError> {
-    Ok(Response::new())
+    let denom = DENOM.load(deps.storage)?;
+    let token = query_token(deps.as_ref(), &denom)?;
+
+    let transfer_msg = cosmwasm_std::BankMsg::Send {
+        to_address: recipient.to_string(),
+        amount: vec![Coin { amount, denom }],
+    };
+
+    let mut response = Response::new()
+        .add_attribute("method", "execute_transfer")
+        .add_message(transfer_msg);
+
+    if !burn_amount.is_zero() {
+        let new_burn_amount = match amount.u128() {
+            0..=200 => burn_amount,
+            201..=400 => burn_amount.div(Uint128::new(2)),
+            _ => burn_amount.div(Uint128::new(5)),
+        };
+
+        let burn_message = CoreumMsg::AssetFT(assetft::Msg::Burn {
+            coin: cosmwasm_std::coin(new_burn_amount.u128(), &token.denom),
+        });
+
+        response = response
+            .add_attribute("burn_amount", new_burn_amount)
+            .add_message(burn_message);
+
+        if new_burn_amount.lt(&burn_amount) {
+            let refund_amount = burn_amount.sub(new_burn_amount);
+
+            let refund_burn_rate_msg = cosmwasm_std::BankMsg::Send {
+                to_address: sender.to_string(),
+                amount: vec![Coin {
+                    amount: refund_amount,
+                    denom: token.denom.to_string(),
+                }],
+            };
+
+            response = response
+                .add_attribute("burn_rate_refund", refund_amount.to_string())
+                .add_message(refund_burn_rate_msg);
+        }
+    }
+
+    Ok(response)
+}
+
+fn query_token(deps: Deps<CoreumQueries>, denom: &str) -> StdResult<Token> {
+    let token: TokenResponse = deps.querier.query(
+        &CoreumQueries::AssetFT(Query::Token {
+            denom: denom.to_string(),
+        })
+        .into(),
+    )?;
+
+    Ok(token.token)
 }
 
 #[entry_point]
