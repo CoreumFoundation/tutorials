@@ -71,16 +71,57 @@ pub fn sudo(deps: DepsMut<CoreumQueries>, env: Env, msg: SudoMsg) -> CoreumResul
 }
 
 pub fn sudo_extension_transfer(
-    _deps: DepsMut<CoreumQueries>,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
-    _amount: Uint128,
+    amount: Uint128,
     _sender: String,
-    _recipient: String,
+    recipient: String,
     _commission_amount: Uint128,
     _burn_amount: Uint128,
-    _context: TransferContext,
+    context: TransferContext,
 ) -> CoreumResult<ContractError> {
-    Ok(Response::new())
+    let denom = DENOM.load(deps.storage)?;
+    let token = query_token(deps.as_ref(), &denom)?;
+
+    assert_block_smart_contracts(&context, &recipient, &token)?;
+
+    let transfer_msg = cosmwasm_std::BankMsg::Send {
+        to_address: recipient.to_string(),
+        amount: vec![Coin { amount, denom }],
+    };
+
+    let response = Response::new()
+        .add_attribute("method", "execute_transfer")
+        .add_message(transfer_msg);
+
+    Ok(response)
+}
+
+fn assert_block_smart_contracts(
+    context: &TransferContext,
+    recipient: &str,
+    token: &Token,
+) -> Result<(), ContractError> {
+    if Some(recipient.to_string()) == token.extension_cw_address {
+        return Ok(());
+    }
+
+    if context.recipient_is_smart_contract {
+        return Err(ContractError::SmartContractBlocked {});
+    }
+
+    return Ok(());
+}
+
+fn query_token(deps: Deps<CoreumQueries>, denom: &str) -> StdResult<Token> {
+    let token: TokenResponse = deps.querier.query(
+        &CoreumQueries::AssetFT(Query::Token {
+            denom: denom.to_string(),
+        })
+        .into(),
+    )?;
+
+    Ok(token.token)
 }
 
 #[entry_point]
