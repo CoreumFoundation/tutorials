@@ -4,11 +4,11 @@ use cosmwasm_std::Uint128;
 #[cw_serde]
 pub struct InstantiateMsg {
     pub denom: String,
-    pub user_provided_instantiation_msg: UserProvidedInstantiationMsg,
+    pub issuance_msg: IssuanceMsg,
 }
 
 #[cw_serde]
-pub struct UserProvidedInstantiationMsg {}
+pub struct IssuanceMsg {}
 
 #[cw_serde]
 pub enum ExecuteMsg {}
