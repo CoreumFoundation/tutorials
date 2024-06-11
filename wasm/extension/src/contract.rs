@@ -32,9 +32,7 @@ pub fn instantiate(
 
     PARENT_DENOM.save(
         deps.storage,
-        &msg.user_provided_instantiation_msg
-            .parent_denom
-            .unwrap_or_default(),
+        &msg.issuance_msg.parent_denom.unwrap_or_default(),
     )?;
 
     Ok(Response::new()
