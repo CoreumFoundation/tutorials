@@ -16,15 +16,15 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v3/pkg/client"
-	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
-	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
-	assetfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/ft/types"
+	"github.com/CoreumFoundation/coreum/v4/pkg/client"
+	coreumconfig "github.com/CoreumFoundation/coreum/v4/pkg/config"
+	"github.com/CoreumFoundation/coreum/v4/pkg/config/constant"
+	assetfttypes "github.com/CoreumFoundation/coreum/v4/x/asset/ft/types"
 )
 
 const (
 	// Replace it with your own mnemonic
-	senderMnemonic = "dish category castle eight torch cross head casual viable virtual inform skirt search area neutral muscle lens hello lounge base away danger forum congress"
+	senderMnemonic = "rough olympic update gloom play squirrel license pride cup hazard onion effort"
 
 	chainID       = constant.ChainIDTest
 	addressPrefix = constant.AddressPrefixTest
@@ -82,15 +82,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	const subunit = "uabc"
+	const subunit = "hahaha"
 
 	msgIssue := &assetfttypes.MsgIssue{
 		Issuer:        senderAddress.String(),
-		Symbol:        "ABC",
+		Symbol:        "HAHAH",
 		Subunit:       subunit,
 		Precision:     6,
 		InitialAmount: sdkmath.NewInt(100_000_000),
-		Description:   "ABC coin",
+		Description:   "HAAHHA coin",
 		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing},
 	}
 
@@ -105,7 +105,7 @@ func main() {
 		panic(err)
 	}
 
-	// Query initial balance hold by the issuer
+	// Query initial balance held by the issuer
 	denom := subunit + "-" + senderAddress.String()
 	bankClient := banktypes.NewQueryClient(clientCtx)
 	resp, err := bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
@@ -160,20 +160,21 @@ func main() {
 	}
 	fmt.Printf("Recipient's balance: %s\n", resp.Balance)
 
-	// Freeze balance portion of the recipient's balance
-	msgFreeze := &assetfttypes.MsgFreeze{
+	// Transfer admin rights
+	msgTransferAdmin := &assetfttypes.MsgTransferAdmin{
 		Sender:  senderAddress.String(),
 		Account: recipientAddress.String(),
-		Coin:    sdk.NewInt64Coin(denom, 500_000),
+		Denom:   denom,
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
 		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
-		msgFreeze,
+		msgTransferAdmin,
 	)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Admin transfer message broadcasted successfully")
 }
