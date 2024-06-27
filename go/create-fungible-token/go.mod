@@ -17,7 +17,7 @@ replace (
 
 require (
 	cosmossdk.io/math v1.3.0
-	github.com/CoreumFoundation/coreum/v4 v4.0.0-20240625084241-f349a68ed04a
+	github.com/CoreumFoundation/coreum/v4 v4.0.0
 	github.com/cosmos/cosmos-sdk v0.47.12
 	google.golang.org/grpc v1.62.1
 )

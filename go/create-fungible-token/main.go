@@ -57,7 +57,8 @@ func main() {
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
 		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
-		WithBroadcastMode(flags.BroadcastSync)
+		WithBroadcastMode(flags.BroadcastSync).
+		WithAwaitTx(true)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -82,11 +83,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	const subunit = "hahaha"
+	const subunit = "hahahahaha"
 
 	msgIssue := &assetfttypes.MsgIssue{
 		Issuer:        senderAddress.String(),
-		Symbol:        "HAHAH",
+		Symbol:        "HAHAHAHAH",
 		Subunit:       subunit,
 		Precision:     6,
 		InitialAmount: sdkmath.NewInt(100_000_000),
