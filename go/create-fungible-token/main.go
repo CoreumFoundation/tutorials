@@ -24,11 +24,12 @@ import (
 
 const (
 	// Replace it with your own mnemonic
-	senderMnemonic = "rough olympic update gloom play squirrel license pride cup hazard onion effort"
+	senderMnemonic    = "gown desert good census decorate clip camera novel swear subway depend wealth hurt target swear token flat clay peasant exile glad under random onion"
+	recipientMnemonic = "version soul liberty random sister invest clerk lake awake fee shock farm scout domain baby wish sport slab train broccoli chef universe way swim"
 
-	chainID       = constant.ChainIDTest
-	addressPrefix = constant.AddressPrefixTest
-	nodeAddress   = "full-node.testnet-1.coreum.dev:9090"
+	chainID       = constant.ChainIDDev
+	addressPrefix = constant.AddressPrefixDev
+	nodeAddress   = "full-node.devnet-1.coreum.dev:9090"
 )
 
 func main() {
@@ -68,7 +69,7 @@ func main() {
 
 	// Generate private key and add it to the keystore
 	senderInfo, err := clientCtx.Keyring().NewAccount(
-		"key-name",
+		"sender-key-name",
 		senderMnemonic,
 		"",
 		sdk.GetConfig().GetFullBIP44Path(),
@@ -119,11 +120,11 @@ func main() {
 	fmt.Printf("Issuer's balance: %s\n", resp.Balance)
 
 	// Send issued token to someone
-	recipientInfo, _, err := clientCtx.Keyring().NewMnemonic(
-		"recipient",
-		keyring.English,
-		sdk.GetConfig().GetFullBIP44Path(),
+	recipientInfo, err := clientCtx.Keyring().NewAccount(
+		"recipient-key-name",
+		recipientMnemonic,
 		"",
+		sdk.GetConfig().GetFullBIP44Path(),
 		hd.Secp256k1,
 	)
 	if err != nil {
@@ -161,6 +162,16 @@ func main() {
 	}
 	fmt.Printf("Recipient's balance: %s\n", resp.Balance)
 
+	assetftClient := assetfttypes.NewQueryClient(clientCtx)
+	res, err := assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Token admin: %s\n", res.Token.Admin)
+
 	// Transfer admin rights
 	msgTransferAdmin := &assetfttypes.MsgTransferAdmin{
 		Sender:  senderAddress.String(),
@@ -178,4 +189,44 @@ func main() {
 		panic(err)
 	}
 	fmt.Println("Admin transfer message broadcasted successfully")
+
+	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Token admin: %s\n", res.Token.Admin)
+
+	// Transfer admin rights
+	msgClearAdmin := &assetfttypes.MsgClearAdmin{
+		Sender: recipientAddress.String(),
+		Denom:  denom,
+	}
+
+	_, err = client.BroadcastTx(
+		ctx,
+		clientCtx.WithFromAddress(recipientAddress),
+		txFactory,
+		msgClearAdmin,
+	)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Admin clear message broadcasted successfully")
+
+	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	if res.Token.Admin == "" {
+		fmt.Print("Token admin: no one\n")
+	} else {
+		fmt.Printf("Token admin: %s\n", res.Token.Admin)
+	}
+
 }
