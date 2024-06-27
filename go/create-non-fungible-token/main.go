@@ -14,11 +14,12 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v3/pkg/client"
-	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
-	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
-	assetnfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/nft/types"
-	"github.com/CoreumFoundation/coreum/v3/x/nft"
+	"github.com/cosmos/cosmos-sdk/x/nft"
+
+	"github.com/CoreumFoundation/coreum/v4/pkg/client"
+	coreumconfig "github.com/CoreumFoundation/coreum/v4/pkg/config"
+	"github.com/CoreumFoundation/coreum/v4/pkg/config/constant"
+	assetnfttypes "github.com/CoreumFoundation/coreum/v4/x/asset/nft/types"
 )
 
 const (
@@ -56,7 +57,8 @@ func main() {
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
 		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
-		WithBroadcastMode(flags.BroadcastSync)
+		WithBroadcastMode(flags.BroadcastSync).
+		WithAwaitTx(true)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
