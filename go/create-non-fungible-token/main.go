@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -24,11 +25,11 @@ import (
 
 const (
 	// Replace it with your own mnemonic
-	senderMnemonic = "dish category castle eight torch cross head casual viable virtual inform skirt search area neutral muscle lens hello lounge base away danger forum congress"
+	senderMnemonic = "hair album dose tribe vendor risk inmate helmet size artefact sadness repeat laugh range access this target picture develop parent quarter trap either very"
 
-	chainID       = constant.ChainIDTest
-	addressPrefix = constant.AddressPrefixTest
-	nodeAddress   = "full-node.testnet-1.coreum.dev:9090"
+	chainID       = constant.ChainIDDev
+	addressPrefix = constant.AddressPrefixDev
+	nodeAddress   = "full-node.devnet-1.coreum.dev:9090"
 )
 
 func main() {
@@ -66,7 +67,7 @@ func main() {
 		WithTxConfig(clientCtx.TxConfig()).
 		WithSimulateAndExecute(true)
 
-	// Generate private key and add it to the keystore
+	// Generate a private key and add it to the keystore
 	senderInfo, err := clientCtx.Keyring().NewAccount(
 		"key-name",
 		senderMnemonic,
@@ -103,6 +104,15 @@ func main() {
 		panic(err)
 	}
 
+	jsonData := []byte(`{"name": "Name", "description": "Description"}`)
+	dataBytes := assetnfttypes.DataBytes{
+		Data: jsonData,
+	}
+	data, err := codectypes.NewAnyWithValue(&dataBytes)
+	if err != nil {
+		panic(err)
+	}
+
 	// Broadcast transaction minting new nft
 	classID := assetnfttypes.BuildClassID(classSymbol, senderAddress)
 	const nftID = "myNFT"
@@ -110,6 +120,7 @@ func main() {
 		Sender:  senderAddress.String(),
 		ClassID: classID,
 		ID:      nftID,
+		Data:    data,
 	}
 
 	_, err = client.BroadcastTx(
@@ -192,4 +203,93 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
+	dataDynamic := assetnfttypes.DataDynamic{
+		Items: []assetnfttypes.DataDynamicItem{
+			{
+				Editors: []assetnfttypes.DataEditor{
+					assetnfttypes.DataEditor_owner,
+				},
+				Data: jsonData,
+			},
+		},
+	}
+	data, err = codectypes.NewAnyWithValue(&dataDynamic)
+	if err != nil {
+		panic(err)
+	}
+
+	// Broadcast transaction minting new dynamic nft
+	classID = assetnfttypes.BuildClassID(classSymbol, senderAddress)
+	const dynamicNftID = "myDynamicNFT"
+	msgMint = &assetnfttypes.MsgMint{
+		Sender:  senderAddress.String(),
+		ClassID: classID,
+		ID:      dynamicNftID,
+		Data:    data,
+	}
+
+	_, err = client.BroadcastTx(
+		ctx,
+		clientCtx.WithFromAddress(senderAddress),
+		txFactory,
+		msgMint,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	// Query the nft
+	storedNFT, err := nftClient.NFT(ctx, &nft.QueryNFTRequest{
+		ClassId: classID,
+		Id:      dynamicNftID,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	var storedDataDynamic assetnfttypes.DataDynamic
+	err = storedDataDynamic.Unmarshal(storedNFT.Nft.Data.Value)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Data: %s\n", string(storedDataDynamic.Items[0].Data))
+
+	// update stored NFT
+	msgUpdateData := &assetnfttypes.MsgUpdateData{
+		Sender:  senderAddress.String(),
+		ClassID: classID,
+		ID:      dynamicNftID,
+		Items: []assetnfttypes.DataDynamicIndexedItem{
+			{
+				Index: 0,
+				Data:  []byte(`{"name": "Updated Name", "description": "Updated Description"}`),
+			},
+		},
+	}
+
+	_, err = client.BroadcastTx(
+		ctx,
+		clientCtx.WithFromAddress(senderAddress),
+		txFactory,
+		msgUpdateData,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	storedNFT, err = nftClient.NFT(ctx, &nft.QueryNFTRequest{
+		ClassId: classID,
+		Id:      dynamicNftID,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	var storedDataDynamic2 assetnfttypes.DataDynamic
+	err = storedDataDynamic2.Unmarshal(storedNFT.Nft.Data.Value)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Data: %s\n", string(storedDataDynamic2.Items[0].Data))
 }
