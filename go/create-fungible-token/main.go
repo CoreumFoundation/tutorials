@@ -16,19 +16,20 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 
-	"github.com/CoreumFoundation/coreum/v3/pkg/client"
-	coreumconfig "github.com/CoreumFoundation/coreum/v3/pkg/config"
-	"github.com/CoreumFoundation/coreum/v3/pkg/config/constant"
-	assetfttypes "github.com/CoreumFoundation/coreum/v3/x/asset/ft/types"
+	"github.com/CoreumFoundation/coreum/v4/pkg/client"
+	coreumconfig "github.com/CoreumFoundation/coreum/v4/pkg/config"
+	"github.com/CoreumFoundation/coreum/v4/pkg/config/constant"
+	assetfttypes "github.com/CoreumFoundation/coreum/v4/x/asset/ft/types"
 )
 
 const (
 	// Replace it with your own mnemonic
-	senderMnemonic = "dish category castle eight torch cross head casual viable virtual inform skirt search area neutral muscle lens hello lounge base away danger forum congress"
+	senderMnemonic    = "gown desert good census decorate clip camera novel swear subway depend wealth hurt target swear token flat clay peasant exile glad under random onion"
+	recipientMnemonic = "version soul liberty random sister invest clerk lake awake fee shock farm scout domain baby wish sport slab train broccoli chef universe way swim"
 
-	chainID       = constant.ChainIDTest
-	addressPrefix = constant.AddressPrefixTest
-	nodeAddress   = "full-node.testnet-1.coreum.dev:9090"
+	chainID       = constant.ChainIDDev
+	addressPrefix = constant.AddressPrefixDev
+	nodeAddress   = "full-node.devnet-1.coreum.dev:9090"
 )
 
 func main() {
@@ -57,7 +58,8 @@ func main() {
 		WithChainID(string(chainID)).
 		WithGRPCClient(grpcClient).
 		WithKeyring(keyring.NewInMemory(encodingConfig.Codec)).
-		WithBroadcastMode(flags.BroadcastSync)
+		WithBroadcastMode(flags.BroadcastSync).
+		WithAwaitTx(true)
 
 	txFactory := client.Factory{}.
 		WithKeybase(clientCtx.Keyring()).
@@ -67,7 +69,7 @@ func main() {
 
 	// Generate private key and add it to the keystore
 	senderInfo, err := clientCtx.Keyring().NewAccount(
-		"key-name",
+		"sender-key-name",
 		senderMnemonic,
 		"",
 		sdk.GetConfig().GetFullBIP44Path(),
@@ -82,15 +84,15 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	const subunit = "uabc"
+	const subunit = "hahahahaha"
 
 	msgIssue := &assetfttypes.MsgIssue{
 		Issuer:        senderAddress.String(),
-		Symbol:        "ABC",
+		Symbol:        "HAHAHAHAH",
 		Subunit:       subunit,
 		Precision:     6,
 		InitialAmount: sdkmath.NewInt(100_000_000),
-		Description:   "ABC coin",
+		Description:   "HAAHHA coin",
 		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing},
 	}
 
@@ -105,7 +107,7 @@ func main() {
 		panic(err)
 	}
 
-	// Query initial balance hold by the issuer
+	// Query initial balance held by the issuer
 	denom := subunit + "-" + senderAddress.String()
 	bankClient := banktypes.NewQueryClient(clientCtx)
 	resp, err := bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
@@ -118,11 +120,11 @@ func main() {
 	fmt.Printf("Issuer's balance: %s\n", resp.Balance)
 
 	// Send issued token to someone
-	recipientInfo, _, err := clientCtx.Keyring().NewMnemonic(
-		"recipient",
-		keyring.English,
-		sdk.GetConfig().GetFullBIP44Path(),
+	recipientInfo, err := clientCtx.Keyring().NewAccount(
+		"recipient-key-name",
+		recipientMnemonic,
 		"",
+		sdk.GetConfig().GetFullBIP44Path(),
 		hd.Secp256k1,
 	)
 	if err != nil {
@@ -160,20 +162,71 @@ func main() {
 	}
 	fmt.Printf("Recipient's balance: %s\n", resp.Balance)
 
-	// Freeze balance portion of the recipient's balance
-	msgFreeze := &assetfttypes.MsgFreeze{
+	assetftClient := assetfttypes.NewQueryClient(clientCtx)
+	res, err := assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Token admin: %s\n", res.Token.Admin)
+
+	// Transfer admin rights
+	msgTransferAdmin := &assetfttypes.MsgTransferAdmin{
 		Sender:  senderAddress.String(),
 		Account: recipientAddress.String(),
-		Coin:    sdk.NewInt64Coin(denom, 500_000),
+		Denom:   denom,
 	}
 
 	_, err = client.BroadcastTx(
 		ctx,
 		clientCtx.WithFromAddress(senderAddress),
 		txFactory,
-		msgFreeze,
+		msgTransferAdmin,
 	)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Admin transfer message broadcasted successfully")
+
+	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Printf("Token admin: %s\n", res.Token.Admin)
+
+	// Transfer admin rights
+	msgClearAdmin := &assetfttypes.MsgClearAdmin{
+		Sender: recipientAddress.String(),
+		Denom:  denom,
+	}
+
+	_, err = client.BroadcastTx(
+		ctx,
+		clientCtx.WithFromAddress(recipientAddress),
+		txFactory,
+		msgClearAdmin,
+	)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Admin clear message broadcasted successfully")
+
+	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
+		Denom: denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	if res.Token.Admin == "" {
+		fmt.Print("Token admin: no one\n")
+	} else {
+		fmt.Printf("Token admin: %s\n", res.Token.Admin)
+	}
+
 }
