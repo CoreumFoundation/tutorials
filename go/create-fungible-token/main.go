@@ -24,14 +24,15 @@ import (
 
 const (
 	// Replace it with your own mnemonic
-	senderMnemonic    = "gown desert good census decorate clip camera novel swear subway depend wealth hurt target swear token flat clay peasant exile glad under random onion"
-	recipientMnemonic = "version soul liberty random sister invest clerk lake awake fee shock farm scout domain baby wish sport slab train broccoli chef universe way swim"
+	senderMnemonic    = "your mnemonic"
+	recipientMnemonic = "recipient mnemonic"
 
-	chainID       = constant.ChainIDDev
-	addressPrefix = constant.AddressPrefixDev
-	nodeAddress   = "full-node.devnet-1.coreum.dev:9090"
+	chainID       = constant.ChainIDTest
+	addressPrefix = constant.AddressPrefixTest
+	nodeAddress   = "full-node.testnet-1.coreum.dev:9090"
 )
 
+// Example function demonstrating clawback functionality for fungible tokens.
 func main() {
 	// Configure Cosmos SDK
 	config := sdk.GetConfig()
@@ -39,14 +40,12 @@ func main() {
 	config.SetCoinType(constant.CoinType)
 	config.Seal()
 
-	// List required modules.
-	// If you need types from any other module import them and add here.
+	// List required modules
 	modules := module.NewBasicManager(
 		auth.AppModuleBasic{},
 	)
 
 	// Configure client context and tx factory
-	// If you don't use TLS then replace `grpc.WithTransportCredentials()` with `grpc.WithInsecure()`
 	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{MinVersion: tls.VersionTLS12})))
 	if err != nil {
 		panic(err)
@@ -79,21 +78,22 @@ func main() {
 		panic(err)
 	}
 
-	// Broadcast transaction issuing new fungible token
+	// Get sender address
 	senderAddress, err := senderInfo.GetAddress()
 	if err != nil {
 		panic(err)
 	}
-	const subunit = "hahahahaha"
+	const subunit = "plam"
 
+	// Issue new fungible token
 	msgIssue := &assetfttypes.MsgIssue{
 		Issuer:        senderAddress.String(),
-		Symbol:        "HAHAHAHAH",
+		Symbol:        "PLAM",
 		Subunit:       subunit,
 		Precision:     6,
 		InitialAmount: sdkmath.NewInt(100_000_000),
-		Description:   "HAAHHA coin",
-		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing},
+		Description:   "PLAM coin",
+		Features:      []assetfttypes.Feature{assetfttypes.Feature_freezing, assetfttypes.Feature_clawback},
 	}
 
 	ctx := context.Background()
@@ -162,6 +162,45 @@ func main() {
 	}
 	fmt.Printf("Recipient's balance: %s\n", resp.Balance)
 
+	// Clawback function: Try to claw back some tokens
+	fmt.Println("Attempting clawback...")
+
+	clawbackMsg := &assetfttypes.MsgClawback{
+		Sender:  senderAddress.String(),
+		Account: recipientAddress.String(),
+		Coin:    sdk.NewCoin(denom, sdk.NewInt(500_000)),
+	}
+	res, err := client.BroadcastTx(
+		ctx,
+		clientCtx.WithFromAddress(senderAddress),
+		txFactory,
+		clawbackMsg,
+	)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Clawback transaction broadcasted successfully, TxHash:", res.TxHash)
+
+	// Query the balance of the recipient after clawback
+	resp, err = bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
+		Address: recipientAddress.String(),
+		Denom:   denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Recipient's balance after clawback: %s\n", resp.Balance)
+
+	// Query the balance of the issuer after clawback
+	resp, err = bankClient.Balance(ctx, &banktypes.QueryBalanceRequest{
+		Address: senderAddress.String(),
+		Denom:   denom,
+	})
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Issuer's balance after clawback: %s\n", resp.Balance)
+
 	assetftClient := assetfttypes.NewQueryClient(clientCtx)
 	res, err := assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
 		Denom: denom,
@@ -190,6 +229,7 @@ func main() {
 	}
 	fmt.Println("Admin transfer message broadcasted successfully")
 
+	// Query to verify admin rights transfer
 	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
 		Denom: denom,
 	})
@@ -197,9 +237,9 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Printf("Token admin: %s\n", res.Token.Admin)
+	fmt.Printf("Token admin after transfer: %s\n", res.Token.Admin)
 
-	// Transfer admin rights
+	// Clear admin rights
 	msgClearAdmin := &assetfttypes.MsgClearAdmin{
 		Sender: recipientAddress.String(),
 		Denom:  denom,
@@ -216,6 +256,7 @@ func main() {
 	}
 	fmt.Println("Admin clear message broadcasted successfully")
 
+	// Query to verify admin rights clearance
 	res, err = assetftClient.Token(ctx, &assetfttypes.QueryTokenRequest{
 		Denom: denom,
 	})
@@ -228,5 +269,4 @@ func main() {
 	} else {
 		fmt.Printf("Token admin: %s\n", res.Token.Admin)
 	}
-
 }
