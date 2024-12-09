@@ -1,0 +1,5 @@
+target
+artifacts/extension.wasm
+artifacts/checksums.txt
+artifacts/checksums_intermediate.txt
+
