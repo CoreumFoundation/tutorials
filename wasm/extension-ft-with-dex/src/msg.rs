@@ -54,8 +54,8 @@ pub enum SudoMsg {
     },
     ExtensionPlaceOrder {
         order: DEXOrder,
-        expected_to_spend: Coin,
-        expected_to_receive: Coin,
+        spent: Coin,
+        received: Coin,
     },
 }
 

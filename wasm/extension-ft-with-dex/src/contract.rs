@@ -62,9 +62,9 @@ pub fn sudo(deps: DepsMut, env: Env, msg: SudoMsg) -> Result<Response, ContractE
         ),
         SudoMsg::ExtensionPlaceOrder {
             order,
-            expected_to_spend,
-            expected_to_receive,
-        } => sudo_extension_place_order(order, expected_to_spend, expected_to_receive),
+            spent,
+            received,
+        } => sudo_extension_place_order(order, spent, received),
     }
 }
 
@@ -83,8 +83,8 @@ pub fn sudo_extension_transfer(
 
 pub fn sudo_extension_place_order(
     order: DEXOrder,
-    _expected_to_spend: Coin,
-    _expected_to_receive: Coin,
+    _spent: Coin,
+    _received: Coin,
 ) -> Result<Response, ContractError> {
     if order.quantity < Uint128::new(10) {
         return Err(ContractError::Std(StdError::generic_err(
