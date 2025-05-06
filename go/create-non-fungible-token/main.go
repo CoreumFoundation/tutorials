@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/cosmos-sdk/crypto/hd"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -45,14 +46,22 @@ func main() {
 		auth.AppModuleBasic{},
 	)
 
+	encodingConfig := coreumconfig.NewEncodingConfig(modules)
+
+	pc, ok := encodingConfig.Codec.(codec.GRPCCodecProvider)
+	if !ok {
+		panic("failed to cast codec to codec.GRPCCodecProvider")
+	}
+
 	// Configure client context and tx factory
-	// If you don't use TLS then replace `grpc.WithTransportCredentials()` with `grpc.WithInsecure()`
-	grpcClient, err := grpc.Dial(nodeAddress, grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{MinVersion: tls.VersionTLS12})))
+	grpcClient, err := grpc.Dial(
+		nodeAddress,
+		grpc.WithDefaultCallOptions(grpc.ForceCodec(pc.GRPCCodec())),
+		grpc.WithTransportCredentials(credentials.NewTLS(&tls.Config{MinVersion: tls.VersionTLS12})),
+	)
 	if err != nil {
 		panic(err)
 	}
-
-	encodingConfig := coreumconfig.NewEncodingConfig(modules)
 
 	clientCtx := client.NewContext(client.DefaultContextConfig(), modules).
 		WithChainID(string(chainID)).
